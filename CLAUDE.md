@@ -327,9 +327,40 @@ pnpm db:studio
 3. A+ template overlay for consistency and elite standards
 4. Cross-agent collaboration protocols and success metrics
 
+**Agent Tracking System:**
+- **Agent IDs**: Sequential numbering (1-15) matching the strategic roadmap
+- **Categories**: Core Development, Quality & Performance, Product & Design, Business & Growth
+- **Version Control**: Semantic versioning with last_updated timestamps
+- **Cross-Reference Validation**: All agents mapped to strategic framework for consistency
+
+**Complete Agent ID Mapping:**
+
+**Core Development (IDs 1-4):**
+- ID 1: 🔬 Research Expert - Academic methodology, evaluation frameworks ✅
+- ID 2: 🐍 Backend Expert - Python, LangGraph, APIs, microservices ✅  
+- ID 3: 🌐 Extension Expert - WXT, Chrome APIs, TypeScript, shadcn/ui ✅
+- ID 4: 📊 Evaluation Expert - Academic metrics, benchmarking, statistical analysis ✅
+
+**Quality & Performance (IDs 5-8):**
+- ID 5: 🧪 QA Expert - Testing strategies, automation, code review
+- ID 6: ⚡ Performance Expert - Optimization, caching, scaling, load testing
+- ID 7: 🛡️ Security Expert - Web security, privacy, compliance, penetration testing
+- ID 8: 🔧 DevOps Expert - Infrastructure, CI/CD, deployment, monitoring
+
+**Product & Design (IDs 9-10):**
+- ID 9: 🎨 Design Expert - UX + Visual Design + Brand Identity + Marketing Materials
+- ID 10: 📱 Data & Analytics Expert - Product analytics, user behavior, BI
+
+**Business & Growth (IDs 11-15):**
+- ID 11: 📢 Marketing & Content Expert - Content strategy, SEO, PR, social media
+- ID 12: 📈 Growth Expert - Metrics, experiments, user acquisition, optimization  
+- ID 13: 🎓 Customer Success Expert - Onboarding, support, feature adoption
+- ID 14: 💰 Business Expert - Pricing, financial modeling, market analysis
+- ID 15: 🏢 Enterprise Expert - B2B sales, compliance, partnerships
+
 ---
 
-*Last updated: 2025-09-10*  
+*Last updated: 2025-09-11*  
 *Current milestone: Complete remaining 11 elite expert agents using proven A+ template*  
 *Strategic documents: docs/strategy/project-vision.md, docs/strategy/product-roadmap.md*  
 *Elite Agent Progress: 4/15 A+ agents complete with perfect foundation established*
