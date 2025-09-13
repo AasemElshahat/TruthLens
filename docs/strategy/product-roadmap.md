@@ -1,7 +1,7 @@
 # TruthLens - Product Roadmap & Bootstrap Strategy
 
-**Version:** 1.0  
-**Date:** September 9, 2025  
+**Version:** 2.0  
+**Date:** September 13, 2025  
 **Status:** Active Development  
 **Author:** Aasem Elshahat
 
@@ -33,22 +33,23 @@
 - Establish credibility in fact-checking space
 
 ### Development Approach:
-**Claude Code + 15 Elite Expert Agents:**
-Perfect coverage for complete product lifecycle with no gaps or compromises.
+**Claude Code + 7-Agent Hybrid Team with Technical Product Manager:**
+Optimal coverage through advisory-implementation specialists coordinated by Technical PM.
 
-**Agent Creation Timeline (3-4 days):**
-- **Day 1**: Core Development (4 agents) - Research, Backend, Extension, Evaluation
-- **Day 2**: Quality & Performance (4 agents) - QA, Performance, Security, DevOps  
-- **Day 3**: Product & Design (2 agents) - Design, Data & Analytics
-- **Day 4**: Business & Growth (5 agents) - Marketing, Growth, Customer Success, Business, Enterprise
+**Team Implementation Timeline (3-4 weeks):**
+- **Week 1**: Technical Product Manager creation and coordination validation
+- **Week 2**: Existing agent transformation to hybrid advisory-implementation model
+- **Week 3**: Core hybrid specialists (Full-Stack, Security & Performance) creation
+- **Week 4**: Complete team (Product & UX, Business & Growth, Data & Analytics) creation
 
 ### Technical Milestones:
 
 #### Month 1 (October 2025):
-- [ ] **Elite Agent Foundation (Days 1-4)**
-  - Build all 15 elite expert agents with comprehensive domain knowledge
-  - Establish agent coordination workflow
-  - Validate agent expertise through initial tasks
+- [ ] **Hybrid Team Foundation (Week 1)**
+  - Create Technical Product Manager as primary orchestrator
+  - Transform existing agents to hybrid advisory-implementation model
+  - Establish TPM coordination workflow and GitHub project management
+  - Validate specialist coordination through initial tasks
   
 - [ ] **Research & Architecture (Days 5-31)**
   - Complete Claimify methodology analysis (Research Expert)
@@ -438,5 +439,5 @@ Perfect coverage for complete product lifecycle with no gaps or compromises.
 *"Building sustainably means building to last. Every technical decision today determines our ability to serve millions tomorrow."*
 
 **Document maintained by:** Aasem Elshahat  
-**Last updated:** September 9, 2025  
+**Last updated:** September 13, 2025  
 **Next review:** October 2025

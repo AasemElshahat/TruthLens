@@ -1,7 +1,7 @@
 # TruthLens - Project Vision Document
 
-**Version:** 2.0  
-**Date:** September 9, 2025  
+**Version:** 3.0  
+**Date:** September 13, 2025  
 **Status:** Active Development  
 **Author:** Aasem Elshahat
 
@@ -139,24 +139,24 @@ These principles guide every product decision:
 - Horizontal scaling architecture
 
 ### Development Approach:
-- **Claude Code as technical foundation**: 15 elite expert agents for complete lifecycle coverage
-- **Perfect Coverage**: No gaps in development, quality, design, marketing, growth, or enterprise scaling
-- **Elite Expertise**: Each agent has comprehensive domain knowledge, not just basic skills
-- **Strategic Investment**: 3-4 days to build foundation that serves entire 15-month project lifecycle
+- **Claude Code as technical foundation**: 7-agent hybrid team with Technical Product Manager orchestration
+- **Optimal Complexity**: Comprehensive coverage without overwhelming coordination overhead
+- **Advisory + Implementation**: Each specialist both guides strategically AND builds solutions
+- **TPM Coordination**: Single interface eliminates routing confusion and manages all documentation
+- **Professional Objectivity**: Specialists challenge approaches while implementing better alternatives
 
-### Complete 15-Agent Elite Team:
+### Complete 7-Agent Hybrid Team:
 
-**Core Development (4 Agents):**
-- 🔬 Research Expert, 🐍 Backend Expert, 🌐 Extension Expert, 📊 Evaluation Expert
+**Primary Orchestrator:**
+- 🎯 Technical Product Manager (Primary interface, GitHub project management, specialist coordination)
 
-**Quality & Performance (4 Agents):**
-- 🧪 QA Expert, ⚡ Performance Expert, 🛡️ Security Expert, 🔧 DevOps Expert
-
-**Product & Design (2 Agents):**
-- 🎨 Design Expert (UX + Visual + Brand), 📱 Data & Analytics Expert
-
-**Business & Growth (5 Agents):**
-- 📢 Marketing & Content Expert, 📈 Growth Expert, 🎓 Customer Success Expert, 💰 Business Expert, 🏢 Enterprise Expert
+**Hybrid Advisory-Implementation Specialists:**
+- 🔬 Research & Evaluation Specialist (Academic methodology + statistical analysis + implementation)
+- 🏗️ Full-Stack Technical Specialist (Backend + Frontend + Infrastructure + implementation)
+- 🎨 Product & UX Specialist (User experience + design + research + implementation)
+- 🚀 Business & Growth Specialist (Strategy + growth + marketing + implementation)
+- 🛡️ Security & Performance Specialist (Security + performance + QA + implementation)
+- 📊 Data & Analytics Specialist (Analytics + measurement + visualization + implementation)
 
 ---
 
@@ -329,5 +329,5 @@ If the answer to any is "no," reconsider.
 *"In a world drowning in information, we're building the life raft of truth."*
 
 **Document maintained by:** Aasem Elshahat  
-**Last updated:** September 9, 2025  
+**Last updated:** September 13, 2025  
 **Next review:** October 2025
