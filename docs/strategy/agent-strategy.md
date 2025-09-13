@@ -1,177 +1,199 @@
 # TruthLens - Elite Expert Agent Strategy
 
-**Version:** 1.0  
-**Date:** September 9, 2025  
-**Status:** Ready for Implementation  
-**Author:** Aasem Elshahat
+**Version:** 3.0  
+**Date:** September 14, 2025  
+**Status:** Hybrid Advisory-Implementation Model  
+**Author:** Aasem Elshahat  
+**Framework:** [Agent Creation Framework](agent-creation-framework.md)
 
 ---
 
-## Strategic Decision: 15 Elite Expert Agents
+## Strategic Decision: 7-Agent Hybrid Team with Technical Product Manager
 
-After comprehensive analysis of the complete product lifecycle, we've decided on **15 Elite Expert Agents** to ensure perfect coverage from thesis to multi-million dollar enterprise product.
+After critical evaluation of complexity vs. value, we've evolved to a **7-Agent Hybrid Team** that combines advisory guidance with implementation capability, orchestrated by a Technical Product Manager.
 
-## Why 15 Agents (Not 12, Not 18)?
+### **Agent Philosophy: Advisory-Implementation Specialists**
+
+Our agents function as **hybrid advisory-implementation specialists** who:
+- **Advise** by challenging approaches and presenting alternatives
+- **Implement** by building TruthLens components with technical excellence
+- **Educate** through transparent reasoning during both advisory and implementation phases
+- **Collaborate** in decision-making while taking ownership of execution
+- **Orchestrate** through Technical Product Manager for coordination and documentation
+
+This hybrid approach addresses the entrepreneur's need for both strategic guidance AND implementation capability, managed through a single orchestrator to prevent overwhelming complexity.
+
+## Why 7 Agents (Not 15, Not 5)?
 
 ### **Strategic Reasoning:**
-- **Complete Coverage**: Every aspect of product development, growth, and scaling covered
-- **No Overlaps**: Each agent has distinct, clear domain expertise
-- **No Gaps**: Comprehensive analysis revealed 3 critical missing specializations
-- **Elite Quality**: Deep expertise, not just surface-level knowledge
-- **Bootstrap to Enterprise**: Scales from academic project to venture-level product
+- **Optimal Complexity**: Comprehensive coverage without overwhelming coordination overhead
+- **Hybrid Capability**: Each agent both advises strategically AND implements solutions
+- **Clear Orchestration**: Technical Product Manager eliminates coordination confusion
+- **Manageable Relationships**: 7 specialists with 1 primary interface (TPM)
+- **Professional Objectivity**: Deep expertise combined with respectful challenge capabilities
+- **Bootstrap to Enterprise**: Scales from thesis foundation to commercial product
+- **Educational Implementation**: Agents teach while building, maximizing learning value
 
-### **3 Critical Additions Identified:**
-1. **📱 Data & Analytics Expert** - Product analytics fundamentally different from academic evaluation
-2. **📢 Marketing & Content Expert** - Marketing/messaging completely different from growth optimization  
-3. **🎓 Customer Success Expert** - SaaS retention expertise separate from business strategy
-
----
-
-## Complete 15-Agent Elite Team Structure
-
-### **Core Development (4 Agents)**
-
-#### 🔬 Research Expert
-- **Domain**: Academic methodology, literature review, comparative analysis
-- **Elite Knowledge**: Research best practices, statistical analysis, academic writing standards, peer review processes
-- **Responsibilities**: Claimify/SAFE analysis, evaluation frameworks, thesis requirements, academic validation
-
-#### 🐍 Backend Expert  
-- **Domain**: Python, LangGraph, LLM APIs, microservices architecture
-- **Elite Knowledge**: Async programming, caching strategies, API design patterns, security, performance optimization
-- **Responsibilities**: API integrations, claim processing pipeline, scalable backend architecture
-
-#### 🌐 Extension Expert
-- **Domain**: WXT framework, Chrome APIs, TypeScript, shadcn/ui, cross-browser compatibility
-- **Elite Knowledge**: Extension architecture, performance optimization, manifest v3, content script patterns
-- **Responsibilities**: Chrome extension development, context menus, popup UI, cross-platform ports
-
-#### 📊 Evaluation Expert
-- **Domain**: Academic metrics, benchmarking, statistical analysis, comparative studies
-- **Elite Knowledge**: Statistical significance, A/B testing, academic validation methods, data interpretation
-- **Responsibilities**: Comparative LLM analysis, user testing, performance evaluation, thesis metrics
-
-### **Quality & Performance (4 Agents)**
-
-#### 🧪 QA Expert
-- **Domain**: Testing strategies, automation, code review, documentation standards
-- **Elite Knowledge**: TDD, integration testing, end-to-end testing, quality metrics, review processes
-- **Responsibilities**: Test planning, automated testing, code review standards, documentation quality
-
-#### ⚡ Performance Expert
-- **Domain**: Optimization, caching, load testing, profiling, scalability
-- **Elite Knowledge**: Performance bottleneck identification, caching strategies, CDN optimization, memory management
-- **Responsibilities**: Speed optimization, memory management, scalability testing, performance monitoring
-
-#### 🛡️ Security Expert
-- **Domain**: Web security, API security, data privacy, compliance, penetration testing
-- **Elite Knowledge**: OWASP standards, encryption, secure API design, privacy by design, GDPR compliance
-- **Responsibilities**: Security audits, vulnerability assessment, compliance implementation, data protection
-
-#### 🔧 DevOps Expert
-- **Domain**: Infrastructure, CI/CD, deployment, monitoring, cost optimization
-- **Elite Knowledge**: Kubernetes, auto-scaling, security hardening, cost optimization, reliability engineering
-- **Responsibilities**: Infrastructure setup, automated deployments, performance monitoring, scaling strategies
-
-### **Product & Design (2 Agents)**
-
-#### 🎨 Design Expert
-- **Domain**: UX + Visual Design + Brand Identity + Marketing Materials
-- **Elite Knowledge**: Design psychology, accessibility standards, user research methods, brand consistency
-- **Responsibilities**: UI/UX optimization, user journey analysis, brand development, marketing design
-
-#### 📱 Data & Analytics Expert  
-- **Domain**: Product analytics, user behavior, BI, predictive analytics
-- **Elite Knowledge**: Product analytics tools, SQL, data visualization, statistical modeling, behavioral analysis
-- **Responsibilities**: User behavior analysis, feature usage optimization, data-driven product decisions
-
-### **Business & Growth (5 Agents)**
-
-#### 📢 Marketing & Content Expert
-- **Domain**: Content strategy, SEO, PR, social media, messaging, brand positioning
-- **Elite Knowledge**: Content marketing, copywriting, SEO optimization, PR relations, community building
-- **Responsibilities**: Brand positioning, content marketing, SEO strategy, PR campaigns, social media
-
-#### 📈 Growth Expert
-- **Domain**: Product metrics, experiments, user acquisition, conversion optimization
-- **Elite Knowledge**: Growth hacking, conversion optimization, viral mechanics, retention strategies
-- **Responsibilities**: Growth experiments, user acquisition, conversion optimization, retention analysis
-
-#### 🎓 Customer Success Expert
-- **Domain**: Onboarding, support, feature adoption, churn prevention
-- **Elite Knowledge**: Customer journey mapping, support tools, onboarding flows, success metrics, churn analysis
-- **Responsibilities**: User onboarding, customer support, feature adoption, churn prevention, success metrics
-
-#### 💰 Business Expert
-- **Domain**: Pricing strategy, financial modeling, market analysis, legal basics
-- **Elite Knowledge**: SaaS metrics, pricing psychology, competitive analysis, financial planning, legal compliance
-- **Responsibilities**: Revenue optimization, market positioning, financial planning, competitive intelligence
-
-#### 🏢 Enterprise Expert
-- **Domain**: B2B sales, compliance, partnerships, enterprise features
-- **Elite Knowledge**: Enterprise sales, compliance requirements, API partnerships, B2B contract negotiation
-- **Responsibilities**: Enterprise customer needs, scalability planning, partnership strategy, compliance
+### **Key Design Decisions:**
+1. **Technical Product Manager**: Single orchestrator for coordination, documentation, and GitHub issue management
+2. **Domain Consolidation**: Strategic combination of complementary specializations (e.g., Security + Performance)
+3. **Hybrid Approach**: Each specialist provides both advisory guidance AND implementation capability
+4. **Thesis + Commercial**: Balanced focus on academic requirements and commercial foundation building
 
 ---
 
-## Agent Creation Timeline (3-4 Days)
+## Agent Behavioral Framework Integration
 
-### **Day 1: Core Development Foundation**
-**Priority**: Academic success + technical foundation
-- 🔬 Research Expert - Academic methodology and thesis requirements
-- 🐍 Backend Expert - Python, LangGraph, API architecture  
-- 🌐 Extension Expert - WXT, Chrome APIs, TypeScript, shadcn/ui
-- 📊 Evaluation Expert - Academic metrics and comparative analysis
+### **Professional Objectivity Standards**
 
-### **Day 2: Quality & Performance Foundation** 
-**Priority**: No-compromise technical standards
-- 🧪 QA Expert - Testing strategies, code review, documentation
-- ⚡ Performance Expert - Optimization, caching, scalability
-- 🛡️ Security Expert - Web security, privacy, compliance
-- 🔧 DevOps Expert - Infrastructure, CI/CD, deployment
+All agents follow the **[Agent Creation Framework](agent-creation-framework.md)** which establishes:
 
-### **Day 3: Product & Design Foundation**
-**Priority**: User experience and data-driven decisions
-- 🎨 Design Expert - UX, visual design, brand identity
-- 📱 Data & Analytics Expert - Product analytics, user behavior
+- **Trade-Offs First Communication**: Present alternatives and comparisons before implementation
+- **Respectful Challenge Protocol**: Question approaches when better options exist
+- **Collaborative Decision-Making**: Work with user to reach optimal solutions
+- **Educational Explanations**: High-level technical reasoning without implementation details
+- **Documentation Requirements**: Update project knowledge after completing work
 
-### **Day 4: Business & Growth Foundation**
-**Priority**: Sustainable business growth and scaling  
-- 📢 Marketing & Content Expert - Content strategy, SEO, PR
-- 📈 Growth Expert - Growth experiments, user acquisition
-- 🎓 Customer Success Expert - Onboarding, retention, support
-- 💰 Business Expert - Pricing, financial modeling, market analysis
-- 🏢 Enterprise Expert - B2B sales, partnerships, compliance
+### **Agent-User Relationship Model**
+
+Given that you (the entrepreneur) have business vision and high-level technical intuition but need deep technical guidance, our agents are designed to:
+
+1. **Understand Your Goals**: Clarify what you want to achieve and why
+2. **Evaluate Your Approaches**: Analyze proposed solutions objectively
+3. **Present Better Alternatives**: Suggest optimal approaches when they exist
+4. **Explain Trade-Offs**: Provide clear reasoning for all recommendations
+5. **Collaborate on Decisions**: Work together to reach the best technical solutions
+6. **Maintain Documentation**: Keep project knowledge current for all agents
 
 ---
 
-## Agent Workflow & Coordination
+## 7-Agent Hybrid Advisory-Implementation Team Structure
 
-### **Manual Orchestration Model**
-- **You (Project Manager)**: Assign tasks to specific agents using Claude Code Task tool
-- **No Automatic Triggering**: Each agent called explicitly for their domain expertise
-- **Clear Accountability**: Know exactly which expert handled each aspect
-- **Quality Control**: Review and integrate outputs from different agents
+### **1. 🎯 Technical Product Manager** (Primary Orchestrator)
+- **Domain**: Project coordination, GitHub issue management, documentation oversight
+- **Advisory Role**: Challenge project priorities, suggest optimal development sequences, coordinate specialist recommendations
+- **Implementation Role**: Create detailed GitHub issues, maintain project documentation, manage cross-agent workflows
+- **Primary Interface**: Your main point of contact for all TruthLens development decisions
 
-### **Agent Collaboration Patterns**
+### **2. 🔬 Research & Evaluation Specialist** (Hybrid)
+- **Domain**: Academic methodology, statistical analysis, comparative studies, thesis requirements
+- **Advisory Role**: Challenge research assumptions, suggest better evaluation methods, balance academic rigor with business constraints
+- **Implementation Role**: Build evaluation pipelines, conduct statistical analyses, write thesis sections, create academic validation frameworks
+- **Education Focus**: Explain research methodologies and statistical reasoning throughout implementation
 
-#### **Common Collaboration Scenarios:**
-1. **Backend + Security Expert**: API development with security review
-2. **Extension + Performance Expert**: UI development with optimization
-3. **Design + Marketing Expert**: Brand consistency across all materials
-4. **Growth + Data Expert**: Growth experiments with analytical validation
-5. **QA + All Experts**: Code review and testing for all components
+### **3. 🏗️ Full-Stack Technical Specialist** (Hybrid)
+- **Domain**: Backend (Python, LangGraph, APIs), Frontend (Extension, TypeScript, shadcn/ui), Infrastructure (DevOps, deployment)
+- **Advisory Role**: Challenge architectural decisions, suggest optimal tech stacks, explain scalability trade-offs
+- **Implementation Role**: Build backend APIs, develop Chrome extension, set up deployment infrastructure, optimize performance
+- **Education Focus**: Explain technical architecture decisions and their business implications
 
-#### **Cross-Domain Validation:**
-- **Technical decisions** reviewed by QA + Performance + Security experts
-- **Product decisions** validated by Data + Growth + Customer Success experts  
-- **Business decisions** analyzed by Business + Marketing + Enterprise experts
+### **4. 🎨 Product & UX Specialist** (Hybrid)
+- **Domain**: User experience design, visual design, user research, product strategy
+- **Advisory Role**: Challenge UX assumptions, suggest better interaction patterns, evaluate user journey trade-offs
+- **Implementation Role**: Design interfaces, create user flows, build responsive components, conduct user testing
+- **Education Focus**: Teach product design principles and user psychology during implementation
 
-### **Quality Gates**
-- **Code Quality**: QA Expert approval required for all code
-- **Performance**: Performance Expert validation for all optimizations
-- **Security**: Security Expert approval for all external integrations
-- **User Experience**: Design Expert review for all user-facing features
+### **5. 🚀 Business & Growth Specialist** (Hybrid)
+- **Domain**: Business strategy, growth experiments, marketing, customer success, pricing
+- **Advisory Role**: Challenge business assumptions, suggest market alternatives, evaluate monetization strategies
+- **Implementation Role**: Build analytics systems, create marketing materials, design pricing strategies, implement growth experiments
+- **Education Focus**: Explain business model decisions and growth implications throughout implementation
+
+### **6. 🛡️ Security & Performance Specialist** (Hybrid)
+- **Domain**: Web security, API security, performance optimization, compliance, quality assurance
+- **Advisory Role**: Challenge security approaches, suggest performance optimizations, evaluate compliance trade-offs
+- **Implementation Role**: Implement security protocols, optimize performance, conduct testing, ensure compliance
+- **Education Focus**: Explain security and performance decisions and their user impact
+
+### **7. 📊 Data & Analytics Specialist** (Hybrid)
+- **Domain**: Product analytics, user behavior analysis, data visualization, statistical modeling
+- **Advisory Role**: Challenge measurement approaches, suggest better metrics, evaluate data collection strategies
+- **Implementation Role**: Build tracking systems, create dashboards, analyze user behavior, implement A/B testing
+- **Education Focus**: Explain data-driven decision making and growth metrics throughout implementation
+
+---
+
+## Team Implementation Strategy
+
+### **Phase 1: Technical Product Manager (Week 1)**
+**Priority**: Establish orchestration and coordination foundation
+- Create Technical Product Manager with full orchestration capabilities
+- Test TPM coordination with existing agents (Research, Backend, Extension, Evaluation)
+- Validate GitHub issue management and documentation workflows
+- Ensure TPM can effectively route tasks and coordinate specialists
+
+### **Phase 2: Core Hybrid Specialists (Week 2-3)**
+**Priority**: Transform current agents and add critical missing specialists
+- Update existing agents to hybrid advisory-implementation model
+- Create Full-Stack Technical Specialist (consolidating backend/extension/DevOps)
+- Create Security & Performance Specialist (consolidating security/performance/QA)
+- Test coordinated workflows through Technical Product Manager
+
+### **Phase 3: Product & Business Specialists (Week 4)**
+**Priority**: Complete team with user-facing and business capabilities
+- Create Product & UX Specialist for user experience and interface design
+- Create Business & Growth Specialist for strategy and monetization
+- Create Data & Analytics Specialist for measurement and optimization
+- Validate full team coordination and cross-specialist collaboration
+
+---
+
+## Technical Product Manager Orchestration Model
+
+### **Your Primary Workflow**
+- **You → Technical PM**: Present goals, ideas, or problems you want to address
+- **Technical PM Analysis**: Determines which specialists are needed and coordinates their work
+- **Specialist Advisory + Implementation**: Relevant specialists provide alternatives and build solutions
+- **Technical PM Synthesis**: Presents unified recommendations with trade-offs and coordinates implementation
+- **Collaborative Decision**: You work with Technical PM and specialists to choose optimal approach
+- **Documentation & Execution**: Technical PM manages GitHub issues and ensures knowledge is updated
+
+### **Technical Product Manager Responsibilities**
+
+#### **Orchestration & Routing:**
+- **Single Point of Entry**: Your primary interface for all TruthLens development decisions
+- **Task Coordination**: Routes requests to appropriate specialists and manages dependencies
+- **Conflict Resolution**: Mediates when specialists have different recommendations
+- **Progress Tracking**: Monitors all work and ensures timely delivery
+
+#### **GitHub Project Management:**
+- **Issue Creation**: Transforms your requirements into detailed, well-scoped GitHub issues
+- **Priority Management**: Orders work based on thesis timeline and business strategy
+- **Sprint Planning**: Creates manageable work cycles with clear deliverables
+- **Progress Monitoring**: Tracks completion and adjusts priorities as needed
+
+#### **Documentation & Context Management:**
+- **Knowledge Maintenance**: Ensures all project documentation stays current
+- **Agent Context Updates**: Updates specialist instructions when requirements evolve
+- **Decision Recording**: Documents architectural and strategic decisions with reasoning
+- **Cross-Agent Communication**: Facilitates knowledge sharing between specialists
+
+### **Hybrid Advisory-Implementation Patterns**
+
+#### **Typical Feature Development Flow:**
+1. **You → Technical PM**: "I want to add social sharing to increase viral growth"
+2. **Technical PM Coordination**: Analyzes requirements and coordinates with:
+   - Full-Stack Specialist (API changes, extension integration)
+   - Product & UX Specialist (optimal sharing user experience)
+   - Business & Growth Specialist (viral mechanics strategy)
+   - Data & Analytics Specialist (tracking and measurement)
+3. **Specialist Advisory**: Each provides trade-offs and alternative approaches
+4. **Technical PM Synthesis**: Presents unified recommendation with implementation plan
+5. **Collaborative Decision**: You decide approach based on complete analysis
+6. **Coordinated Implementation**: Specialists build components with Technical PM coordination
+7. **Documentation Update**: Technical PM ensures all decisions and learnings are recorded
+
+#### **Cross-Specialist Collaboration:**
+- **Technical Architecture**: Full-Stack + Security & Performance specialists coordinate on scalable, secure solutions
+- **User Experience**: Product & UX + Data & Analytics specialists align on user-centered design with measurement
+- **Business Strategy**: Business & Growth + Research & Evaluation specialists balance commercial goals with academic requirements
+- **Quality Assurance**: All specialists validate each other's work through Technical PM coordination
+
+### **Professional Objectivity Through Coordination**
+- **Multi-Perspective Analysis**: Technical PM ensures multiple specialists evaluate each decision
+- **Alternative Presentation**: Technical PM synthesizes different specialist recommendations into clear alternatives
+- **Educational Synthesis**: Technical PM translates specialist technical reasoning into accessible explanations
+- **Collaborative Implementation**: Specialists challenge each other's approaches through Technical PM facilitation
 
 ---
 
@@ -183,40 +205,61 @@ After comprehensive analysis of the complete product lifecycle, we've decided on
 
 ### **Knowledge Depth Standards:**
 
-#### **Technical Agents (8 agents):**
-- **Architecture Patterns**: Microservices, event-driven, CQRS, hexagonal architecture
-- **Performance Optimization**: Caching strategies, CDN usage, database optimization, memory management
-- **Security Best Practices**: OWASP Top 10, secure coding, encryption, authentication, authorization
-- **Testing Strategies**: Unit, integration, e2e, load testing, test automation, TDD/BDD
-- **Scalability Patterns**: Horizontal scaling, load balancing, database sharding, auto-scaling
+#### **Technical Product Manager:**
+- **Project Orchestration**: GitHub issue management, sprint planning, dependency coordination, progress tracking
+- **Documentation Architecture**: Knowledge management, decision logging, context maintenance, cross-specialist communication
+- **Strategic Synthesis**: Multi-specialist recommendation integration, trade-off analysis, business alignment
 
-#### **Product Agents (2 agents):**
-- **Design Systems**: Component libraries, design tokens, accessibility, responsive design
-- **Analytics Platforms**: Google Analytics, Mixpanel, Amplitude, custom event tracking
-- **User Research**: A/B testing, user interviews, usability testing, behavioral analysis
-- **Data Visualization**: Dashboard design, KPI selection, statistical significance
+#### **Research & Evaluation Specialist:**
+- **Academic Methodology**: Literature review, statistical analysis, experimental design, peer review standards
+- **Evaluation Frameworks**: FEVER dataset standards, comparative analysis, performance benchmarking
+- **Implementation Capability**: Data collection pipelines, analysis automation, thesis documentation
 
-#### **Business Agents (5 agents):**
-- **SaaS Metrics**: CAC, LTV, churn, MRR, expansion revenue, product-market fit indicators
-- **Growth Strategies**: Viral loops, referral programs, content marketing, SEO, paid acquisition
-- **Customer Success**: Onboarding flows, feature adoption, health scores, churn prediction
-- **Enterprise Sales**: B2B sales cycles, enterprise features, compliance requirements, partnerships
+#### **Full-Stack Technical Specialist:**
+- **Backend Architecture**: Python, LangGraph, microservices, API design, database optimization
+- **Frontend Development**: TypeScript, React, Chrome extensions, responsive design
+- **Infrastructure**: DevOps, CI/CD, deployment, monitoring, scalability patterns
+
+#### **Product & UX Specialist:**
+- **User Experience**: Design systems, accessibility, user research, interface optimization
+- **Product Strategy**: User journey mapping, feature prioritization, conversion optimization
+- **Implementation Capability**: UI/UX development, user testing, design system implementation
+
+#### **Business & Growth Specialist:**
+- **Business Strategy**: SaaS metrics, pricing psychology, market analysis, financial modeling
+- **Growth Implementation**: Viral mechanics, content marketing, SEO, user acquisition campaigns
+- **Revenue Optimization**: Conversion funnels, retention strategies, enterprise sales processes
+
+#### **Security & Performance Specialist:**
+- **Security Standards**: OWASP Top 10, encryption, secure coding, compliance (GDPR, SOC2)
+- **Performance Optimization**: Caching strategies, load testing, database optimization, scalability
+- **Quality Assurance**: Testing frameworks, code review, reliability engineering
+
+#### **Data & Analytics Specialist:**
+- **Analytics Implementation**: Google Analytics, Mixpanel, custom event tracking, dashboard creation
+- **Data Science**: Statistical modeling, user behavior analysis, predictive analytics
+- **Measurement Systems**: KPI selection, A/B testing, performance monitoring, business intelligence
 
 ---
 
 ## Success Metrics for Agent Implementation
 
-### **Agent Quality Validation (Week 1):**
-- [ ] Each agent demonstrates elite-level knowledge in initial test tasks
-- [ ] Agents provide comprehensive solutions, not just basic implementations
-- [ ] Cross-domain collaboration produces integrated, coherent outputs
-- [ ] Agent recommendations align with industry best practices
+### **Team Coordination Validation (COMPLETED ✅):**
+- [x] Technical PM effectively routes requests and coordinates specialist responses
+- [x] Each specialist demonstrates professional objectivity by challenging suboptimal approaches (validated with R&E and Full-Stack)
+- [x] Specialists provide both advisory trade-off analysis AND implementation capability (proven through specification creation)
+- [x] Cross-domain collaboration produces cohesive, educational outputs through TPM coordination
+- [x] GitHub issues are well-scoped with clear acceptance criteria and proper priority ordering
+- [x] Documentation stays current automatically through Technical PM oversight
 
-### **Development Efficiency (Month 1):**
-- [ ] 50%+ reduction in context-switching time
-- [ ] Consistent high-quality outputs across all domains  
-- [ ] Seamless collaboration between different expert domains
-- [ ] Zero technical debt introduction due to knowledge gaps
+### **Hybrid Advisory-Implementation Efficiency (Month 1):**
+- [ ] 60%+ reduction in coordination overhead through Technical PM orchestration
+- [ ] Specialists successfully balance advisory guidance with implementation execution
+- [ ] Technical PM eliminates confusion about which specialist to consult for different needs
+- [ ] Cross-specialist collaboration produces better solutions than individual specialist work
+- [ ] User technical understanding improved through coordinated educational approach
+- [ ] TruthLens development velocity increased through coordinated specialist implementation
+- [ ] Frequency of suboptimal user proposals successfully challenged and improved by specialist agents
 
 ### **Long-term ROI (15-month project):**
 - [ ] Elite-quality outputs throughout entire project lifecycle
@@ -247,24 +290,73 @@ After comprehensive analysis of the complete product lifecycle, we've decided on
 
 ---
 
-## Long-term Agent Evolution Strategy
+## Shifting Team Focus Across Project Phases
 
-### **Phase 1 (Thesis - 4 months)**: Core 8 agents most active
-- Focus on Research, Backend, Extension, Evaluation, QA, Performance, Security, DevOps
+While all 7 hybrid specialists are available from project start, the team's primary implementation workload will naturally shift based on development priorities and business needs.
 
-### **Phase 2 (MVP - 4 months)**: Add Product agents
-- Heavy usage of Design and Data & Analytics experts
+### **Phase 1 (Thesis - 4 months)**: Research & Technical Implementation Focus
+**Primary Implementation Workload:**
+- **Research & Evaluation Specialist**: Heavy implementation of evaluation frameworks, statistical analysis, and thesis documentation
+- **Full-Stack Technical Specialist**: Intensive backend development, Chrome extension implementation, and infrastructure setup
+- **Technical Product Manager**: Establishing coordination protocols and comprehensive project documentation
 
-### **Phase 3 (Growth - 7 months)**: Full business team activation
-- Marketing, Growth, Customer Success, Business, Enterprise experts in full action
+**Supporting Implementation:**
+- Security & Performance Specialist: Core security and performance foundations
+- Product & UX Specialist: Basic user interface and experience implementation
+- Other specialists: Advisory guidance with minimal implementation requirements
 
-### **Phase 4 (Scale - Ongoing)**: All agents in continuous operation
-- Regular agent knowledge updates based on learned patterns and industry evolution
+### **Phase 2 (MVP - 4 months)**: Product & User Experience Expansion
+**Expanding Implementation Workload:**
+- **Product & UX Specialist**: Heavy implementation of user experience optimization, interface polish, and user research
+- **Data & Analytics Specialist**: Implementation of user tracking, analytics dashboards, and measurement systems
+- **Security & Performance Specialist**: Production-ready security and performance optimization implementation
+
+Continued intensive work from Research & Evaluation and Full-Stack specialists for MVP polish and optimization.
+
+### **Phase 3 (Growth - 7 months)**: Business & Growth Implementation Activation
+**Full Team Implementation:**
+- **Business & Growth Specialist**: Heavy implementation of marketing systems, growth experiments, and revenue optimization
+- **Data & Analytics Specialist**: Advanced analytics implementation, business intelligence, and growth measurement systems
+- All specialists operating at high implementation capacity for scaling requirements
+
+### **Phase 4 (Scale - Ongoing)**: Continuous Evolution & Optimization
+All specialists maintain high implementation activity with focus areas adapting to:
+- Market feedback and user behavior insights
+- Technical scaling requirements and performance optimization
+- Business model evolution and enterprise feature development
+- Competitive landscape changes and product differentiation needs
 
 ---
 
-*"Perfect execution requires perfect preparation. Our 15 elite experts are the foundation for building a multi-million dollar product with zero compromises."*
+---
+
+## Implementation Strategy
+
+### **Phase 1: Documentation & Technical PM Creation (COMPLETED ✅)**
+- [x] Update Agent Strategy for 7-agent hybrid model
+- [x] Update Agent Creation Framework for hybrid advisory-implementation approach
+- [x] Create Technical Product Manager specification and agent
+- [x] Validate Technical PM orchestration capabilities and GitHub integration
+
+### **Phase 2: Core Specialist Creation (IN PROGRESS - 2/3 COMPLETE)**
+- [x] Create Research & Evaluation Specialist (hybrid advisory-implementation model) ✅ Completed Sept 14, 2025
+- [x] Create Full-Stack Technical Specialist (backend + frontend + infrastructure) ✅ Completed Sept 14, 2025
+- [ ] Create Security & Performance Specialist (security + optimization + QA) - **Next Priority**
+- [ ] Validate coordinated advisory-implementation workflows
+- [ ] Test multi-specialist GitHub issue coordination through TPM
+
+### **Phase 3: Complete Hybrid Team**
+- [ ] Create Product & UX Specialist, Business & Growth Specialist, Data & Analytics Specialist
+- [ ] Establish full cross-specialist collaboration through Technical PM coordination
+- [ ] Validate complete team effectiveness on real TruthLens development tasks
+- [ ] Optimize team workflows based on practical usage experience
+
+---
+
+*"Hybrid advisory-implementation specialists orchestrated through Technical Product Manager deliver both strategic guidance and execution capability, optimized for thesis completion and commercial foundation building."*
 
 **Document maintained by:** Aasem Elshahat  
-**Last updated:** September 9, 2025  
-**Next milestone:** Begin Day 1 agent creation - Core Development Foundation**
+**Last updated:** September 14, 2025  
+**Framework Reference:** [Agent Creation Framework](agent-creation-framework.md)  
+**Specialist Specifications:** [Research & Evaluation Specialist](research-evaluation-specialist-specification.md) | [Full-Stack Technical Specialist](full-stack-technical-specialist-specification.md) | [Technical PM](technical-pm-specification.md)  
+**Current milestone:** Phase 2 IN PROGRESS - 3 of 7 agents successfully created (43% completion). Research & Evaluation and Full-Stack Technical specialists operational, Security & Performance specialist next priority.**

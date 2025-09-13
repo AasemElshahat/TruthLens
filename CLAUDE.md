@@ -29,40 +29,28 @@ TruthLens is a private implementation of an AI-powered fact-checking system, bui
 
 ## Strategic Development Approach
 
-### Elite Expert Agent Strategy
-Our development strategy leverages Claude Code to build 15 elite expert agents with deep domain knowledge for complete product lifecycle coverage:
+### Hybrid Advisory-Implementation Specialist Strategy
+Our development strategy leverages Claude Code to build a 7-agent hybrid team orchestrated by a Technical Product Manager for optimal coordination and execution:
 
-**Agent Creation Strategy:**
-- **Build Foundation First**: Create all 15 agents in 3-4 days before starting development
-- **Elite Expertise**: Each agent has comprehensive knowledge of best practices, patterns, and trade-offs
-- **Long-term Investment**: One-time creation pays dividends throughout entire project lifecycle
-- **Perfect Coverage**: No gaps in product development, growth, or scaling
-- **Consistent Quality**: Elite-level outputs without repeated context provision
+**Hybrid Team Strategy:**
+- **Technical Product Manager Orchestration**: Single point of contact eliminates coordination complexity
+- **Advisory + Implementation Capability**: Each specialist both guides strategically AND builds solutions
+- **Manageable Complexity**: 7 specialists with clear coordination vs. overwhelming 15-agent management
+- **Thesis + Commercial Focus**: Balanced approach serving academic requirements and business foundation
+- **Professional Objectivity**: Specialists challenge approaches while implementing better alternatives
 
-**Complete 15-Agent Elite Team:**
+**Complete 7-Agent Hybrid Team:**
 
-**Core Development (4 Agents):**
-1. 🔬 **Research Expert** - Academic methodology, thesis requirements, evaluation frameworks
-2. 🐍 **Backend Expert** - Python, LangGraph, APIs, microservices architecture  
-3. 🌐 **Extension Expert** - WXT, Chrome APIs, TypeScript, shadcn/ui, cross-platform
-4. 📊 **Evaluation Expert** - Academic metrics, benchmarking, statistical analysis
+**Primary Orchestrator:**
+1. 🎯 **Technical Product Manager** - Primary interface, GitHub project management, documentation oversight, specialist coordination
 
-**Quality & Performance (4 Agents):**
-5. 🧪 **QA Expert** - Testing strategies, automation, code review, documentation standards
-6. ⚡ **Performance Expert** - Optimization, caching, scaling, load testing
-7. 🛡️ **Security Expert** - Web security, privacy, compliance, penetration testing
-8. 🔧 **DevOps Expert** - Infrastructure, CI/CD, deployment, monitoring, cost optimization
-
-**Product & Design (2 Agents):**
-9. 🎨 **Design Expert** - UX + Visual Design + Brand Identity + Marketing Materials
-10. 📱 **Data & Analytics Expert** - Product analytics, user behavior, BI, predictive analytics
-
-**Business & Growth (5 Agents):**
-11. 📢 **Marketing & Content Expert** - Content strategy, SEO, PR, social media, messaging
-12. 📈 **Growth Expert** - Metrics, experiments, user acquisition, conversion optimization  
-13. 🎓 **Customer Success Expert** - Onboarding, support, feature adoption, churn prevention
-14. 💰 **Business Expert** - Pricing, financial modeling, market analysis, legal basics
-15. 🏢 **Enterprise Expert** - B2B sales, compliance, partnerships, enterprise features
+**Hybrid Advisory-Implementation Specialists:**
+2. 🔬 **Research & Evaluation Specialist** - Academic methodology + statistical analysis + thesis implementation + evaluation pipeline development
+3. 🏗️ **Full-Stack Technical Specialist** - Backend (Python, LangGraph, APIs) + Frontend (Extension, TypeScript, shadcn/ui) + Infrastructure (DevOps, deployment)
+4. 🎨 **Product & UX Specialist** - User experience design + visual design + user research + interface implementation
+5. 🚀 **Business & Growth Specialist** - Business strategy + growth experiments + marketing + analytics implementation
+6. 🛡️ **Security & Performance Specialist** - Web security + performance optimization + quality assurance + compliance implementation
+7. 📊 **Data & Analytics Specialist** - Product analytics + user behavior analysis + data visualization + measurement system implementation
 
 ### Technical Excellence Philosophy
 **Non-Negotiable Standards:**
@@ -92,11 +80,12 @@ git merge upstream/main
 git push origin main
 ```
 
-### Subagent Coordination
-- **Task Assignment**: Use TodoWrite to coordinate between different specialized agents
-- **Quality Gates**: Each component must pass QA review before integration
-- **Architecture Reviews**: Regular assessment of scaling and performance implications
-- **Knowledge Sharing**: Document decisions and learnings in respective files
+### Technical Product Manager Coordination
+- **Single Interface**: Technical PM serves as primary contact for all development requests
+- **Specialist Orchestration**: Technical PM routes requests and coordinates multi-specialist work
+- **GitHub Project Management**: Technical PM creates issues, manages sprints, tracks progress
+- **Documentation Oversight**: Technical PM maintains project knowledge and specialist context
+- **Quality Integration**: Technical PM ensures specialist work integrates cohesively
 
 ## Project Structure & Documentation
 
@@ -122,69 +111,63 @@ TruthLens/
 
 ## Current Development Status
 
-### Phase 1: Academic Foundation (Oct 2025 - Jan 2026)
-**Current Focus**: Thesis requirements with production-ready architecture
+### Phase 1: Strategic Foundation & Team Setup (September 2025 - October 2025)
+**Current Focus**: Optimized 7-agent hybrid team creation with Technical Product Manager orchestration
 
 #### Completed ✅
-- [x] Repository setup and privacy configuration
-- [x] Strategic planning and documentation framework
-- [x] Development approach with specialized subagents
-- [x] Technical architecture principles established
-- [x] **Elite Agent Foundation Built**: 4 A+ world-class expert agents created
-  - [x] 🔬 Research Expert - Academic methodology + market intelligence + revenue research
-  - [x] 🐍 Backend Expert - Production architecture + cost optimization + revenue engineering  
-  - [x] 🌐 Extension Expert - Cross-platform growth + viral mechanics + conversion optimization
-  - [x] 📊 Evaluation Expert - Statistical measurement + academic validation + revenue attribution
-- [x] **Elite Template Standard**: Perfect A+ agent template for remaining 11 agents
-- [x] **Cross-Agent Workflow**: Established collaboration protocols and success metrics
+- [x] **Repository Setup & Privacy Configuration**: Private TruthLens repository with full IP ownership
+- [x] **Strategic Model Evolution**: Critically evaluated and optimized from 15-agent to 7-agent hybrid approach
+- [x] **Complete Documentation Overhaul**: Updated all strategic documents for hybrid advisory-implementation model
+  - [x] Agent Strategy Document (7-agent hybrid team structure)
+  - [x] Agent Creation Framework (hybrid advisory-implementation approach)
+  - [x] Technical Product Manager Specification (orchestrator role definition)
+  - [x] Project Vision & Product Roadmap alignment
+- [x] **Professional Objectivity Framework**: Validated agent behavior framework that challenges suboptimal approaches
+- [x] **Legacy Agent Foundation**: 4 existing agents ready for hybrid transformation
+  - [x] Research Expert (ready to become Research & Evaluation Specialist)
+  - [x] Backend Expert (ready to become part of Full-Stack Technical Specialist)  
+  - [x] Extension Expert (ready to become part of Full-Stack Technical Specialist)
+  - [x] Evaluation Expert (ready to become part of Research & Evaluation Specialist)
 
-#### In Progress 🔄
-- [ ] Complete remaining 11 elite expert agents (using proven A+ template)
-- [ ] Deep dive into Claimify and SAFE methodologies  
-- [ ] System architecture design for scalability
-- [ ] Development environment setup
-- [ ] Multi-LLM abstraction layer planning
+#### Recently Completed ✅
+- [x] **Technical Product Manager Creation**: Successfully implemented with GitHub integration, structured labeling system, and coordination protocols
+- [x] **TPM Validation**: Demonstrated excellent issue coordination with hybrid master+subticket approach (Issues #4-7)
+- [x] **Research & Evaluation Specialist Creation**: Successfully synthesized research methodology and evaluation frameworks into unified hybrid specialist (Sept 14, 2025)
+- [x] **Full-Stack Technical Specialist Creation**: Successfully consolidated backend and frontend expertise into comprehensive technical specialist (Sept 14, 2025)
+- [x] **Documentation Integration**: All project documentation updated to reflect current TPM-orchestrated state
 
-#### Next Steps 📋
-**Current Priority: Complete Remaining Elite Expert Agents (11 agents)**
+#### Current Focus 🎯
+**Current Priority: Continue Core Specialist Creation & Begin TPM-Orchestrated Development**
 
-**COMPLETED: Core Development Agents (4 Agents) ✅**
-1. [x] **🔬 Research Expert** - Academic methodology, thesis requirements, evaluation frameworks
-2. [x] **🐍 Backend Expert** - Python, LangGraph, APIs, microservices architecture  
-3. [x] **🌐 Extension Expert** - WXT, Chrome APIs, TypeScript, shadcn/ui, cross-platform
-4. [x] **📊 Evaluation Expert** - Academic metrics, benchmarking, statistical analysis
+**Phase 2a: Core Specialist Creation (3/7 Complete)**
+1. [x] Create Research & Evaluation Specialist (academic methodology + statistical analysis) ✅ Completed Sept 14, 2025
+2. [x] Create Full-Stack Technical Specialist (backend + frontend + infrastructure) ✅ Completed Sept 14, 2025
+3. [ ] Create Security & Performance Specialist (security + optimization + QA) - **Next Priority**
+4. [ ] Begin coordinated TruthLens development work through TPM orchestration
 
-**NEXT: Quality & Performance Agents (4 Agents):**
+**Phase 2b: Advanced Specialist Integration (Next 2-3 weeks)**
+1. [ ] Validate multi-specialist coordination through TPM for real development tasks
+2. [ ] Test hybrid advisory-implementation workflow with core specialist team
+3. [ ] Optimize TPM coordination protocols based on practical development experience
 
-5. [ ] **🧪 QA Expert** - Testing strategies, automation, code review, documentation standards
-6. [ ] **⚡ Performance Expert** - Optimization, caching, scaling, load testing
-7. [ ] **🛡️ Security Expert** - Web security, privacy, compliance, penetration testing
-8. [ ] **🔧 DevOps Expert** - Infrastructure, CI/CD, deployment, monitoring, cost optimization
+**Phase 2c: Complete Team Assembly (Following 3-4 weeks)**
+1. [ ] Create Product & UX Specialist (design + user research + implementation)
+2. [ ] Create Business & Growth Specialist (strategy + marketing + growth implementation)
+3. [ ] Create Data & Analytics Specialist (analytics + measurement + visualization)
+4. [ ] Validate complete 7-agent hybrid team coordination
 
-**Product & Design Agents (2 Agents):**
-9. [ ] **🎨 Design Expert** - UX + Visual Design + Brand Identity + Marketing Materials
-10. [ ] **📱 Data & Analytics Expert** - Product analytics, user behavior, BI, predictive analytics
-
-**Business & Growth Agents (5 Agents):**
-11. [ ] **📢 Marketing & Content Expert** - Content strategy, SEO, PR, social media, messaging
-12. [ ] **📈 Growth Expert** - Metrics, experiments, user acquisition, conversion optimization  
-13. [ ] **🎓 Customer Success Expert** - Onboarding, support, feature adoption, churn prevention
-14. [ ] **💰 Business Expert** - Pricing, financial modeling, market analysis, legal basics
-15. [ ] **🏢 Enterprise Expert** - B2B sales, compliance, partnerships, enterprise features
-
-**Elite Agent Success:** 4/15 A+ agents completed with perfect template established
-
-**Technical Development Steps (After Agents are Built):**
-- [ ] Google Gemini API integration alongside OpenAI
-- [ ] Chrome extension core functionality development (WXT + shadcn/ui)
-- [ ] Transparency features implementation
-- [ ] Comparative evaluation framework setup
+**Technical Development Steps (After Team Complete):**
+- [ ] System architecture design with full specialist team input
+- [ ] Development environment setup with coordinated specialist workflows
+- [ ] Multi-LLM abstraction layer planning and implementation
+- [ ] Core TruthLens functionality development through coordinated specialists
 
 ### Success Metrics for Current Phase
-- **Technical**: All core functionality working with <10s response time
-- **Academic**: Thesis requirements met with comparative LLM analysis
-- **Quality**: 90%+ code coverage, comprehensive documentation
-- **Performance**: Extension works on 90% of tested websites
+- **Team Coordination**: TPM successfully routes requests and coordinates specialist responses
+- **Professional Objectivity**: Specialists challenge suboptimal approaches and provide alternatives
+- **Implementation Capability**: Specialists deliver both strategic guidance AND working solutions
+- **Documentation Quality**: All project knowledge stays current through TPM oversight
+- **Development Velocity**: Hybrid approach increases TruthLens development speed vs. previous model
 
 ## Development Guidelines
 
@@ -257,10 +240,10 @@ TruthLens/
 ## Communication & Collaboration
 
 ### With Claude Code
-- Use TodoWrite for all task tracking and progress monitoring
-- Leverage specialized subagents for domain expertise
-- Maintain clear context and progress documentation
-- Regular architecture and performance reviews
+- Use Technical Product Manager as primary interface for all requests
+- Leverage hybrid advisory-implementation specialists for both guidance and execution
+- Technical PM maintains comprehensive documentation and specialist coordination
+- Regular cross-specialist collaboration through Technical PM facilitation
 
 ### Documentation Standards
 - Real-time updates to reflect current status
@@ -304,63 +287,83 @@ pnpm db:studio
 
 ---
 
-## Elite Agent Team Progress
+## 7-Agent Hybrid Team Implementation Status
 
-### Current Status: 4/15 A+ Elite Agents Complete 🎯
+### Current Status: TPM Successfully Implemented, Core Specialist Creation Ready 🎯
 
-**Completed Elite Agents:**
-- **🔬 Research Expert**: Academic methodology + Market intelligence + Revenue research
-- **🐍 Backend Expert**: Production architecture + Cost optimization + Revenue engineering  
-- **🌐 Extension Expert**: Cross-platform growth + Viral mechanics + Conversion optimization
-- **📊 Evaluation Expert**: Statistical measurement + Academic validation + Revenue attribution
+**✅ Strategic Foundation Phase Complete:**
+- **Complete Strategic Realignment**: Successfully evolved from 15-agent advisory model to optimized 7-agent hybrid approach
+- **Comprehensive Documentation**: All strategic documents updated and aligned with hybrid advisory-implementation model
+- **Professional Objectivity Framework**: Validated approach for specialists to challenge user ideas respectfully and implement better alternatives
+- **Technical Product Manager Specification**: Detailed blueprint for primary orchestrator role ready for implementation
 
-**Elite Agent Capabilities:**
-- World-class domain expertise with 12-15+ years equivalent experience
-- Bootstrap-to-millions mindset with revenue impact focus
-- Cross-team collaboration protocols established
-- Specific success metrics targeting multi-million user scale
-- Perfect A+ template created for remaining 11 agents
+### Team Architecture Overview
 
-**Agent Creation Workflow Established:**
-1. Perplexity research prompt for cutting-edge domain insights
-2. Agent creation using `/agents` command with research integration
-3. A+ template overlay for consistency and elite standards
-4. Cross-agent collaboration protocols and success metrics
+**🎯 Technical Product Manager** (✅ COMPLETED)
+- **Role**: Primary orchestrator and user interface for all TruthLens development
+- **Capabilities**: GitHub project management, specialist coordination, documentation oversight, strategic synthesis
+- **Status**: Successfully implemented with structured labeling system, GitHub integration, and proven coordination capabilities
 
-**Agent Tracking System:**
-- **Agent IDs**: Sequential numbering (1-15) matching the strategic roadmap
-- **Categories**: Core Development, Quality & Performance, Product & Design, Business & Growth
-- **Version Control**: Semantic versioning with last_updated timestamps
-- **Cross-Reference Validation**: All agents mapped to strategic framework for consistency
+**Hybrid Advisory-Implementation Specialists:**
 
-**Complete Agent ID Mapping:**
+| Specialist | Status | Components | Readiness |
+|------------|--------|------------|----------|
+| **🔬 Research & Evaluation** | ✅ COMPLETED | Research Expert + Evaluation Expert → Unified Specialist | ✅ Sept 14, 2025 |
+| **🏗️ Full-Stack Technical** | ✅ COMPLETED | Backend Expert + Extension Expert + DevOps → Unified Specialist | ✅ Sept 14, 2025 |
+| **🛡️ Security & Performance** | Creation Needed | Security + Performance + QA capabilities | 📝 Next Priority |
+| **🎨 Product & UX** | Creation Needed | Design + UX research + interface implementation | 📝 Planned |
+| **🚀 Business & Growth** | Creation Needed | Strategy + marketing + growth implementation | 📝 Planned |
+| **📊 Data & Analytics** | Creation Needed | Analytics + measurement + visualization | 📝 Planned |
 
-**Core Development (IDs 1-4):**
-- ID 1: 🔬 Research Expert - Academic methodology, evaluation frameworks ✅
-- ID 2: 🐍 Backend Expert - Python, LangGraph, APIs, microservices ✅  
-- ID 3: 🌐 Extension Expert - WXT, Chrome APIs, TypeScript, shadcn/ui ✅
-- ID 4: 📊 Evaluation Expert - Academic metrics, benchmarking, statistical analysis ✅
+### Implementation Roadmap
 
-**Quality & Performance (IDs 5-8):**
-- ID 5: 🧪 QA Expert - Testing strategies, automation, code review
-- ID 6: ⚡ Performance Expert - Optimization, caching, scaling, load testing
-- ID 7: 🛡️ Security Expert - Web security, privacy, compliance, penetration testing
-- ID 8: 🔧 DevOps Expert - Infrastructure, CI/CD, deployment, monitoring
+**✅ COMPLETED: Core Team Foundation (Sept 9-14, 2025)**
+- ✅ Created Technical Product Manager with comprehensive GitHub integration and coordination protocols
+- ✅ Successfully transformed and unified Research & Evaluation specialists into single hybrid agent
+- ✅ Successfully consolidated Backend + Extension expertise into unified Full-Stack Technical specialist
+- ✅ Validated TPM coordination protocols and GitHub issue management workflows
 
-**Product & Design (IDs 9-10):**
-- ID 9: 🎨 Design Expert - UX + Visual Design + Brand Identity + Marketing Materials
-- ID 10: 📱 Data & Analytics Expert - Product analytics, user behavior, BI
+**🎯 CURRENT WEEK: Continue Core Specialist Creation**
+- Create Security & Performance Specialist (consolidating security + performance + QA capabilities)
+- Test multi-specialist coordination through TPM with 3+ agents
+- Begin initial TruthLens technical architecture work with existing specialists
 
-**Business & Growth (IDs 11-15):**
-- ID 11: 📢 Marketing & Content Expert - Content strategy, SEO, PR, social media
-- ID 12: 📈 Growth Expert - Metrics, experiments, user acquisition, optimization  
-- ID 13: 🎓 Customer Success Expert - Onboarding, support, feature adoption
-- ID 14: 💰 Business Expert - Pricing, financial modeling, market analysis
-- ID 15: 🏢 Enterprise Expert - B2B sales, compliance, partnerships
+**📅 Next 2-3 Weeks: Advanced Team Assembly**
+- Create Product & UX Specialist (design + user research + interface implementation)
+- Create Business & Growth Specialist (strategy + marketing + growth implementation)
+- Create Data & Analytics Specialist (analytics + measurement + visualization)
+- Validate complete 7-agent team coordination and begin full TruthLens development
+
+### Success Validation Criteria
+
+**Technical Product Manager Effectiveness:**
+- [x] Successfully routes user requests to appropriate specialists
+- [x] Creates well-scoped GitHub issues with clear acceptance criteria
+- [x] Coordinates multi-specialist work without conflicts
+- [x] Maintains current documentation across all project areas
+
+**Hybrid Specialist Performance:**
+- [x] Each specialist challenges suboptimal user approaches respectfully (validated with R&E and Full-Stack specialists)
+- [x] Specialists provide both strategic alternatives AND implementation solutions (proven through specification creation)
+- [x] Educational value: User technical understanding improves through specialist guidance (demonstrated in creation process)
+- [x] Implementation quality: Specialists deliver working TruthLens components (ready for technical implementation)
+
+**Team Coordination Quality:**
+- [ ] Cross-specialist collaboration produces better solutions than individual work
+- [ ] No coordination confusion or duplicate work between specialists
+- [ ] Decision documentation maintains comprehensive project knowledge
+- [ ] Development velocity increases compared to previous approach
 
 ---
 
-*Last updated: 2025-09-11*  
-*Current milestone: Complete remaining 11 elite expert agents using proven A+ template*  
-*Strategic documents: docs/strategy/project-vision.md, docs/strategy/product-roadmap.md*  
-*Elite Agent Progress: 4/15 A+ agents complete with perfect foundation established*
+### Next Milestone: Security & Performance Specialist Creation
+
+**Immediate Goal**: Create Security & Performance Specialist to complete core implementation team
+**Success Metric**: Third hybrid specialist successfully created with full advisory-implementation capabilities
+**Timeline**: Next 1-2 days completion
+**Dependencies**: Security and performance domain expertise consolidation
+
+*Last updated: 2025-09-14*  
+*Current milestone: 3 of 7 hybrid specialists successfully created (43% team completion)*  
+*Strategic documents: Complete and aligned with 7-agent hybrid model*  
+*Team readiness: TPM operational, R&E and Full-Stack specialists ready for coordination*
