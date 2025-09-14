@@ -181,3 +181,6 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+
+#playwright-mcp-images
+.playwright-mcp*
