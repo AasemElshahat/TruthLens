@@ -11,7 +11,7 @@ The evidence retrieval approach in this module draws some inspiration from the S
 Once we've got our nicely extracted claims from the Claim Extractor, this module takes each claim and runs it through a verification process:
 
 1.  **Generate Search Queries**: First, it crafts search queries designed to find evidence supporting or refuting the claim.
-2.  **Retrieve Evidence**: Then it uses either Exa AI or Tavily Search API to gather relevant information from the web. You can configure which search provider to use in the settings.
+2.  **Retrieve Evidence**: Then it uses one of multiple search providers (Brave Search, Exa AI, or Tavily Search) to gather relevant information from the web. You can configure which search provider to use via the SEARCH_PROVIDER environment variable.
 3.  **Evaluate Evidence**: An LLM analyzes all the evidence snippets and decides if they support, refute, or provide insufficient/conflicting information about the claim.
 4.  **Retry Logic**: If we don't find enough information on the first try, it will generate new, more targeted queries and try again. This retry mechanism boosted our "insufficient information" rate by about 25% in my testing.
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     asyncio.run(verify_claim())
 ```
 
-**Hot tip**: You need a valid `OPENAI_API_KEY` environment variable, plus either `EXA_API_KEY` or `TAVILY_API_KEY` depending on which search provider you configure. Both services offer free tiers for testing, but watch your usage if you're processing lots of claims.
+**Hot tip**: You need a valid `OPENAI_API_KEY` environment variable, plus the appropriate search API key (`BRAVE_API_KEY`, `EXA_API_KEY`, or `TAVILY_API_KEY`) depending on which search provider you configure. All services offer free tiers for testing, but watch your usage if you're processing lots of claims.
 
 ## 📊 How the verification works
 
@@ -72,7 +72,7 @@ Breaking down what each part does:
 
 -   **Query Distribution**: A simple router that fans out queries to our search component or ends the process if we couldn't generate any usable queries.
 
--   **Evidence Retrieval**: This is our search engine interface. It supports both Exa AI (neural search) and Tavily Search APIs. You can switch between them via configuration. We also deduplicate results to avoid counting the same evidence multiple times.
+-   **Evidence Retrieval**: This is our search engine interface. It supports Brave Search, Exa AI (neural search), and Tavily Search APIs through a flexible abstraction layer. You can switch between them via the SEARCH_PROVIDER environment variable. We also deduplicate results to avoid counting the same evidence multiple times.
 
 -   **Evidence Evaluation**: The LLM does the heavy lifting here, reviewing all the evidence and deciding if it collectively supports or refutes the claim, or if there's insufficient or conflicting information. I found temperature=0 works best here - we want consistent evaluations.
 
@@ -84,7 +84,7 @@ If you're using this module, you might want to tweak these settings in `claim_ve
 
 -   `nodes.py` contains:
     -   `QUERY_GENERATION_CONFIG`: I've set it to generate just 1 query per attempt by default, but you can increase this. Just be mindful of search API costs.
-    -   `EVIDENCE_RETRIEVAL_CONFIG`: Controls how many search results per query (default 3) and which search provider to use (`"exa"` or `"tavily"`). Switch between providers by changing the `search_provider` setting.
+    -   `EVIDENCE_RETRIEVAL_CONFIG`: Controls how many search results per query (default 3). Switch between providers by setting the `SEARCH_PROVIDER` environment variable to `"brave"`, `"exa"`, or `"tavily"`.
     -   `ITERATIVE_SEARCH_CONFIG`: Sets max retry attempts (default 5). I've found this is the sweet spot - beyond that, you rarely find new information.
 
 -   `llm/config.py`: I've set it to use `gpt-4o-mini` which has a good balance of cost and accuracy for this task. You could try other models, but smaller models sometimes struggle with the nuanced evaluation needed.
