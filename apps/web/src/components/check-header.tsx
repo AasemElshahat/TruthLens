@@ -74,14 +74,14 @@ export const CheckHeader = ({
                 key="fallback"
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                Claime Results
+                Claim Results
               </motion.div>
             )}
           </AnimatePresence>
         </h1>
       </div>
 
-      <p className="text-neutral-700 leading-relaxed">
+      <div className="text-neutral-700 leading-relaxed">
         {metadata?.text ?? (
           <div className="space-y-2">
             <div className="h-4 animate-pulse rounded bg-neutral-200" />
@@ -89,7 +89,7 @@ export const CheckHeader = ({
             <div className="h-4 w-3/5 animate-pulse rounded bg-neutral-200" />
           </div>
         )}
-      </p>
+      </div>
 
       <div className="flex items-center justify-between border-neutral-200">
         <div className="flex items-center gap-3">

@@ -1,7 +1,49 @@
 import { Redis } from "@upstash/redis";
 import { env } from "@/env";
 
-const STREAM_EXPIRY_SECONDS = 24 * 60 * 60;
+/**
+ * Redis Configuration for TruthLens Fact-Checking System
+ * 
+ * This configuration uses Upstash Redis with HTTP REST API for maximum compatibility
+ * and easy deployment across different environments.
+ * 
+ * UPSTASH HTTP PROXY CONFIGURATION:
+ * - Uses HTTP REST API instead of traditional Redis protocol
+ * - Supports serverless environments (Vercel, Netlify, etc.)
+ * - No connection pooling required - each request is stateless
+ * - Automatic retry and error handling built into Upstash client
+ * 
+ * Environment Variables Required:
+ * - UPSTASH_REDIS_REST_URL: HTTP endpoint for Redis database
+ * - UPSTASH_REDIS_REST_TOKEN: Authentication token for Redis access
+ * 
+ * Local Development:
+ * - Use http://localhost:8080 for UPSTASH_REDIS_REST_URL
+ * - Use "local_dev_token" for UPSTASH_REDIS_REST_TOKEN
+ * - Requires local Redis server with Upstash-compatible HTTP interface
+ * 
+ * Production:
+ * - Use actual Upstash Redis database URL and token
+ * - Configured in deployment environment variables
+ */
+
+const STREAM_EXPIRY_SECONDS = 24 * 60 * 60; // 24 hours
+
+/**
+ * Validates Redis configuration at startup
+ * Note: env.ts already validates these with Zod, but explicit runtime check provides clarity
+ */
+const validateRedisConfig = () => {
+  if (!env.UPSTASH_REDIS_REST_URL) {
+    throw new Error("UPSTASH_REDIS_REST_URL is required for Redis operations");
+  }
+  if (!env.UPSTASH_REDIS_REST_TOKEN) {
+    throw new Error("UPSTASH_REDIS_REST_TOKEN is required for Redis authentication");
+  }
+};
+
+// Validate configuration on module load
+validateRedisConfig();
 
 export const redis = new Redis({
   url: env.UPSTASH_REDIS_REST_URL,
