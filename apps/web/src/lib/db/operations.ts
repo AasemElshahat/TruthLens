@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { extractClerkId } from "../utils";
+import { env } from "@/env";
 import { db } from ".";
 import { checks, texts, users } from "./schema";
 
@@ -114,12 +115,17 @@ export const findOrCreateUser = async (userId: string, email: string, imageUrl?:
     return newUser;
 
   } catch (error) {
-    // Enhanced error logging with context
-    const errorContext = {
-      userId: userId?.substring(0, 10) + "...", // Log partial ID for privacy
-      email: email ? "***@" + email.split('@')[1] : "undefined", // Log domain only for privacy
-      operation: "findOrCreateUser"
-    };
+    // Environment-based error logging - no PII in production
+    const errorContext = env.NODE_ENV === "development" 
+      ? {
+          userId: userId?.substring(0, 10) + "...", // Partial ID for debugging
+          email: email ? "***@" + email.split('@')[1] : "undefined", // Domain for debugging
+          operation: "findOrCreateUser"
+        }
+      : {
+          operation: "findOrCreateUser", // Production: only operation name
+          timestamp: new Date().toISOString()
+        };
 
     console.error("Database operation failed:", {
       error: error instanceof Error ? error.message : String(error),

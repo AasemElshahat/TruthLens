@@ -29,6 +29,22 @@ import { env } from "@/env";
 
 const STREAM_EXPIRY_SECONDS = 24 * 60 * 60; // 24 hours
 
+/**
+ * Validates Redis configuration at startup
+ * Note: env.ts already validates these with Zod, but explicit runtime check provides clarity
+ */
+const validateRedisConfig = () => {
+  if (!env.UPSTASH_REDIS_REST_URL) {
+    throw new Error("UPSTASH_REDIS_REST_URL is required for Redis operations");
+  }
+  if (!env.UPSTASH_REDIS_REST_TOKEN) {
+    throw new Error("UPSTASH_REDIS_REST_TOKEN is required for Redis authentication");
+  }
+};
+
+// Validate configuration on module load
+validateRedisConfig();
+
 export const redis = new Redis({
   url: env.UPSTASH_REDIS_REST_URL,
   token: env.UPSTASH_REDIS_REST_TOKEN,

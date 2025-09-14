@@ -171,6 +171,8 @@ apps/web/.next
 apps/web/out
 apps/web/node_modules
 node_modules/
+# TypeScript build info files
+*.tsbuildinfo
 
 # Python
 .venv
