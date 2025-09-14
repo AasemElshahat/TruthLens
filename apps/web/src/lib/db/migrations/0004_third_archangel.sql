@@ -1,0 +1,1 @@
+ALTER TABLE "checks" ALTER COLUMN "is_public" SET DATA TYPE boolean;

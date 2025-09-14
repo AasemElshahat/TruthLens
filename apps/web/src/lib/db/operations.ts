@@ -49,6 +49,28 @@ export const getUserById = async (userId: string) => {
   return user;
 };
 
+export const findOrCreateUser = async (userId: string, email: string, imageUrl?: string) => {
+  const clerkId = extractClerkId(userId);
+  
+  // First try to find existing user
+  const existingUser = await getUserById(userId);
+  if (existingUser) {
+    return existingUser;
+  }
+
+  // Create new user if not found
+  const [newUser] = await db
+    .insert(users)
+    .values({
+      id: clerkId,
+      email,
+      imageUrl,
+    })
+    .returning();
+
+  return newUser;
+};
+
 type CreateCheckParams = {
   checkId: string;
   userId: string;

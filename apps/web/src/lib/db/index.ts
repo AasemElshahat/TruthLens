@@ -18,11 +18,6 @@ const LOCAL_DB_CONFIG = {
 } as const;
 
 const getConnectionString = (): string => {
-  if (env.NODE_ENV === "development") {
-    const { host, port, database, user, password } = LOCAL_DB_CONFIG;
-    return `postgres://${user}:${password}@${host}:${port}/${database}`;
-  }
-
   if (!env.DATABASE_URL) {
     throw new Error("DATABASE_URL environment variable is required");
   }
@@ -55,6 +50,7 @@ const initializeDatabase = (): NeonHttpDatabase => {
   try {
     const connectionString = getConnectionString();
 
+    // Configure Neon for local development
     if (env.NODE_ENV === "development") {
       configureNeonForDevelopment();
     }
