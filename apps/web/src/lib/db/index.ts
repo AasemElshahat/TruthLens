@@ -18,8 +18,15 @@ const LOCAL_DB_CONFIG = {
 } as const;
 
 const getConnectionString = (): string => {
+  // In development, use local configuration if DATABASE_URL is not set
+  if (env.NODE_ENV === "development" && !env.DATABASE_URL) {
+    const { host, port, database, user, password } = LOCAL_DB_CONFIG;
+    return `postgresql://${user}:${password}@${host}:${port}/${database}`;
+  }
+
+  // For production or when DATABASE_URL is explicitly set
   if (!env.DATABASE_URL) {
-    throw new Error("DATABASE_URL environment variable is required");
+    throw new Error("DATABASE_URL environment variable is required for production");
   }
 
   return env.DATABASE_URL;

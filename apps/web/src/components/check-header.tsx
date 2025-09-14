@@ -74,7 +74,7 @@ export const CheckHeader = ({
                 key="fallback"
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                Claime Results
+                Claim Results
               </motion.div>
             )}
           </AnimatePresence>
