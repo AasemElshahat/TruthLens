@@ -58,8 +58,7 @@ In an era where misinformation spreads faster than truth, we need transparent, r
 ### Prerequisites
 - Node.js 18+ and pnpm
 - Python 3.11+ with Poetry  
-- PostgreSQL database
-- Redis instance
+- Docker and Docker Compose (for database and Redis)
 - OpenAI API key
 - Clerk authentication setup
 
@@ -72,21 +71,28 @@ cd TruthLens
 
 # Install dependencies
 pnpm install
-cd apps/agent && poetry install
+cd apps/agent && poetry install && cd ../..
 
-# Environment setup - Use our enhanced templates
+# Start Docker services (REQUIRED for database and Redis!)
+cd apps/web
+docker-compose up -d
+cd ../..
+
+# Environment setup - Use our enhanced templates (optional - works with defaults)
 cp apps/web/.env.example apps/web/.env
 cp apps/agent/.env.example apps/agent/.env
-# Edit .env files with your API keys (see detailed docs below)
+# Edit .env files with your API keys if you have them
 
-# Database setup - Now with improved error handling (PR #9)
-cd apps/web
-pnpm db:push      # Works with local development fallback
+# Database setup - Run migrations after Docker is running
+pnpm db:push      # Creates database tables
 pnpm db:studio    # Optional: view database
 
 # Start development servers
-pnpm dev          # Web interface (http://localhost:3000)
-cd apps/agent && poetry run python main.py  # Backend agent
+pnpm dev          # Starts both backend (port 2024) and frontend (port 3000)
+
+# Or run services individually:
+# Backend: cd apps/agent && poetry run langgraph dev --no-browser --config langgraph.json
+# Frontend: cd apps/web && pnpm dev
 
 # Extension development (Extension.js - current framework)
 cd apps/extension
