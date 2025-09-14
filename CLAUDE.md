@@ -1,384 +1,155 @@
-# TruthLens - Claude Code Project Documentation
+# TruthLens - Thesis + Future Product Development
 
-## Project Overview
-TruthLens is a private implementation of an AI-powered fact-checking system, building on the ClaimeAI project foundation. This system breaks down text into verifiable claims, cross-references them with web search evidence, and generates detailed accuracy reports with full transparency.
+## Mission
+Build a polished AI fact-checking Chrome extension for my bachelor's thesis, with production-ready architecture for future commercialization.
 
-**Academic Foundation**: This project serves as the technical implementation for a bachelor's thesis at Berliner Hochschule für Technik, with the goal of creating a production-ready Chrome extension.
+## Current Sprint: Gemini Integration Research (Week 1)
+**Focus**: Understand Gemini API requirements and plan LLM abstraction layer
 
-**Business Vision**: Bootstrap a sustainable fact-checking service from thesis to multi-million dollar potential through technical excellence and user-centric design.
+### This Week's Goals
+- [ ] Research Gemini API capabilities and limitations
+- [ ] Design LLM abstraction layer architecture
+- [ ] Test Gemini API integration with existing prompts
+- [ ] Document comparison framework (Gemini vs OpenAI)
 
-## Repository Setup History
+## Thesis Requirements (Due Jan 2026)
+**Core Deliverables**:
+- [x] ClaimeAI backend foundation ✅
+- [ ] Gemini API integration alongside OpenAI
+- [ ] Chrome extension with context menu functionality
+- [ ] Professional UI/UX for fact-checking results
+- [ ] Comparative evaluation (Gemini vs OpenAI)
+- [ ] User study with 5-10 participants
+- [ ] 40-60 page thesis document
 
-### Initial Setup (2025-09-09)
-1. **Forked Original Repository**: Initially forked from `https://github.com/BharathxD/ClaimeAI.git`
-2. **Privacy Issue Identified**: GitHub forks cannot be made private
-3. **Solution Implemented**: Created a new private repository `TruthLens` and imported all code
-4. **Clean Local Setup**: Removed fork directory and cloned private repository
+**Academic Success Metrics**:
+- Extension works on 90% of tested websites
+- Average response time <10 seconds
+- Clear evidence transparency features
+- Documented methodology and evaluation
 
-### Current Repository Configuration
-- **Private Repository**: `https://github.com/AasemElshahat/TruthLens.git`
-- **Origin Remote**: Points to private TruthLens repository
-- **Upstream Remote**: Points to original ClaimeAI repository (`https://github.com/BharathxD/ClaimeAI.git`)
+## Tech Stack
+**Current**:
+- Backend: Python/LangGraph (from ClaimeAI)
+- Search: Brave Search, Tavily, Exa APIs
+- Database: PostgreSQL + Redis
+- LLM: OpenAI GPT-4
 
-### Privacy & Security
-- ✅ Repository is completely private
-- ✅ All work remains invisible to public
-- ✅ Can stay updated with upstream changes
-- ✅ Changes push to private repository only
-- ✅ Full ownership and control of intellectual property
+**Adding for Thesis**:
+- Gemini API integration
+- Chrome extension (TypeScript/WXT framework, shadcn/ui, Tailwind CSS)
+- Comparative evaluation framework
 
-## Strategic Development Approach
+**Future Commercial Features** (Post-Thesis):
+- Stripe payment integration
+- User authentication with Clerk
+- Usage tracking and analytics
+- Team accounts and billing
 
-### Hybrid Advisory-Implementation Specialist Strategy
-Our development strategy leverages Claude Code to build a 7-agent hybrid team orchestrated by a Technical Product Manager for optimal coordination and execution:
+## Architecture (Built for Scale)
+- Modular backend with clean API boundaries
+- LLM abstraction layer (easy provider switching)
+- PostgreSQL with proper indexes
+- Environment-based configuration
+- Professional TypeScript frontend
 
-**Hybrid Team Strategy:**
-- **Technical Product Manager Orchestration**: Single point of contact eliminates coordination complexity
-- **Advisory + Implementation Capability**: Each specialist both guides strategically AND builds solutions
-- **Manageable Complexity**: 7 specialists with clear coordination vs. overwhelming 15-agent management
-- **Thesis + Commercial Focus**: Balanced approach serving academic requirements and business foundation
-- **Professional Objectivity**: Specialists challenge approaches while implementing better alternatives
-
-**Complete 7-Agent Hybrid Team:**
-
-**Primary Orchestrator:**
-1. 🎯 **Technical Product Manager** - Primary interface, GitHub project management, documentation oversight, specialist coordination
-
-**Hybrid Advisory-Implementation Specialists:**
-2. 🔬 **Research & Evaluation Specialist** - Academic methodology + statistical analysis + thesis implementation + evaluation pipeline development
-3. 🏗️ **Full-Stack Technical Specialist** - Backend (Python, LangGraph, APIs) + Frontend (Extension, TypeScript, shadcn/ui) + Infrastructure (DevOps, deployment)
-4. 🎨 **Product & UX Specialist** - User experience design + visual design + user research + interface implementation
-5. 🚀 **Business & Growth Specialist** - Business strategy + growth experiments + marketing + analytics implementation
-6. 🛡️ **Security & Performance Specialist** - Web security + performance optimization + quality assurance + compliance implementation
-7. 📊 **Data & Analytics Specialist** - Product analytics + user behavior analysis + data visualization + measurement system implementation
-
-### Technical Excellence Philosophy
-**Non-Negotiable Standards:**
-- No technical compromises that create future debt
-- Architecture designed for multi-million user scale from day one
-- Comprehensive testing and documentation
-- Security-first development approach
-- Performance optimization at every level
-- Maintainable, clean, well-documented code
-
-## Development Workflow
-
-### Daily Development Process
-1. **Planning**: Use TodoWrite tool to track all tasks and progress
-2. **Implementation**: Leverage specialized subagents for different components
-3. **Quality Assurance**: Continuous testing and code review
-4. **Documentation**: Real-time documentation updates
-5. **Performance Monitoring**: Track metrics and optimize continuously
-
-### Repository Management
+## Quick Commands
 ```bash
-# Stay updated with upstream
-git fetch upstream
-git merge upstream/main
+# Development
+pnpm dev              # Start full dev environment  
+pnpm backend:dev      # Backend only
+pnpm frontend:dev     # Web interface only
+pnpm dev:ext          # Include extension development
 
-# Push your changes to private repo
-git push origin main
-```
+# Database
+pnpm db:generate      # Generate migrations
+pnpm db:push          # Apply schema changes
+pnpm db:studio        # Database GUI
 
-### Technical Product Manager Coordination
-- **Single Interface**: Technical PM serves as primary contact for all development requests
-- **Specialist Orchestration**: Technical PM routes requests and coordinates multi-specialist work
-- **GitHub Project Management**: Technical PM creates issues, manages sprints, tracks progress
-- **Documentation Oversight**: Technical PM maintains project knowledge and specialist context
-- **Quality Integration**: Technical PM ensures specialist work integrates cohesively
-
-## Project Structure & Documentation
-
-### Core Documentation Files
-- **`PROJECT_VISION.md`**: Product vision, user personas, success metrics, competitive positioning
-- **`PRODUCT_ROADMAP.md`**: Bootstrap strategy, technical roadmap, financial projections, scaling plans
-- **`CLAUDE.md`**: Technical development approach, workflows, architecture decisions (this file)
-
-### Technical Architecture
-```
-TruthLens/
-├── apps/
-│   ├── agent/              # Core fact-checking backend
-│   │   ├── claim_extractor/    # Claimify methodology implementation
-│   │   ├── claim_verifier/     # Evidence retrieval and verification
-│   │   ├── fact_checker/       # Orchestration and reporting
-│   │   └── utils/              # Shared utilities and abstractions
-│   ├── extension/          # Chrome extension (TypeScript)
-│   └── web/               # Web interface (Next.js)
-├── docs/                  # Technical documentation
-└── scripts/              # Development and deployment scripts
+# Testing
+cd apps/agent && python -m pytest    # Backend tests
+cd apps/extension && pnpm test       # Extension tests
 ```
 
 ## Current Development Status
+**Infrastructure**: ✅ Production-ready foundation established
+- Database operations with error handling
+- Redis HTTP REST API configuration  
+- Authentication system ready
+- Local development environment functional
 
-### Phase 1: Strategic Foundation & Team Setup (September 2025 - October 2025)
-**Current Focus**: Optimized 7-agent hybrid team creation with Technical Product Manager orchestration
+**Next Priorities**:
+1. Gemini API integration and testing
+2. LLM abstraction layer implementation
+3. Chrome extension context menu development
+4. Results display UI/UX design
 
-#### Completed ✅
-- [x] **Repository Setup & Privacy Configuration**: Private TruthLens repository with full IP ownership
-- [x] **Strategic Model Evolution**: Critically evaluated and optimized from 15-agent to 7-agent hybrid approach
-- [x] **Complete Documentation Overhaul**: Updated all strategic documents for hybrid advisory-implementation model
-  - [x] Agent Strategy Document (7-agent hybrid team structure)
-  - [x] Agent Creation Framework (hybrid advisory-implementation approach)
-  - [x] Technical Product Manager Specification (orchestrator role definition)
-  - [x] Project Vision & Product Roadmap alignment
-- [x] **Professional Objectivity Framework**: Validated agent behavior framework that challenges suboptimal approaches
-- [x] **Legacy Agent Foundation**: 4 existing agents ready for hybrid transformation
-  - [x] Research Expert (ready to become Research & Evaluation Specialist)
-  - [x] Backend Expert (ready to become part of Full-Stack Technical Specialist)  
-  - [x] Extension Expert (ready to become part of Full-Stack Technical Specialist)
-  - [x] Evaluation Expert (ready to become part of Research & Evaluation Specialist)
+## Key Architectural Decisions
+- **Monolithic backend** (can split later, but keep simple for thesis)
+- **Multi-LLM support** (core thesis requirement)
+- **Context menu approach** (better UX than URL input)
+- **Transparency-first** (show all evidence and reasoning)
+- **Academic documentation** (every decision justified)
 
-#### Recently Completed ✅
-- [x] **Technical Product Manager Creation**: Successfully implemented with GitHub integration, structured labeling system, and coordination protocols
-- [x] **TPM Validation**: Demonstrated excellent issue coordination with hybrid master+subticket approach (Issues #4-7)
-- [x] **Research & Evaluation Specialist Creation**: Successfully synthesized research methodology and evaluation frameworks into unified hybrid specialist (Sept 14, 2025)
-- [x] **Full-Stack Technical Specialist Creation**: Successfully consolidated backend and frontend expertise into comprehensive technical specialist (Sept 14, 2025)
-- [x] **Infrastructure Improvements (PR #9)**: Critical production fixes completed with Redis connection enhancement and database operations security improvements
-- [x] **Search Abstraction Layer Implementation**: Flexible search provider system with Brave Search integration, hot-swappable providers via environment variables, comprehensive testing and production deployment ready
-- [x] **Documentation Integration**: All project documentation updated to reflect current TPM-orchestrated state and recent technical progress
+## Weekly Focus Areas
+**Week 1 (Current)**: Gemini integration research and planning  
+**Week 2**: LLM abstraction layer implementation  
+**Week 3**: Chrome extension context menu functionality  
+**Week 4**: Results display and evidence transparency  
 
-#### Current Focus 🎯
-**Current Priority: Infrastructure Preparation Phase Complete - Continue Core Specialist Creation**
+## Environment Setup
+Copy environment examples and add your API keys:
+- `apps/agent/.env` - Backend configuration
+- `apps/web/.env.local` - Frontend configuration
 
-**Development Status**: We are currently in the infrastructure preparation and team setup phase. The existing ClaimeAI codebase is functional and we've completed critical production fixes (PR #9). Our TruthLens enhancements will be built on this solid foundation during the active development phase.
+Required API keys:
+- OpenAI API key (existing)
+- Google Gemini API key (to add)
+- Brave Search API key (existing)
+- Tavily API key (optional, backup search)
 
-**Phase 2a: Infrastructure Foundation & Core Specialist Creation (UPDATED)**
-1. [x] Create Research & Evaluation Specialist (academic methodology + statistical analysis) ✅ Completed Sept 14, 2025
-2. [x] Create Full-Stack Technical Specialist (backend + frontend + infrastructure) ✅ Completed Sept 14, 2025
-3. [x] Production Infrastructure Improvements ✅ Completed Sept 14, 2025 (PR #9)
-   - ✅ Local development database support restored
-   - ✅ Comprehensive error handling and input validation
-   - ✅ Redis configuration with Upstash HTTP REST API
-   - ✅ Environment-based PII logging security
-   - ✅ Database migration safety improvements
-4. [ ] Create Security & Performance Specialist (security + optimization + QA) - **Next Priority**
-5. [ ] Begin coordinated TruthLens development work through TPM orchestration
+## How We Build Features
 
-**Phase 2b: Advanced Specialist Integration (Next 2-3 weeks)**
-1. [ ] Validate multi-specialist coordination through TPM for real development tasks
-2. [ ] Test hybrid advisory-implementation workflow with core specialist team
-3. [ ] Optimize TPM coordination protocols based on practical development experience
+### Our Development Philosophy
+- **YAGNI** (You Aren't Gonna Need It) - Build only what the thesis requires
+- **Ship Fast, Refactor Later** - Working code > perfect code
+- **Integration Tests Only** - Test user workflows, not implementation details
+- **Document Decisions** - Every "why" in TECHNICAL_DECISIONS.md
 
-**Phase 2c: Complete Team Assembly (Following 3-4 weeks)**
-1. [ ] Create Product & UX Specialist (design + user research + implementation)
-2. [ ] Create Business & Growth Specialist (strategy + marketing + growth implementation)
-3. [ ] Create Data & Analytics Specialist (analytics + measurement + visualization)
-4. [ ] Validate complete 7-agent hybrid team coordination
+### Feature Workflow
+1. **Define user story**: "As a user, I want to..."
+2. **Create integration test** with Playwright MCP
+3. **Build minimum viable implementation**
+4. **Test manually in browser**
+5. **Ship when it works**
 
-**Technical Development Steps (After Team Complete):**
-- [ ] System architecture design with full specialist team input
-- [ ] Development environment setup with coordinated specialist workflows
-- [ ] Multi-LLM abstraction layer planning and implementation
-- [ ] Core TruthLens functionality development through coordinated specialists
+### Testing Strategy (Thesis-Focused)
+**Use Integration Tests**:
+- Right-click → fact-check → results workflow
+- Gemini vs OpenAI API responses
+- Error handling (network failures, invalid text)
 
-### Success Metrics for Current Phase
-- **Team Coordination**: TPM successfully routes requests and coordinates specialist responses
-- **Professional Objectivity**: Specialists challenge suboptimal approaches and provide alternatives
-- **Implementation Capability**: Specialists deliver both strategic guidance AND working solutions
-- **Documentation Quality**: All project knowledge stays current through TPM oversight
-- **Development Velocity**: Hybrid approach increases TruthLens development speed vs. previous model
-
-## Development Guidelines
-
-### Code Quality Standards
-- **TypeScript**: Strict mode, comprehensive type definitions
-- **Python**: Type hints, docstrings, PEP 8 compliance
-- **Testing**: Unit tests, integration tests, end-to-end tests
-- **Documentation**: Inline comments, README files, API documentation
-- **Security**: Input validation, secure API handling, privacy protection
-
-### Performance Requirements
-- **Response Time**: <3 seconds for fact-checking (target), <10 seconds (acceptable)
-- **Accuracy**: >90% verification accuracy rate
-- **Reliability**: 99.9% uptime target
-- **Scalability**: Architecture supports 1M+ users without major rewrites
-
-### Development Environment
-- **Primary IDE**: Claude Code with specialized subagents
-- **Version Control**: Git with conventional commits
-- **Package Management**: pnpm for Node.js, Poetry for Python
-- **Process Orchestration**: LangGraph for AI workflows
-- **Testing**: Jest/Vitest for frontend, pytest for backend
-
-## Testing Strategy
-
-### Academic Validation
-- Comparative analysis between Gemini and OpenAI implementations
-- User study with 5-10 participants
-- Quantitative evaluation on curated test dataset
-- Performance benchmarking and optimization
-
-### Production Readiness
-- Cross-browser compatibility testing
-- Website compatibility testing (90% success rate target)
-- Load testing and performance optimization
-- Security testing and vulnerability assessment
-- User experience testing and optimization
-
-## Deployment & Infrastructure
-
-### Development Stack (Current)
-- **Backend**: Python, LangGraph, FastAPI
-- **Frontend**: TypeScript, React, Chrome Extension APIs
-- **Database**: PostgreSQL with proper indexing
-- **Caching**: Redis for performance optimization
-- **APIs**: OpenAI, Google Gemini, Brave Search, Tavily Search, Exa Search
-- **Hosting**: Fly.io (backend), Vercel (web), Chrome Web Store (extension)
-
-### Scalability Preparation
-- **Microservices**: Separate services for different components
-- **Queue System**: Redis/BullMQ for async processing
-- **CDN**: Global content delivery for static assets
-- **Auto-scaling**: Kubernetes-ready container architecture
-- **Monitoring**: Comprehensive logging and metrics collection
-
-## Risk Management & Contingencies
-
-### Technical Risks
-- **API Rate Limits**: Multiple provider support, caching strategies
-- **Performance Issues**: Comprehensive optimization and monitoring
-- **Security Vulnerabilities**: Regular security audits and updates
-- **Scaling Challenges**: Architecture designed for scale from start
-
-### Business Risks
-- **Competition**: Academic credibility and transparency as differentiators
-- **User Adoption**: Focus on user experience and demonstrable value
-- **Cost Management**: Efficient caching and rate limiting strategies
-- **Platform Dependencies**: Multi-browser and multi-platform approach
-
-## Communication & Collaboration
-
-### With Claude Code
-- Use Technical Product Manager as primary interface for all requests
-- Leverage hybrid advisory-implementation specialists for both guidance and execution
-- Technical PM maintains comprehensive documentation and specialist coordination
-- Regular cross-specialist collaboration through Technical PM facilitation
-
-### Documentation Standards
-- Real-time updates to reflect current status
-- Clear task assignments and completion criteria
-- Comprehensive decision logging and rationale
-- Regular review and refinement of strategies
-
----
-
-## Quick Reference Commands
-
-### Development
+**Use Playwright MCP for browser testing**:
 ```bash
-# Start development environment
-pnpm dev
-
-# Run all tests
-pnpm test
-
-# Build for production
-pnpm build
-
-# Type checking
-pnpm type-check
-
-# Linting
-pnpm lint
+mcp__playwright__browser_navigate "test-site.com"  
+mcp__playwright__browser_click "text selection"
+mcp__playwright__browser_take_screenshot
 ```
 
-### Database
-```bash
-# Generate migrations
-pnpm db:generate
+**Skip for thesis phase**:
+- Unit tests (change too often during exploration)
+- Performance tests (not relevant for prototype)
+- Complex edge cases (focus on 90% scenarios)
 
-# Push schema changes
-pnpm db:push
-
-# Database studio
-pnpm db:studio
-```
-
----
-
-## 7-Agent Hybrid Team Implementation Status
-
-### Current Status: TPM Successfully Implemented, Core Specialist Creation Ready 🎯
-
-**✅ Strategic Foundation Phase Complete:**
-- **Complete Strategic Realignment**: Successfully evolved from 15-agent advisory model to optimized 7-agent hybrid approach
-- **Comprehensive Documentation**: All strategic documents updated and aligned with hybrid advisory-implementation model
-- **Professional Objectivity Framework**: Validated approach for specialists to challenge user ideas respectfully and implement better alternatives
-- **Technical Product Manager Specification**: Detailed blueprint for primary orchestrator role ready for implementation
-
-### Team Architecture Overview
-
-**🎯 Technical Product Manager** (✅ COMPLETED)
-- **Role**: Primary orchestrator and user interface for all TruthLens development
-- **Capabilities**: GitHub project management, specialist coordination, documentation oversight, strategic synthesis
-- **Status**: Successfully implemented with structured labeling system, GitHub integration, and proven coordination capabilities
-
-**Hybrid Advisory-Implementation Specialists:**
-
-| Specialist | Status | Components | Readiness |
-|------------|--------|------------|----------|
-| **🔬 Research & Evaluation** | ✅ COMPLETED | Research Expert + Evaluation Expert → Unified Specialist | ✅ Sept 14, 2025 |
-| **🏗️ Full-Stack Technical** | ✅ COMPLETED | Backend Expert + Extension Expert + DevOps → Unified Specialist | ✅ Sept 14, 2025 |
-| **🛡️ Security & Performance** | Creation Needed | Security + Performance + QA capabilities | 📝 Next Priority |
-| **🎨 Product & UX** | Creation Needed | Design + UX research + interface implementation | 📝 Planned |
-| **🚀 Business & Growth** | Creation Needed | Strategy + marketing + growth implementation | 📝 Planned |
-| **📊 Data & Analytics** | Creation Needed | Analytics + measurement + visualization | 📝 Planned |
-
-### Implementation Roadmap
-
-**✅ COMPLETED: Core Team Foundation & Infrastructure (Sept 9-14, 2025)**
-- ✅ Created Technical Product Manager with comprehensive GitHub integration and coordination protocols
-- ✅ Successfully transformed and unified Research & Evaluation specialists into single hybrid agent
-- ✅ Successfully consolidated Backend + Extension expertise into unified Full-Stack Technical specialist
-- ✅ Completed critical production infrastructure improvements (PR #9)
-  - ✅ Database operations security and error handling
-  - ✅ Redis HTTP REST API configuration for serverless deployment
-  - ✅ Local development environment restoration
-- ✅ Validated TPM coordination protocols and GitHub issue management workflows
-
-**🎯 CURRENT FOCUS: Ready for Development - Continue Core Specialist Creation**
-- Create Security & Performance Specialist (consolidating security + performance + QA capabilities)
-- Test multi-specialist coordination through TPM with established infrastructure
-- Begin initial TruthLens technical architecture work with production-ready foundation
-
-**📅 Next 2-3 Weeks: Advanced Team Assembly**
-- Create Product & UX Specialist (design + user research + interface implementation)
-- Create Business & Growth Specialist (strategy + marketing + growth implementation)
-- Create Data & Analytics Specialist (analytics + measurement + visualization)
-- Validate complete 7-agent team coordination and begin full TruthLens development
-
-### Success Validation Criteria
-
-**Technical Product Manager Effectiveness:**
-- [x] Successfully routes user requests to appropriate specialists
-- [x] Creates well-scoped GitHub issues with clear acceptance criteria
-- [x] Coordinates multi-specialist work without conflicts
-- [x] Maintains current documentation across all project areas
-
-**Hybrid Specialist Performance:**
-- [x] Each specialist challenges suboptimal user approaches respectfully (validated with R&E and Full-Stack specialists)
-- [x] Specialists provide both strategic alternatives AND implementation solutions (proven through specification creation)
-- [x] Educational value: User technical understanding improves through specialist guidance (demonstrated in creation process)
-- [x] Implementation quality: Specialists deliver working TruthLens components (ready for technical implementation)
-
-**Team Coordination Quality:**
-- [ ] Cross-specialist collaboration produces better solutions than individual work
-- [ ] No coordination confusion or duplicate work between specialists
-- [ ] Decision documentation maintains comprehensive project knowledge
-- [ ] Development velocity increases compared to previous approach
+## Documentation Imports
+- @docs/DEVELOPMENT_WORKFLOW.md - Complete development process
+- @docs/THESIS_REQUIREMENTS.md - Detailed academic requirements
+- @docs/CURRENT_SPRINT.md - Weekly task breakdown
+- @docs/POST_THESIS_FEATURES.md - Commercial features for later
+- @docs/TECHNICAL_DECISIONS.md - Architecture rationale
 
 ---
-
-### Next Milestone: Security & Performance Specialist Creation
-
-**Immediate Goal**: Create Security & Performance Specialist to complete core implementation team
-**Success Metric**: Third hybrid specialist successfully created with full advisory-implementation capabilities
-**Timeline**: Next 1-2 days completion
-**Dependencies**: Security and performance domain expertise consolidation
-**Infrastructure Status**: Production-ready foundation established (PR #9 completed)
 
 *Last updated: 2025-09-14*  
-*Current milestone: 3 of 7 hybrid specialists successfully created + production infrastructure ready*  
-*Infrastructure: Database, Redis, authentication, and deployment pipeline operational*  
-*Team readiness: TPM operational, R&E and Full-Stack specialists ready, production foundation established*
+*Current milestone: Gemini integration research phase*  
+*Development approach: Simple, focused, ship-when-it-works*

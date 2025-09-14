@@ -184,3 +184,11 @@ build/
 
 #playwright-mcp-images
 .playwright-mcp*
+# Research papers (copyrighted)
+docs/research-papers/
+
+# Claude Code directory
+.claude/
+
+# Thesis proposal (personal academic work)
+docs/thesis-proposal.tex

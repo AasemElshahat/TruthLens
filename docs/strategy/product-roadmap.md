@@ -33,18 +33,7 @@
 - Establish credibility in fact-checking space
 
 ### Development Approach:
-**Claude Code + 7-Agent Hybrid Team with Technical Product Manager:**
-Optimal coverage through advisory-implementation specialists coordinated by Technical PM.
-
-**Team Implementation Timeline (UPDATED - 2/4 weeks completed + production infrastructure ready):**
-- **✅ Week 1**: Technical Product Manager creation and coordination validation (COMPLETED)
-- **✅ Week 2**: Core hybrid specialists creation + infrastructure foundation (COMPLETED Sept 14, 2025)
-  - ✅ Research & Evaluation Specialist - Academic methodology + statistical analysis
-  - ✅ Full-Stack Technical Specialist - Backend + Frontend + Infrastructure
-  - ✅ Production Infrastructure Implementation (PR #9) - Database, Redis, Authentication ready
-  - 📝 Security & Performance Specialist - Next Priority (Week 3)
-- **Week 3**: Complete core implementation team (Security & Performance) + begin development
-- **Week 4**: Remaining specialists + full team validation and coordinated TruthLens development
+**Claude Code Direct Partnership:** Direct development with Claude Code as technical co-founder, eliminating complexity and focusing on rapid implementation.
 
 ### Technical Milestones:
 
@@ -81,10 +70,10 @@ Optimal coverage through advisory-implementation specialists coordinated by Tech
   - Set up monitoring and logging infrastructure
 
 #### Month 3 (December 2025):
-- [ ] **Chrome Extension Development**
-  - Build context menu integration
-  - Create popup UI with real-time feedback
-  - Implement results display with transparency features
+- [ ] **Chrome Extension Development (WXT Framework)**
+  - Build context menu integration with WXT framework
+  - Create popup UI with real-time feedback using shadcn/ui components
+  - Implement results display with transparency features and Tailwind CSS styling
   - Add evidence expansion and source linking
   - Test across different website types
 
@@ -379,11 +368,12 @@ Optimal coverage through advisory-implementation specialists coordinated by Tech
 - **CDN**: Global content delivery
 - **Security**: HTTPS, input validation, SQL injection prevention
 
-#### Chrome Extension:
-- **Modular Architecture**: Easy feature additions
-- **Offline Capabilities**: Cached results
-- **Performance Optimized**: Lazy loading, efficient DOM manipulation
-- **Cross-browser Ready**: Architecture supports Firefox/Edge ports
+#### Chrome Extension (WXT Framework):
+- **Modern Architecture**: WXT framework with shadcn/ui and Tailwind CSS
+- **Modular Design**: Easy feature additions with component-based structure
+- **Offline Capabilities**: Cached results with efficient state management
+- **Performance Optimized**: Lazy loading, efficient DOM manipulation, Tailwind CSS optimization
+- **Cross-browser Ready**: WXT architecture supports Firefox/Edge ports
 
 ### Scaling Checkpoints:
 
