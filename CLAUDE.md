@@ -1,155 +1,161 @@
-# TruthLens - Thesis + Future Product Development
+# CLAUDE.md
 
-## Mission
-Build a polished AI fact-checking Chrome extension for my bachelor's thesis, with production-ready architecture for future commercialization.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Current Sprint: Gemini Integration Research (Week 1)
-**Focus**: Understand Gemini API requirements and plan LLM abstraction layer
+## Project Overview
 
-### This Week's Goals
-- [ ] Research Gemini API capabilities and limitations
-- [ ] Design LLM abstraction layer architecture
-- [ ] Test Gemini API integration with existing prompts
-- [ ] Document comparison framework (Gemini vs OpenAI)
+TruthLens is an AI-powered fact-checking Chrome extension with full transparency. It's built as a bachelor's thesis project for evaluating the effectiveness of different AI models in fact-checking tasks.
 
-## Thesis Requirements (Due Jan 2026)
-**Core Deliverables**:
-- [x] ClaimeAI backend foundation ✅
-- [ ] Gemini API integration alongside OpenAI
-- [ ] Chrome extension with context menu functionality
-- [ ] Professional UI/UX for fact-checking results
-- [ ] Comparative evaluation (Gemini vs OpenAI)
-- [ ] User study with 5-10 participants
-- [ ] 40-60 page thesis document
+## Architecture
 
-**Academic Success Metrics**:
-- Extension works on 90% of tested websites
-- Average response time <10 seconds
-- Clear evidence transparency features
-- Documented methodology and evaluation
+### Tech Stack
+- **Backend**: Python with LangGraph framework for agent orchestration, FastAPI for API layer
+- **Frontend**: Next.js 15 with TypeScript, shadcn/ui components, TailwindCSS 
+- **Extension**: Extension.js framework for Chrome extension development
+- **Database**: PostgreSQL (via Drizzle ORM) + Redis (via Upstash HTTP)
+- **AI Models**: OpenAI GPT-4 and Google Gemini (thesis requirement for comparison)
 
-## Tech Stack
-**Current**:
-- Backend: Python/LangGraph (from ClaimeAI)
-- Search: Brave Search, Tavily, Exa APIs
-- Database: PostgreSQL + Redis
-- LLM: OpenAI GPT-4
+### Core Components
 
-**Adding for Thesis**:
-- Gemini API integration
-- Chrome extension (TypeScript/WXT framework, shadcn/ui, Tailwind CSS)
-- Comparative evaluation framework
+1. **Agent System** (`apps/agent/`)
+   - Three LangGraph agents working in pipeline:
+     - `claim_extractor`: Breaks down text into verifiable claims
+     - `claim_verifier`: Searches and verifies individual claims
+     - `fact_checker`: Main orchestrator combining extraction and verification
+   - Search abstraction layer supporting multiple providers (Brave, Tavily)
+   - Redis caching for API responses
 
-**Future Commercial Features** (Post-Thesis):
-- Stripe payment integration
-- User authentication with Clerk
-- Usage tracking and analytics
-- Team accounts and billing
+2. **Web Application** (`apps/web/`)
+   - Next.js application with Hono API routes
+   - Real-time streaming from LangGraph agents
+   - Clerk authentication integration
+   - Database operations via Drizzle ORM
 
-## Architecture (Built for Scale)
-- Modular backend with clean API boundaries
-- LLM abstraction layer (easy provider switching)
-- PostgreSQL with proper indexes
-- Environment-based configuration
-- Professional TypeScript frontend
+3. **Chrome Extension** (`apps/extension/`)
+   - Context menu integration for fact-checking selected text
+   - Communication with backend via API
 
-## Quick Commands
+## Development Commands
+
+### Setup
 ```bash
-# Development
-pnpm dev              # Start full dev environment  
-pnpm backend:dev      # Backend only
-pnpm frontend:dev     # Web interface only
-pnpm dev:ext          # Include extension development
-
-# Database
-pnpm db:generate      # Generate migrations
-pnpm db:push          # Apply schema changes
-pnpm db:studio        # Database GUI
-
-# Testing
-cd apps/agent && python -m pytest    # Backend tests
-cd apps/extension && pnpm test       # Extension tests
+# Install all dependencies (pnpm + poetry)
+pnpm setup:dev
 ```
 
-## Current Development Status
-**Infrastructure**: ✅ Production-ready foundation established
-- Database operations with error handling
-- Redis HTTP REST API configuration  
-- Authentication system ready
-- Local development environment functional
+### Development
+```bash
+# Full stack development (backend + frontend)
+pnpm dev
 
-**Next Priorities**:
-1. Gemini API integration and testing
-2. LLM abstraction layer implementation
-3. Chrome extension context menu development
-4. Results display UI/UX design
+# With extension development
+pnpm dev:ext
 
-## Key Architectural Decisions
-- **Monolithic backend** (can split later, but keep simple for thesis)
-- **Multi-LLM support** (core thesis requirement)
-- **Context menu approach** (better UX than URL input)
-- **Transparency-first** (show all evidence and reasoning)
-- **Academic documentation** (every decision justified)
+# Backend only (LangGraph)
+pnpm backend:dev
 
-## Weekly Focus Areas
-**Week 1 (Current)**: Gemini integration research and planning  
-**Week 2**: LLM abstraction layer implementation  
-**Week 3**: Chrome extension context menu functionality  
-**Week 4**: Results display and evidence transparency  
+# Frontend only (Next.js)
+pnpm frontend:dev
+```
+
+### Database
+```bash
+pnpm db:generate  # Generate Drizzle migrations
+pnpm db:push      # Apply schema to database
+pnpm db:studio    # Open Drizzle Studio GUI
+```
+
+### Code Quality
+```bash
+# Frontend
+cd apps/web
+pnpm lint         # Run ultracite linter
+pnpm tc          # TypeScript type checking
+
+# Backend
+cd apps/agent
+poetry run python -m pytest  # Run tests
+```
+
+### Extension
+```bash
+cd apps/extension
+pnpm dev         # Development mode
+pnpm build       # Build for production
+```
 
 ## Environment Setup
-Copy environment examples and add your API keys:
-- `apps/agent/.env` - Backend configuration
-- `apps/web/.env.local` - Frontend configuration
 
-Required API keys:
-- OpenAI API key (existing)
-- Google Gemini API key (to add)
-- Brave Search API key (existing)
-- Tavily API key (optional, backup search)
+Required environment variables:
 
-## How We Build Features
+### Backend (`apps/agent/.env`)
+- `OPENAI_API_KEY`: OpenAI API key for GPT-4
+- `GOOGLE_API_KEY`: Google Gemini API key (thesis requirement)
+- `BRAVE_API_KEY`: Brave Search API key
+- `TAVILY_API_KEY`: Tavily Search API key (optional)
+- `REDIS_URL`: Redis connection string
 
-### Our Development Philosophy
-- **YAGNI** (You Aren't Gonna Need It) - Build only what the thesis requires
-- **Ship Fast, Refactor Later** - Working code > perfect code
-- **Integration Tests Only** - Test user workflows, not implementation details
-- **Document Decisions** - Every "why" in TECHNICAL_DECISIONS.md
+### Frontend (`apps/web/.env`)
+- `LANGGRAPH_API_URL`: LangGraph server URL (default: http://localhost:2024)
+- `DATABASE_URL`: PostgreSQL connection string
+- `UPSTASH_REDIS_REST_URL`: Upstash Redis HTTP endpoint
+- `UPSTASH_REDIS_REST_TOKEN`: Upstash Redis auth token
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Clerk public key
+- `CLERK_SECRET_KEY`: Clerk secret key
+- `OPENAI_API_KEY`: OpenAI API key for streaming
 
-### Feature Workflow
-1. **Define user story**: "As a user, I want to..."
-2. **Create integration test** with Playwright MCP
-3. **Build minimum viable implementation**
-4. **Test manually in browser**
-5. **Ship when it works**
+## Key Workflows
 
-### Testing Strategy (Thesis-Focused)
-**Use Integration Tests**:
-- Right-click → fact-check → results workflow
-- Gemini vs OpenAI API responses
-- Error handling (network failures, invalid text)
+### Fact-Checking Pipeline
+1. User selects text on webpage → triggers Chrome extension
+2. Extension sends request to web API
+3. Web API streams request to LangGraph agents
+4. `fact_checker` agent orchestrates:
+   - Claims extraction via `claim_extractor`
+   - Parallel verification via `claim_verifier`
+   - Report generation with evidence trails
+5. Results streamed back to user in real-time
 
-**Use Playwright MCP for browser testing**:
-```bash
-mcp__playwright__browser_navigate "test-site.com"  
-mcp__playwright__browser_click "text selection"
-mcp__playwright__browser_take_screenshot
-```
+### Agent Communication
+- LangGraph agents communicate via state management
+- Each agent has defined nodes, prompts, and schemas
+- Verification includes search query generation, evidence retrieval, and evaluation
+- Full transparency with reasoning traces
 
-**Skip for thesis phase**:
-- Unit tests (change too often during exploration)
-- Performance tests (not relevant for prototype)
-- Complex edge cases (focus on 90% scenarios)
+## Important Files
 
-## Documentation Imports
-- @docs/DEVELOPMENT_WORKFLOW.md - Complete development process
-- @docs/THESIS_REQUIREMENTS.md - Detailed academic requirements
-- @docs/CURRENT_SPRINT.md - Weekly task breakdown
-- @docs/POST_THESIS_FEATURES.md - Commercial features for later
-- @docs/TECHNICAL_DECISIONS.md - Architecture rationale
+- `apps/agent/langgraph.json`: LangGraph configuration defining available graphs
+- `apps/agent/fact_checker/agent.py`: Main fact-checking orchestrator
+- `apps/web/src/server/routes/agent.ts`: API endpoints for agent communication
+- `apps/web/src/lib/langgraph.ts`: LangGraph client configuration
+- `apps/extension/src/background.ts`: Extension background service worker
 
----
+## Testing Approach
 
-*Last updated: 2025-09-14*  
-*Current milestone: Gemini integration research phase*  
-*Development approach: Simple, focused, ship-when-it-works*
+### Backend Testing
+- Unit tests for individual agent nodes
+- Integration tests for full pipelines
+- Mock external API calls during tests
+
+### Frontend Testing  
+- Component testing with React Testing Library
+- API route testing with Hono test client
+- E2E testing considerations for extension
+
+## Common Issues & Solutions
+
+1. **LangGraph not starting**: Ensure Poetry environment is activated and dependencies installed
+2. **Database connection issues**: Check PostgreSQL is running and DATABASE_URL is correct
+3. **Redis connection**: For local dev, ensure Redis server is running or use Upstash HTTP proxy
+4. **Extension not loading**: Run `pnpm build` in extension directory before loading unpacked
+
+## Thesis Requirements Tracking
+
+Key academic deliverables:
+- Gemini API integration for model comparison
+- Chrome extension with context menu integration  
+- User study with 5-10 participants
+- Comparative evaluation metrics (accuracy, speed, reasoning quality)
+- 40-60 page thesis document
+
+Current focus should maintain academic rigor while building production-ready system.
