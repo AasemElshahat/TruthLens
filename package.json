@@ -1,5 +1,5 @@
 {
-  "name": "claime-ai",
+  "name": "truth-lens",
   "private": true,
   "scripts": {
     "build": "turbo build",
