@@ -1,154 +1,97 @@
 # TruthLens
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**AI-Powered Fact-Checking Chrome Extension with Full Transparency**
 
-**AI-Powered Fact-Checking System with Full Transparency**
+TruthLens is a Chrome extension that instantly fact-checks selected text on any webpage, showing not just what's true or false, but exactly how and why. Built as a bachelor's thesis project at Berliner Hochschule für Technik.
 
-TruthLens is a comprehensive fact-checking system that breaks down text into verifiable claims, cross-references them with web evidence, and generates detailed accuracy reports with complete transparency. Built as a bachelor's thesis project at Berliner Hochschule für Technik, it's designed to be production-ready Chrome extension serving millions of users.
-
-**Academic Foundation**: Technical implementation for bachelor's thesis research  
-**Business Vision**: Bootstrap sustainable fact-checking service with multi-million dollar potential
-
-## 🏗️ Architecture Overview
-
-### Current Implementation (Inherited from ClaimeAI)
-TruthLens builds upon the existing ClaimeAI foundation with these components:
-
-**Core Components:**
-- **`apps/agent/`** - Python/LangGraph fact-checking backend (fully functional)
-  - **[Claim Extractor](./apps/agent/claim_extractor/README.md)** - Extracts factual claims using Claimify methodology
-  - **[Claim Verifier](./apps/agent/claim_verifier/README.md)** - Verifies claims against web evidence via Tavily Search  
-  - **[Fact Checker](./apps/agent/fact_checker/README.md)** - Orchestrates workflow and generates reports
-- **`apps/web/`** - Next.js web interface with existing shadcn/ui components
-- **`apps/extension/`** - Basic Chrome extension using Extension.js framework
-
-**Current Technology Stack:**
-- **Backend**: Python, LangGraph, FastAPI
-- **Frontend**: TypeScript, Next.js, React, shadcn/ui (already integrated)
-- **Extension**: Extension.js framework
-- **Database**: PostgreSQL with Drizzle ORM
-- **Caching**: Redis with Upstash HTTP REST API
-- **Authentication**: Clerk
-- **Hosting**: Fly.io (backend), Vercel (web), Chrome Web Store (extension)
-
-### Planned TruthLens Development (Our Contributions)
-**Current Status**: Infrastructure preparation and team setup phase (Week 2 of 4-week plan)
-
-**Planned Enhancements:**
-- **Extension Migration**: Extension.js → **WXT framework** for modern Chrome extension development
-- **Enhanced Features**: Real-time streaming, improved UI/UX, advanced sharing capabilities
-- **Academic Integration**: Comparative analysis framework (OpenAI vs Gemini implementations)
-- **Production Scaling**: Architecture designed for multi-million user scale
-- **Chrome Extension**: Complete rebuild with WXT for better development experience
-- **Advanced Analytics**: User behavior tracking and performance metrics
-
-## 🎯 Why TruthLens?
-
-In an era where misinformation spreads faster than truth, we need transparent, real-time fact-checking that shows not just what's true or false, but **exactly HOW we know it**.
-
-## 🔄 How It Works
-
-1. **Text Input** - Submit any text through web interface or Chrome extension
-2. **Claim Extraction** - AI breaks down text into specific, testable factual claims
-3. **Evidence Gathering** - Each claim is verified against real-world web evidence
-4. **Transparent Reporting** - Get detailed results showing not just true/false, but the reasoning and sources behind each determination
-
-## 🚀 Quick Start (Current ClaimeAI Infrastructure)
-
-### Prerequisites
-- Node.js 18+ and pnpm
-- Python 3.11+ with Poetry  
-- Docker and Docker Compose (for database and Redis)
-- OpenAI API key
-- Clerk authentication setup
-
-### Development Setup
+## Quick Start
 
 ```bash
-# Clone repository
-git clone https://github.com/AasemElshahat/TruthLens.git
-cd TruthLens
-
 # Install dependencies
-pnpm install
-cd apps/agent && poetry install && cd ../..
+pnpm setup:dev
 
-# Start Docker services (REQUIRED for database and Redis!)
-cd apps/web
-docker-compose up -d
-cd ../..
+# Start development
+pnpm dev
 
-# Environment setup - Use our enhanced templates (optional - works with defaults)
-cp apps/web/.env.example apps/web/.env
-cp apps/agent/.env.example apps/agent/.env
-# Edit .env files with your API keys if you have them
-
-# Database setup - Run migrations after Docker is running
-pnpm db:push      # Creates database tables
-pnpm db:studio    # Optional: view database
-
-# Start development servers
-pnpm dev          # Starts both backend (port 2024) and frontend (port 3000)
-
-# Or run services individually:
-# Backend: cd apps/agent && poetry run langgraph dev --no-browser --config langgraph.json
-# Frontend: cd apps/web && pnpm dev
-
-# Extension development (Extension.js - current framework)
-cd apps/extension
-pnpm dev          # Chrome extension development
+# Start with extension development
+pnpm dev:ext
 ```
 
-**Note**: This runs the current working ClaimeAI infrastructure. Our TruthLens enhancements will be built on top of this foundation during the development phase.
+## What It Does
 
-## 📖 Documentation
+1. **Select text** on any webpage
+2. **Right-click** → "Fact-check with TruthLens"  
+3. **Get instant verification** with full evidence trail
+4. **See the reasoning** - sources, queries, and AI logic
 
-- **[Project Documentation](./docs/README.md)** - Complete documentation index
-- **[Project Vision](./docs/strategy/project-vision.md)** - Product vision and user personas
-- **[Product Roadmap](./docs/strategy/product-roadmap.md)** - Bootstrap strategy and development timeline
-- **[Technical Approach](./CLAUDE.md)** - Development methodology and team coordination
-- **Component READMEs**: [Agent](./apps/agent/README.md) | [Web](./apps/web/README.md) | [Extension](./apps/extension/README.md)
+## Tech Stack
 
-## 🎓 Academic Foundation
+- **Backend**: Python, LangGraph, FastAPI
+- **Frontend**: Next.js, TypeScript, shadcn/ui
+- **Extension**: Extension.js framework
+- **Database**: PostgreSQL + Redis
+- **AI**: OpenAI GPT-4 + Google Gemini (thesis requirement)
 
-**Thesis Context**: Bachelor's thesis at Berliner Hochschule für Technik  
-**Research Focus**: Comparative analysis of LLM providers (OpenAI vs Gemini) for fact-checking  
-**Methodology**: Based on proven academic research (Claimify + SAFE methodologies)  
-**Timeline**: October 2025 - January 2026
+## Thesis Requirements
 
-### Research Components:
-- Quantitative evaluation on curated test datasets
-- User study with 5-10 participants  
-- Performance benchmarking and optimization analysis
-- Comparative LLM provider analysis
+**Academic Deliverables (Due January 2026)**:
+- [x] ClaimeAI foundation ✅
+- [ ] Gemini API integration for comparison
+- [ ] Chrome extension with context menu
+- [ ] User study with 5-10 participants
+- [ ] Comparative evaluation (Gemini vs OpenAI)
+- [ ] 40-60 page thesis document
 
-Each component offers extensive configuration options in their respective `config/` directories:
+## Project Structure
 
-- **LLM Settings**: Temperature, model selection, retry attempts
-- **Search Configuration**: Number of results, result filtering, source weighting
-- **Performance Tuning**: Caching strategies, rate limiting, timeout handling
-- **UI Customization**: Real-time streaming, result display, sharing options
+```
+TruthLens/
+├── apps/
+│   ├── agent/        # Python fact-checking backend
+│   ├── extension/    # Chrome extension
+│   └── web/          # Next.js web interface
+├── docs/            # Project documentation
+└── .claude/         # Claude Code commands
+```
 
-See individual component READMEs for detailed configuration guides.
+## Development Commands
 
-## 📚 Research Foundation
+```bash
+# Backend only
+pnpm backend:dev
 
-**Claimify Methodology**: Claim extraction based on Metropolitansky & Larson's 2025 research  
-**SAFE Integration**: Evidence retrieval inspired by Wei et al.'s Search-Augmented Factuality Evaluator  
-**Academic Rigor**: All implementations follow peer-reviewed methodologies with proper citations
+# Frontend only
+pnpm frontend:dev
 
-## 🤝 Contributing
+# Database operations
+pnpm db:generate    # Generate migrations
+pnpm db:push        # Apply schema changes
+pnpm db:studio      # Database GUI
 
-This is a thesis project with specific academic requirements, but feedback and suggestions are welcome:
+# Testing
+cd apps/agent && python -m pytest    # Backend tests
+cd apps/extension && pnpm test       # Extension tests
+```
 
-1. **Issues**: Report bugs or suggest features via GitHub Issues
-2. **Documentation**: Help improve documentation clarity
-3. **Testing**: Contribute test cases or performance benchmarks
+## Environment Setup
 
-## 📄 License
+Copy `.env.example` files and add your API keys:
 
-MIT License - see [LICENSE](LICENSE) file for details.
+**Required APIs**:
+- OpenAI API key
+- Google Gemini API key (thesis requirement)
+- Brave Search API key
+
+## Documentation
+
+- **[CLAUDE.md](CLAUDE.md)** - Development guide and current sprint
+- **[docs/THESIS_REQUIREMENTS.md](docs/THESIS_REQUIREMENTS.md)** - Academic requirements
+- **[docs/CURRENT_SPRINT.md](docs/CURRENT_SPRINT.md)** - This week's tasks
+
+## License
+
+MIT License - See LICENSE file for details.
 
 ---
 
-**Built with academic rigor, designed for production scale** 🎓⚡️
+*Building transparent, trustworthy fact-checking for the AI age* 🎯
