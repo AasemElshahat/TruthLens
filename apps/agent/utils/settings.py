@@ -36,16 +36,25 @@ def _validate_brave_api_key(v: str | None) -> str | None:
     return v
 
 
+def _validate_google_api_key(v: str | None) -> str | None:
+    """Validate that the Google API key starts with 'AIza'."""
+    if v and not v.startswith("AIza"):
+        raise ValueError("Google API key must start with 'AIza'")
+    return v
+
+
 OpenAIAPIKey = Annotated[str | None, AfterValidator(_validate_openai_api_key)]
 ExaAPIKey = Annotated[str | None, AfterValidator(_validate_exa_api_key)]
 TavilyAPIKey = Annotated[str | None, AfterValidator(_validate_tavily_api_key)]
 BraveAPIKey = Annotated[str | None, AfterValidator(_validate_brave_api_key)]
+GoogleAPIKey = Annotated[str | None, AfterValidator(_validate_google_api_key)]
 
 
 class Settings(BaseSettings):
     """Manages application settings and environment variables."""
 
     openai_api_key: OpenAIAPIKey = Field(default=None, alias="OPENAI_API_KEY")
+    google_api_key: GoogleAPIKey = Field(default=None, alias="GOOGLE_API_KEY")
     exa_api_key: ExaAPIKey = Field(default=None, alias="EXA_API_KEY")
     tavily_api_key: TavilyAPIKey = Field(default=None, alias="TAVILY_API_KEY")
     brave_api_key: BraveAPIKey = Field(default=None, alias="BRAVE_API_KEY")
