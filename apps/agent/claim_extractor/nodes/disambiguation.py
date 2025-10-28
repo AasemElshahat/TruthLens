@@ -125,8 +125,9 @@ async def disambiguation_node(state: State) -> Dict[str, List[DisambiguatedConte
         logger.warning("Nothing to disambiguate")
         return {}
 
-    # Get LLM with temperature 0.2 for multiple completions
-    llm = get_llm(completions=COMPLETIONS)
+    # Get LLM with temperature 0.2 for multiple completions with configured provider
+    from utils.settings import settings
+    llm = get_llm(completions=COMPLETIONS, provider=settings.llm_provider)
 
     # Process all selected contents with voting
     disambiguated_contents = await process_with_voting(

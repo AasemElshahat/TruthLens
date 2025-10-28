@@ -104,6 +104,30 @@ module/
 - Each node is implemented as an async function to allow for concurrent operations
 - Configuration settings can be adjusted through the config/ directory in each module
 
+## ⚙️ LLM Provider Configuration
+
+The system supports multiple LLM providers through a unified abstraction layer:
+
+### Supported Providers
+- **OpenAI**: GPT-4, GPT-4o, etc.
+- **Google Gemini**: Gemini Pro, Gemini Flash, etc.
+
+### Configuration
+Set the `LLM_PROVIDER` environment variable to switch between providers:
+- `LLM_PROVIDER=openai` (default)
+- `LLM_PROVIDER=gemini`
+
+Required API keys should also be configured:
+- `OPENAI_API_KEY` for OpenAI provider
+- `GOOGLE_API_KEY` for Gemini provider
+
+### Architecture
+The LLM abstraction follows a provider pattern with:
+- Abstract `LLMProvider` base class
+- Concrete implementations for each provider
+- Centralized configuration in `utils/settings.py`
+- Automatic provider selection in the global `get_llm()` function
+
 ## 🔬 Development
 
 ### Setup

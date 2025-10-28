@@ -43,16 +43,25 @@ def _validate_google_api_key(v: str | None) -> str | None:
     return v
 
 
+def _validate_llm_provider(v: str | None) -> str | None:
+    """Validate that the LLM provider is supported."""
+    if v and v not in ["openai", "gemini"]:
+        raise ValueError("LLM provider must be 'openai' or 'gemini'")
+    return v
+
+
 OpenAIAPIKey = Annotated[str | None, AfterValidator(_validate_openai_api_key)]
 ExaAPIKey = Annotated[str | None, AfterValidator(_validate_exa_api_key)]
 TavilyAPIKey = Annotated[str | None, AfterValidator(_validate_tavily_api_key)]
 BraveAPIKey = Annotated[str | None, AfterValidator(_validate_brave_api_key)]
 GoogleAPIKey = Annotated[str | None, AfterValidator(_validate_google_api_key)]
+LLMProviderType = Annotated[str, AfterValidator(_validate_llm_provider)]
 
 
 class Settings(BaseSettings):
     """Manages application settings and environment variables."""
 
+    llm_provider: LLMProviderType = Field(default="openai", alias="LLM_PROVIDER")
     openai_api_key: OpenAIAPIKey = Field(default=None, alias="OPENAI_API_KEY")
     google_api_key: GoogleAPIKey = Field(default=None, alias="GOOGLE_API_KEY")
     exa_api_key: ExaAPIKey = Field(default=None, alias="EXA_API_KEY")

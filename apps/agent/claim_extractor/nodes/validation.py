@@ -39,8 +39,9 @@ async def _validate_claim(potential_claim: PotentialClaim) -> ValidatedClaim:
         ("human", VALIDATION_HUMAN_PROMPT.format(claim=potential_claim.claim_text)),
     ]
 
-    # Use zero-temp LLM for consistent results
-    llm = get_llm()  # Uses default temperature for consistent results
+    # Use zero-temp LLM for consistent results with configured provider
+    from utils.settings import settings
+    llm = get_llm(provider=settings.llm_provider)  # Uses configured provider and default temperature for consistent results
 
     # Call the LLM
     response = await call_llm_with_structured_output(

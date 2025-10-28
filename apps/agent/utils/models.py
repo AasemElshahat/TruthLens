@@ -87,22 +87,33 @@ _PROVIDER_CACHE = {}
 
 
 def get_llm(
-    model_name: str = "openai:gpt-4o-mini",
+    model_name: str = None,
     temperature: float = 0.0,
     completions: int = 1,
-    provider: str = "openai",
+    provider: str = None,
 ) -> BaseChatModel:
     """Get LLM with specified configuration.
 
     Args:
-        model_name: The model to use (provider-specific format)
+        model_name: The model to use (provider-specific format). If None, uses provider-appropriate default.
         temperature: Temperature for generation
         completions: How many completions we need (affects temperature for diversity)
-        provider: LLM provider to use ("openai", "gemini")
+        provider: LLM provider to use ("openai", "gemini"). If None, uses configured default.
 
     Returns:
         Configured LLM instance
     """
+    # Use configured default provider if none specified
+    if provider is None:
+        provider = settings.llm_provider
+    
+    # Use provider-appropriate default model name if none specified
+    if model_name is None:
+        if provider == "openai":
+            model_name = "openai:gpt-4o-mini"
+        elif provider == "gemini":
+            model_name = "gemini-1.5-flash"
+    
     # Use singleton pattern for provider instances to avoid recreation overhead
     if provider not in _PROVIDER_CACHE:
         if provider == "openai":
@@ -122,5 +133,5 @@ def get_llm(
 
 
 def get_default_llm() -> BaseChatModel:
-    """Get default LLM instance."""
+    """Get default LLM instance using configured provider and default model."""
     return get_llm()

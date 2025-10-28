@@ -48,7 +48,8 @@ async def generate_search_query_node(
         f"(Iteration: {iteration_count + 1})"
     )
 
-    llm = get_llm()
+    from utils.settings import settings
+    llm = get_llm(provider=settings.llm_provider)
 
     # Build context for iterative searching
     context_parts = []
