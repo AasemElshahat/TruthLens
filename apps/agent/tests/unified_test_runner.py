@@ -16,15 +16,14 @@ from typing import Dict, List
 from dotenv import load_dotenv
 load_dotenv()
 
-# Add the project root to Python path to import modules
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add the parent directory (agent) to Python path to import modules
+tests_dir = os.path.dirname(os.path.abspath(__file__))
+agent_dir = os.path.dirname(tests_dir)
+sys.path.insert(0, agent_dir)
 
-# Add the tests directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tests'))
-
-from test_llm_provider_integration import LLMProviderIntegrationTester
-from test_agent_integration import AgentIntegrationTester
-from test_search_integration import SearchProviderIntegrationTester
+from tests.test_llm_provider_integration import LLMProviderIntegrationTester
+from tests.test_agent_integration import AgentIntegrationTester
+from tests.test_search_integration import SearchProviderIntegrationTester
 from utils.settings import settings
 
 
@@ -217,8 +216,9 @@ class UnifiedIntegrationTestRunner:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"test_report_{timestamp}.txt"
         
-        # Ensure the report is saved in the test_reports directory at the agent level
-        agent_dir = os.path.dirname(os.path.abspath(__file__))
+        # Ensure the report is saved in the test_reports directory at the agent level (one level up from tests)
+        tests_dir = os.path.dirname(os.path.abspath(__file__))
+        agent_dir = os.path.dirname(tests_dir)  # Go up one level to get to agent dir
         reports_dir = os.path.join(agent_dir, 'test_reports')
         filepath = os.path.join(reports_dir, filename)
         

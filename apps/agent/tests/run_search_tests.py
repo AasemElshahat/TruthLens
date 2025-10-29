@@ -16,8 +16,10 @@ from typing import Dict, List
 from dotenv import load_dotenv
 load_dotenv()
 
-# Add the project root to Python path to import modules
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add the parent directory (agent) to Python path to import modules
+tests_dir = os.path.dirname(os.path.abspath(__file__))
+agent_dir = os.path.dirname(tests_dir)
+sys.path.insert(0, agent_dir)
 
 from tests.test_search_integration import SearchProviderIntegrationTester
 
@@ -93,8 +95,9 @@ class SearchTestRunner:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"search_test_report_{timestamp}.txt"
         
-        # Save in the test_reports directory at the agent level
-        agent_dir = os.path.dirname(os.path.abspath(__file__))
+        # Save in the test_reports directory at the agent level (one level up from tests)
+        tests_dir = os.path.dirname(os.path.abspath(__file__))
+        agent_dir = os.path.dirname(tests_dir)  # Go up one level to get to agent dir
         reports_dir = os.path.join(agent_dir, 'test_reports')
         filepath = os.path.join(reports_dir, filename)
         
