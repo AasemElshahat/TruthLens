@@ -11,6 +11,10 @@ import os
 import sys
 from typing import Dict, List, Optional
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Add the project root to Python path to import modules
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
