@@ -82,6 +82,33 @@ class GeminiProvider(LLMProvider):
         )
 
 
+class DeepSeekProvider(LLMProvider):
+    """DeepSeek LLM provider implementation."""
+    
+    def invoke(
+        self,
+        model_name: str = "deepseek-chat",
+        temperature: float = 0.0,
+        completions: int = 1,
+    ) -> BaseChatModel:
+        """Get DeepSeek LLM instance with specified configuration."""
+        # Use higher temp when doing multiple completions for diversity
+        if completions > 1 and temperature == 0.0:
+            temperature = 0.2
+
+        if not settings.deepseek_api_key:
+            raise ValueError("DeepSeek API key not found in environment variables")
+
+        from langchain_openai import ChatOpenAI
+        
+        return ChatOpenAI(
+            model=model_name,
+            api_key=settings.deepseek_api_key,
+            base_url="https://api.deepseek.com",
+            temperature=temperature,
+        )
+
+
 # Provider cache for singleton pattern - avoids recreating instances
 _PROVIDER_CACHE = {}
 
@@ -98,7 +125,7 @@ def get_llm(
         model_name: The model to use (provider-specific format). If None, uses provider-appropriate default.
         temperature: Temperature for generation
         completions: How many completions we need (affects temperature for diversity)
-        provider: LLM provider to use ("openai", "gemini"). If None, uses configured default.
+        provider: LLM provider to use ("openai", "gemini", "deepseek"). If None, uses configured default.
 
     Returns:
         Configured LLM instance
@@ -113,6 +140,8 @@ def get_llm(
             model_name = "openai:gpt-4o-mini"
         elif provider == "gemini":
             model_name = "gemini-1.5-flash"
+        elif provider == "deepseek":
+            model_name = "deepseek-chat"
     
     # Use singleton pattern for provider instances to avoid recreation overhead
     if provider not in _PROVIDER_CACHE:
@@ -120,8 +149,10 @@ def get_llm(
             _PROVIDER_CACHE[provider] = OpenAIProvider()
         elif provider == "gemini":
             _PROVIDER_CACHE[provider] = GeminiProvider()
+        elif provider == "deepseek":
+            _PROVIDER_CACHE[provider] = DeepSeekProvider()
         else:
-            supported_providers = ["openai", "gemini"]
+            supported_providers = ["openai", "gemini", "deepseek"]
             raise ValueError(f"Unknown provider: {provider}. Supported providers: {supported_providers}")
     
     provider_instance = _PROVIDER_CACHE[provider]

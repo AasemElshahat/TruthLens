@@ -90,7 +90,16 @@ async def evaluate_evidence_node(state: ClaimVerifierState) -> dict:
     ]
 
     from utils.settings import settings
-    llm = get_llm(model_name="gpt-4o-mini" if settings.llm_provider == "openai" else "gemini-1.5-pro", provider=settings.llm_provider)
+    if settings.llm_provider == "openai":
+        model_name = "gpt-4o-mini"
+    elif settings.llm_provider == "gemini":
+        model_name = "gemini-1.5-pro"
+    elif settings.llm_provider == "deepseek":
+        model_name = "deepseek-chat"
+    else:
+        model_name = "gpt-4o-mini"  # Default fallback
+    
+    llm = get_llm(model_name=model_name, provider=settings.llm_provider)
 
     response = await call_llm_with_structured_output(
         llm=llm,

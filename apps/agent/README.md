@@ -111,15 +111,18 @@ The system supports multiple LLM providers through a unified abstraction layer:
 ### Supported Providers
 - **OpenAI**: GPT-4, GPT-4o, etc.
 - **Google Gemini**: Gemini Pro, Gemini Flash, etc.
+- **DeepSeek**: DeepSeek Chat, DeepSeek Reasoner, etc.
 
 ### Configuration
 Set the `LLM_PROVIDER` environment variable to switch between providers:
 - `LLM_PROVIDER=openai` (default)
 - `LLM_PROVIDER=gemini`
+- `LLM_PROVIDER=deepseek`
 
 Required API keys should also be configured:
 - `OPENAI_API_KEY` for OpenAI provider
 - `GOOGLE_API_KEY` for Gemini provider
+- `DEEPSEEK_API_KEY` for DeepSeek provider
 
 ### Architecture
 The LLM abstraction follows a provider pattern with:
