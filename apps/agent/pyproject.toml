@@ -23,6 +23,7 @@ uvicorn = "^0.35.0"
 starlette = ">=0.22.0,<1.0.0"
 langchain-tavily = "^0.2.9"
 langchain-google-genai = "^2.1.12"
+pydantic = "^2.12.3"
 
 [tool.poetry]
 authors = ["Bharath Lakshman Kumar <bharathxxd@gmail.com>"]

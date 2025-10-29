@@ -93,7 +93,7 @@ async def evaluate_evidence_node(state: ClaimVerifierState) -> dict:
     if settings.llm_provider == "openai":
         model_name = "gpt-4o-mini"
     elif settings.llm_provider == "gemini":
-        model_name = "gemini-1.5-pro"
+        model_name = "gemini-2.5-flash"
     elif settings.llm_provider == "deepseek":
         model_name = "deepseek-chat"
     else:

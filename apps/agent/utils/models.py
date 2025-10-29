@@ -62,7 +62,7 @@ class GeminiProvider(LLMProvider):
     
     def invoke(
         self,
-        model_name: str = "gemini-1.5-flash",
+        model_name: str = "gemini-2.5-flash",  # Latest and most cost-effective model
         temperature: float = 0.0,
         completions: int = 1,
     ) -> BaseChatModel:
@@ -74,9 +74,10 @@ class GeminiProvider(LLMProvider):
         if not settings.google_api_key:
             raise ValueError("Google API key not found in environment variables")
 
-        return init_chat_model(
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        
+        return ChatGoogleGenerativeAI(
             model=model_name,
-            model_provider="google-genai",
             api_key=settings.google_api_key,
             temperature=temperature,
         )
@@ -139,7 +140,7 @@ def get_llm(
         if provider == "openai":
             model_name = "openai:gpt-4o-mini"
         elif provider == "gemini":
-            model_name = "gemini-1.5-flash"
+            model_name = "gemini-2.5-flash"
         elif provider == "deepseek":
             model_name = "deepseek-chat"
     
