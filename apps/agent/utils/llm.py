@@ -5,10 +5,11 @@ Helper functions for working with language models.
 
 import asyncio
 import logging
-from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar
+from typing import Any, Callable, Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 
-from pydantic import BaseModel
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from pydantic import BaseModel
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -63,10 +64,70 @@ def truncate_evidence_for_token_limit(
     return result
 
 
+MessageLike = Union[BaseMessage, Tuple[str, str], Sequence[Any]]
+
+
+def _normalize_messages(messages: Iterable[MessageLike]) -> List[BaseMessage]:
+    """Convert any supported message representation into BaseMessage objects."""
+
+    def _append_from(value: MessageLike, collector: List[BaseMessage]):
+        if value is None:
+            return
+
+        if isinstance(value, BaseMessage):
+            collector.append(value)
+            return
+
+        if hasattr(value, "to_messages"):
+            for sub in value.to_messages():
+                _append_from(sub, collector)
+            return
+
+        if isinstance(value, (list, tuple)):
+            if len(value) == 0:
+                return
+
+            # Allow tuples of the form (role, content)
+            if len(value) == 2 and isinstance(value[0], str):
+                role, content = value
+
+                # ChatPromptValue iterates to ("messages", [BaseMessage, ...])
+                if role == "messages" and isinstance(content, (list, tuple)):
+                    for sub in content:
+                        _append_from(sub, collector)
+                    return
+
+                role_normalized = (role or "").lower()
+                if role_normalized == "system":
+                    collector.append(SystemMessage(content=content))
+                elif role_normalized in ("assistant", "ai"):
+                    collector.append(AIMessage(content=content))
+                else:
+                    collector.append(HumanMessage(content=content))
+                return
+
+            # Otherwise treat as nested iterable of message-likes
+            for item in value:
+                _append_from(item, collector)
+            return
+
+        raise TypeError(f"Unsupported message payload type: {type(value)}")
+
+    normalized: List[BaseMessage] = []
+
+    if hasattr(messages, "to_messages"):
+        messages = messages.to_messages()  # type: ignore[assignment]
+
+    for entry in messages:
+        _append_from(entry, normalized)
+
+    return normalized
+
+
 async def call_llm_with_structured_output(
     llm: BaseChatModel,
     output_class: Type[M],
-    messages: List[Tuple[str, str]],
+    messages: List[MessageLike],
     context_desc: str = "",
 ) -> Optional[M]:
     """Call LLM with structured output and consistent error handling.
@@ -80,8 +141,10 @@ async def call_llm_with_structured_output(
     Returns:
         Structured output or None if error
     """
+    normalized_messages = _normalize_messages(messages)
+
     try:
-        return await llm.with_structured_output(output_class).ainvoke(messages)
+        return await llm.with_structured_output(output_class).ainvoke(normalized_messages)
     except Exception as e:
         logger.error(f"Error in LLM call for {context_desc}: {e}")
         return None
