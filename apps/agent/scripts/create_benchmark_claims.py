@@ -83,41 +83,50 @@ def create_benchmark_claims(dataset_path: str, extraction_metrics_path: str, out
     
     # Create benchmark claims dataframe
     benchmark_data = []
+    benchmark_sentence_counter = 0
     
     for idx, row in df.iterrows():
         sentence_id = row['sentence_id']
+        answer_id = row.get('answer_id', '')
         original_sentence = row['sentence']
         contains_factual_claim = row['contains_factual_claim']
-        
-        # Get claims from winning extractor for this sentence
-        claims = row[claims_column]
-        
-        if isinstance(claims, list) and len(claims) > 0:
-            # For each claim from the winning extractor, create a benchmark record
-            for claim_idx, claim_data in enumerate(claims):
-                # Ensure the claim_data is properly formatted as a ValidatedClaim dict
-                # This ensures compatibility with the original ValidatedClaim schema
-                validated_claim_dict = {
-                    'claim_text': claim_data.get('claim_text', ''),
-                    'is_complete_declarative': claim_data.get('is_complete_declarative', True),
-                    'disambiguated_sentence': claim_data.get('disambiguated_sentence', ''),
-                    'original_sentence': claim_data.get('original_sentence', ''),
-                    'original_index': claim_data.get('original_index', 0)
-                }
-                
-                benchmark_record = {
-                    'claim_id': f"{sentence_id}_{claim_idx}",
-                    'original_sentence_id': sentence_id,
-                    'original_sentence': original_sentence,
-                    'contains_factual_claim_ground_truth': contains_factual_claim,
-                    'validated_claim_object': json.dumps(validated_claim_dict),
-                    'claim_text': validated_claim_dict['claim_text'],
-                    'disambiguated_sentence': validated_claim_dict['disambiguated_sentence'],
-                    'original_claim_index': validated_claim_dict['original_index'],
-                    'ground_truth_verdict': ''  # This will be filled manually in Phase 2
-                }
-                
-                benchmark_data.append(benchmark_record)
+
+        # CRITICAL: Only process sentences that actually contain factual claims
+        if contains_factual_claim == True:
+            # Get claims from winning extractor for this sentence
+            claims = row[claims_column]
+
+            if isinstance(claims, list) and len(claims) > 0:
+                benchmark_sentence_counter += 1
+                benchmark_sentence_id = benchmark_sentence_counter
+
+                # For each claim from the winning extractor, create a benchmark record
+                for claim_idx, claim_data in enumerate(claims):
+                    # Ensure the claim_data is properly formatted as a ValidatedClaim dict
+                    # This ensures compatibility with the original ValidatedClaim schema
+                    validated_claim_dict = {
+                        'claim_text': claim_data.get('claim_text', ''),
+                        'is_complete_declarative': claim_data.get('is_complete_declarative', True),
+                        'disambiguated_sentence': claim_data.get('disambiguated_sentence', ''),
+                        'original_sentence': claim_data.get('original_sentence', ''),
+                        'original_index': claim_data.get('original_index', 0)
+                    }
+
+                    claim_identifier = f"B{benchmark_sentence_id:03d}_C{claim_idx:02d}"
+
+                    benchmark_record = {
+                        'claim_id': claim_identifier,
+                        'answer_id': answer_id,
+                        'original_sentence': original_sentence,
+                        'contains_factual_claim_ground_truth': contains_factual_claim,
+                        'validated_claim_object': json.dumps(validated_claim_dict),
+                        'claim_text': validated_claim_dict['claim_text'],
+                        'disambiguated_sentence': validated_claim_dict['disambiguated_sentence'],
+                        'ground_truth_verdict': '',  # This will be filled manually in Phase 2
+                        'ground_truth_verdict_sources': ''  # This will be filled manually in Phase 2
+                    }
+
+                    benchmark_data.append(benchmark_record)
     
     # Create benchmark dataframe
     benchmark_df = pd.DataFrame(benchmark_data)
@@ -126,7 +135,7 @@ def create_benchmark_claims(dataset_path: str, extraction_metrics_path: str, out
     print(f"Created benchmark with {len(benchmark_df)} claims from {len(df)} original sentences")
     
     if len(benchmark_df) > 0:
-        sentences_with_claims = benchmark_df['original_sentence_id'].nunique()
+        sentences_with_claims = benchmark_sentence_counter
         avg_claims_per_sentence = len(benchmark_df) / sentences_with_claims if sentences_with_claims > 0 else 0
         print(f"  - {sentences_with_claims} sentences had claims")
         print(f"  - Average {avg_claims_per_sentence:.2f} claims per sentence")
