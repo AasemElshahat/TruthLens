@@ -70,7 +70,7 @@ class GeminiProvider(LLMProvider):
     
     def invoke(
         self,
-        model_name: str = "gemini-2.5-flash-lite",  # Latest and most cost-effective model
+        model_name: str = "gemini-2.5-flash",  # Latest and most cost-effective model
         temperature: float = 0.0,
         completions: int = 1,
     ) -> BaseChatModel:
@@ -88,6 +88,7 @@ class GeminiProvider(LLMProvider):
             model=model_name,
             api_key=settings.google_api_key,
             temperature=temperature,
+            client_options={"quota_project_id": "gen-lang-client-0762618911"},
         )
 
 
@@ -307,7 +308,7 @@ def get_llm(
         if provider == "openai":
             model_name = "openai:gpt-4o-mini"
         elif provider == "gemini":
-            model_name = "gemini-2.5-flash-lite"
+            model_name = "gemini-2.5-flash"
         elif provider == "deepseek":
             model_name = "deepseek-chat"
     

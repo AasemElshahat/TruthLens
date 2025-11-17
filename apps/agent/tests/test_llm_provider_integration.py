@@ -99,7 +99,7 @@ class LLMProviderIntegrationTester:
             providers_to_test.append(("openai", "openai:gpt-4o-mini"))
         
         if settings.google_api_key:
-            providers_to_test.append(("gemini", "gemini-2.5-flash-lite"))
+            providers_to_test.append(("gemini", "gemini-2.5-flash"))
         
         if settings.deepseek_api_key:
             providers_to_test.append(("deepseek", "deepseek-chat"))

@@ -53,86 +53,101 @@ def load_dataset_with_extractions(dataset_path: str) -> pd.DataFrame:
 def calculate_extraction_metrics(df: pd.DataFrame, provider_prefix: str) -> Dict[str, Any]:
     """Calculate extraction metrics for a specific LLM provider."""
     print(f"\n📊 Calculating extraction metrics for {provider_prefix}...")
-    
-    # Get ground truth and predictions
-    y_true = df['contains_factual_claim'].values  # BingCheck ground truth
-    y_pred_raw = df[f'{provider_prefix}_binary_result'].values  # LLM predictions
 
-    # Filter out None/NaN values (sentences not processed yet)
-    valid_mask = pd.notna(y_pred_raw) & (y_pred_raw != 'None') & (y_pred_raw != 'null')
-    y_true_filtered = y_true[valid_mask]
-    y_pred_raw_filtered = y_pred_raw[valid_mask]
+    # Allow for either naming convention so the script tolerates future CSV tweaks
+    label_candidates = ['contains_factual_claim', 'binary_ground_truth']
+    label_col = next((col for col in label_candidates if col in df.columns), None)
+    if not label_col:
+        print(f"  ⚠️  None of the expected label columns {label_candidates} exist in dataset")
+        return None
 
-    # Convert predictions to boolean (this addresses the data type casting issue)
-    # Handle both string 'True'/'False' and actual boolean values
+    y_true = df[label_col].values
+    pred_col = f"{provider_prefix}_binary_result"
+    if pred_col not in df.columns:
+        print(f"  ⚠️  Missing prediction column '{pred_col}' in dataset")
+        return None
+    y_pred_series = pd.Series(df[pred_col], dtype="object")
+    normalized_pred = y_pred_series.astype(str).str.lower()
+
+    valid_mask = (
+        pd.notna(y_true)
+        & pd.notna(y_pred_series)
+        & (normalized_pred != "none")
+        & (normalized_pred != "null")
+    )
+    y_true_filtered = []
     y_pred_filtered = []
-    for pred in y_pred_raw_filtered:
+    y_true_raw_filtered = y_true[valid_mask]
+    y_pred_raw_filtered = y_pred_series[valid_mask].to_numpy()
+
+    if len(y_true_raw_filtered) == 0:
+        print(f"  ⚠️  No valid sentences found for {provider_prefix}")
+        return None
+
+    for idx, (truth, pred) in enumerate(zip(y_true_raw_filtered, y_pred_raw_filtered)):
+        pred_bool = None
         if isinstance(pred, bool):
-            y_pred_filtered.append(pred)
+            pred_bool = pred
         elif isinstance(pred, str):
-            if pred.lower() in ['true', '1', 'yes', 't']:
-                y_pred_filtered.append(True)
-            elif pred.lower() in ['false', '0', 'no', 'f']:
-                y_pred_filtered.append(False)
-            else:
-                print(f"Warning: Unexpected prediction value: {pred}, defaulting to False")
-                y_pred_filtered.append(False)
-        elif pd.isna(pred):
-            y_pred_filtered.append(False)  # or could skip this item
-        else:
-            y_pred_filtered.append(bool(pred))
-    
+            normalized = pred.strip().lower()
+            if normalized in {"true", "1", "yes", "t", "y"}:
+                pred_bool = True
+            elif normalized in {"false", "0", "no", "f", "n"}:
+                pred_bool = False
+        elif isinstance(pred, (int, float)):
+            pred_bool = bool(pred)
+
+        if pred_bool is None:
+            print(f"  ⚠️  Unexpected prediction '{pred}' at filtered index {idx}; skipping row")
+            continue
+
+        y_true_filtered.append(bool(truth))
+        y_pred_filtered.append(pred_bool)
+
+    if not y_true_filtered:
+        print(f"  ⚠️  No processed sentences found for {provider_prefix} after cleaning")
+        return None
+
+    y_true_filtered = pd.Series(y_true_filtered).astype(bool)
     y_pred_filtered = pd.Series(y_pred_filtered).astype(bool)
 
-    if len(y_true_filtered) == 0:
-        print(f"  ⚠️  No processed sentences found for {provider_prefix}")
-        return None
-
-    if len(y_true_filtered) != len(y_pred_filtered):
-        print(f"  ⚠️  Mismatch in filtered arrays: {len(y_true_filtered)} vs {len(y_pred_filtered)}")
-        return None
-
-    # Calculate metrics
     accuracy = accuracy_score(y_true_filtered, y_pred_filtered)
     precision = precision_score(y_true_filtered, y_pred_filtered, zero_division=0)
     recall = recall_score(y_true_filtered, y_pred_filtered, zero_division=0)
     f1 = f1_score(y_true_filtered, y_pred_filtered, zero_division=0)
 
-    # Detailed classification report
     report = classification_report(
         y_true_filtered,
         y_pred_filtered,
+        labels=[False, True],
         target_names=['No Factual Claim', 'Has Factual Claim'],
-        output_dict=True
+        output_dict=True,
+        zero_division=0,
     )
 
-    # Confusion matrix
-    cm = confusion_matrix(y_true_filtered, y_pred_filtered)
-
-    # Calculate TP, TN, FP, FN manually for clarity
+    cm = confusion_matrix(y_true_filtered, y_pred_filtered, labels=[False, True])
     tn, fp, fn, tp = cm.ravel()
 
     metrics = {
-        'provider': provider_prefix,
-        'accuracy': accuracy,
-        'precision': precision,
-        'recall': recall,
-        'f1_score': f1,
-        'confusion_matrix': cm.tolist(),
-        'classification_report': report,
-        'tp': int(tp),  # True Positives
-        'tn': int(tn),  # True Negatives
-        'fp': int(fp),  # False Positives
-        'fn': int(fn),  # False Negatives
-        'total_samples': len(y_true_filtered),
-        'processed_samples': len(y_pred_filtered)
+        "provider": provider_prefix,
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1_score": f1,
+        "confusion_matrix": cm.tolist(),
+        "classification_report": report,
+        "tp": int(tp),
+        "tn": int(tn),
+        "fp": int(fp),
+        "fn": int(fn),
+        "total_samples": int(len(y_true_filtered)),
     }
 
     print(f"  Accuracy: {accuracy:.4f}")
     print(f"  Precision: {precision:.4f}")
     print(f"  Recall: {recall:.4f}")
     print(f"  F1-Score: {f1:.4f}")
-    print(f"  Samples processed: {len(y_pred_filtered)}/{len(y_true)}")
+    print(f"  Samples processed: {len(y_true_filtered)} / {len(df)}")
 
     return metrics
 
