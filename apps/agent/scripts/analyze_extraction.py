@@ -128,18 +128,24 @@ def calculate_extraction_metrics(df: pd.DataFrame, provider_prefix: str) -> Dict
     cm = confusion_matrix(y_true_filtered, y_pred_filtered, labels=[False, True])
     tn, fp, fn, tp = cm.ravel()
 
+    # Calculate NPV (Precision for Negatives)
+    npv = tn / (tn + fn) if (tn + fn) > 0 else 0.0
+
     metrics = {
         "provider": provider_prefix,
         "accuracy": accuracy,
         "precision": precision,
         "recall": recall,
         "f1_score": f1,
+        "npv": npv,
         "confusion_matrix": cm.tolist(),
         "classification_report": report,
         "tp": int(tp),
         "tn": int(tn),
         "fp": int(fp),
         "fn": int(fn),
+        "total_actual_positives": int(tp + fn),
+        "total_actual_negatives": int(tn + fp),
         "total_samples": int(len(y_true_filtered)),
     }
 
@@ -218,10 +224,13 @@ def analyze_extraction_phase(dataset_path: str, output_path: str):
                 'precision': provider_metrics['precision'],
                 'recall': provider_metrics['recall'],
                 'f1_score': provider_metrics['f1_score'],
+                'npv': provider_metrics['npv'],
                 'tp': provider_metrics['tp'],
                 'tn': provider_metrics['tn'],
                 'fp': provider_metrics['fp'],
                 'fn': provider_metrics['fn'],
+                'total_actual_positives': provider_metrics['total_actual_positives'],
+                'total_actual_negatives': provider_metrics['total_actual_negatives'],
                 'total_samples': provider_metrics['total_samples']
             })
     
