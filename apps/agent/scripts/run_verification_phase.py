@@ -20,7 +20,27 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from claim_verifier import graph as claim_verifier_graph
 from claim_extractor.schemas import ValidatedClaim
-from claim_verifier.schemas import VerificationResult
+from claim_verifier.schemas import VerificationResult, Evidence
+
+
+def serialize_sources(sources: Optional[List[Evidence]]) -> str:
+    """Convert Evidence objects into a JSON string for CSV storage."""
+    if not sources:
+        return json.dumps([])
+
+    serialized_sources = []
+    for source in sources:
+        try:
+            serialized_sources.append({
+                'url': source.url,
+                'title': source.title,
+                'text': source.text,
+                'is_influential': source.is_influential
+            })
+        except Exception as exc:  # Defensive: ensure serialization never blocks the run
+            print(f"⚠️  Failed to serialize source for URL {getattr(source, 'url', 'unknown')} - {exc}")
+
+    return json.dumps(serialized_sources)
 
 
 async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[str, Any]:
@@ -57,6 +77,7 @@ async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[st
                     'verdict': verdict.result.value if hasattr(verdict.result, 'value') else str(verdict.result),
                     'reasoning': verdict.reasoning,
                     'sources_count': len(verdict.sources) if hasattr(verdict, 'sources') else 0,
+                    'sources': serialize_sources(getattr(verdict, 'sources', [])),
                     'original_claim': validated_claim.claim_text
                 }
             else:
@@ -64,6 +85,7 @@ async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[st
                     'verdict': 'No verdict returned',
                     'reasoning': 'No reasoning provided',
                     'sources_count': 0,
+                    'sources': json.dumps([]),
                     'original_claim': validated_claim.claim_text
                 }
         else:
@@ -71,6 +93,7 @@ async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[st
                 'verdict': 'No result returned',
                 'reasoning': 'No result from verifier',
                 'sources_count': 0,
+                'sources': json.dumps([]),
                 'original_claim': validated_claim.claim_text
             }
     except Exception as e:
@@ -85,9 +108,9 @@ async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[st
 def add_verification_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Add verification result columns to the dataframe if they don't exist."""
     required_columns = [
-        'gpt4_verdict', 'gpt4_reasoning',
-        'gemini_verdict', 'gemini_reasoning',
-        'deepseek_verdict', 'deepseek_reasoning'
+        'gpt4_verdict', 'gpt4_reasoning', 'gpt4_sources',
+        'gemini_verdict', 'gemini_reasoning', 'gemini_sources',
+        'deepseek_verdict', 'deepseek_reasoning', 'deepseek_sources'
     ]
     
     for col in required_columns:
@@ -124,6 +147,7 @@ async def run_verification_for_provider(
     # Get provider-specific columns
     verdict_col = f"{provider_prefix}_verdict"
     reasoning_col = f"{provider_prefix}_reasoning"
+    sources_col = f"{provider_prefix}_sources"
     
     total_claims = len(df)
     processed_count = 0
@@ -156,6 +180,7 @@ async def run_verification_for_provider(
             # Update the dataframe with results
             df.at[idx, verdict_col] = result['verdict']
             df.at[idx, reasoning_col] = result['reasoning']
+            df.at[idx, sources_col] = result.get('sources', json.dumps([]))
             
             processed_count += 1
         else:
