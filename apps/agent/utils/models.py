@@ -82,15 +82,20 @@ class GeminiProvider(LLMProvider):
         if not settings.google_api_key:
             raise ValueError("Google API key not found in environment variables")
 
-        from langchain_google_genai import ChatGoogleGenerativeAI
+        from langchain_google_genai import ChatGoogleGenerativeAI, HarmBlockThreshold, HarmCategory
         
         return ChatGoogleGenerativeAI(
             model=model_name,
             api_key=settings.google_api_key,
             temperature=temperature,
             client_options={"quota_project_id": "gen-lang-client-0762618911"},
+            safety_settings={
+                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+            },
         )
-
 
 logger = logging.getLogger(__name__)
 
@@ -224,14 +229,14 @@ class DeepSeekChatWrapper(BaseChatModel):
 
                     if not json_payload:
                         logger.debug("DeepSeek response missing JSON payload: %s", text[:200])
-                        return self.schema()
+                        return None  # CHANGED: Return None instead of self.schema() to avoid validation errors
 
                     try:
                         parsed_data = json.loads(json_payload)
-                        return self.schema(**parsed_data) if parsed_data else self.schema()
+                        return self.schema(**parsed_data) if parsed_data else None  # CHANGED: Return None on empty data
                     except (json.JSONDecodeError, TypeError, ValueError) as exc:
                         logger.warning("Failed to parse DeepSeek JSON response: %s", exc)
-                        return self.schema()
+                        return None  # CHANGED: Return None on parse error
 
                 def invoke(self, messages: List[BaseMessage], **llm_kwargs):
                     formatted_messages = self._format_request_with_json_instruction(messages)

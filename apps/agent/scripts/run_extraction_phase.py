@@ -10,6 +10,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Any
+import os
 
 import pandas as pd
 
@@ -18,6 +19,35 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from claim_extractor import graph as claim_extractor_graph
 from claim_extractor.schemas import ValidatedClaim
+
+
+def generate_unique_filename(base_path: str) -> str:
+    """
+    Generate a unique filename by checking if the file exists and appending a counter if needed.
+
+    Args:
+        base_path: The original intended file path
+
+    Returns:
+        str: A unique file path that doesn't conflict with existing files
+    """
+    base_path = Path(base_path)
+    output_dir = base_path.parent
+    stem = base_path.stem
+    suffix = base_path.suffix
+
+    # Check if the original file exists
+    if not base_path.exists():
+        return str(base_path)
+
+    # File exists, so we need to find a unique name
+    counter = 2
+    while True:
+        new_name = f"{stem}_run{counter}{suffix}"
+        new_path = output_dir / new_name
+        if not new_path.exists():
+            return str(new_path)
+        counter += 1
 
 
 def get_llm_provider(provider: str):
@@ -168,43 +198,66 @@ async def run_extraction_for_provider(
 
 
 async def run_extraction_phase(
-    dataset_path: str, 
-    output_path: str, 
-    providers: List[str] = ['openai', 'gemini', 'deepseek']
+    dataset_path: str,
+    output_path: str,
+    providers: List[str] = ['openai', 'gemini', 'deepseek'],
+    fresh_run: bool = False
 ):
     """Run extraction phase for all providers with per-sentence updates."""
     print("🚀 Starting extraction phase with all LLMs...")
     print(f"Dataset: {dataset_path}")
     print(f"Output: {output_path}")
     print(f"Providers: {providers}")
-    
+    print(f"Fresh Run Mode: {fresh_run}")
+
     # Load the dataset
     df = pd.read_csv(dataset_path)
     print(f"Loaded dataset with {len(df)} sentences")
-    
+
     # Add required columns if they don't exist
     df = add_extraction_columns(df)
-    
+
+    # If fresh run is requested, clear all existing extraction results
+    if fresh_run:
+        print("🔄 Preparing for fresh run - clearing existing results...")
+        required_columns = [
+            'gpt4_extracted_claims_json', 'gpt4_binary_result', 'gpt4_num_claims',
+            'gemini_extracted_claims_json', 'gemini_binary_result', 'gemini_num_claims',
+            'deepseek_extracted_claims_json', 'deepseek_binary_result', 'deepseek_num_claims'
+        ]
+
+        for col in required_columns:
+            if col in df.columns:
+                df[col] = None  # Reset to None to force re-processing
+        print("✅ Existing extraction results cleared")
+
+    # Generate a unique output path if the target file already exists
+    unique_output_path = generate_unique_filename(output_path)
+    if unique_output_path != output_path:
+        print(f"⚠️  Output file already exists. Using unique filename: {unique_output_path}")
+
     # Provider mappings
     provider_mapping = {
         'openai': 'gpt4',
-        'gemini': 'gemini', 
+        'gemini': 'gemini',
         'deepseek': 'deepseek'
     }
-    
+
     # Process each provider sequentially
     for provider in providers:
         provider_prefix = provider_mapping[provider]
-        
+
         print(f"\n🔄 Processing provider: {provider.upper()}")
-        
+
         # Run extraction for this provider
-        df = await run_extraction_for_provider(df, provider, provider_prefix, output_path)
-    
+        df = await run_extraction_for_provider(df, provider, provider_prefix, unique_output_path)
+
     # Final save
-    df.to_csv(output_path, index=False)
-    print(f"\n🎉 Extraction phase complete! Results saved to {output_path}")
+    df.to_csv(unique_output_path, index=False)
+    print(f"\n🎉 Extraction phase complete! Results saved to {unique_output_path}")
     print(f"Final dataset has {len(df)} sentences with extraction results from all providers")
+
+    return unique_output_path
 
 
 async def main():
@@ -221,21 +274,32 @@ async def main():
         default="../../my_thesis_dataset.csv",
         help="Path to save results CSV file (default: same as input for in-place update)"
     )
+    parser.add_argument(
+        "--fresh-run",
+        action="store_true",
+        help="Force a fresh run, clearing existing extraction results and re-processing all sentences"
+    )
 
     args = parser.parse_args()
 
     print(f"📄 Dataset: {args.dataset}")
     print(f"💾 Output: {args.output}")
+    print(f"🔄 Fresh Run Mode: {args.fresh_run}")
 
     # Verify the dataset exists
     if not Path(args.dataset).exists():
         print(f"❌ Dataset file not found: {args.dataset}")
         sys.exit(1)
 
-    # Run extraction phase
-    await run_extraction_phase(args.dataset, args.output)
+    # Run extraction phase and get the actual output path used
+    actual_output_path = await run_extraction_phase(
+        args.dataset,
+        args.output,
+        fresh_run=args.fresh_run
+    )
 
     print("✅ Extraction phase completed successfully!")
+    print(f"📊 Results saved to: {actual_output_path}")
 
 
 if __name__ == "__main__":

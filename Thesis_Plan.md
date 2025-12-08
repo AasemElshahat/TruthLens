@@ -121,10 +121,13 @@ For each LLM, calculate per-sentence classification using scikit-learn against B
 
 **Binary Classification Metrics (The "Finder" Score):**
 
-- **Accuracy** = (TP + TN) / (TP + TN + FP + FN)
-- **Precision** = TP / (TP + FP)
-- **Recall** = TP / (TP + FN)
-- **F1-Score** = 2 × (Precision × Recall) / (Precision + Recall)
+- **Accuracy** = (TP + TN) / (TP + TN + FP + FN) - Overall correctness
+- **Precision (Positive Class)** = TP / (TP + FP) - Of all "positive" predictions, how many were correct?
+- **Recall (Positive Class)** = TP / (TP + FN) - Of all actual positives, how many did we find?
+- **F1-Score (Positive Class)** = 2 × (Precision × Recall) / (Precision + Recall) - Balanced metric for positive class
+- **Precision (Negative Class)** = TN / (TN + FN) - Of all "negative" predictions, how many were correct? [Same as NPV - Negative Predictive Value]
+- **Recall (Negative Class)** = TN / (TN + FP) - Of all actual negatives, how many did we find?
+- **F1-Score (Negative Class)** = 2 × (Precision_Neg × Recall_Neg) / (Precision_Neg + Recall_Neg) - Balanced metric for negative class
 
 Where:
 

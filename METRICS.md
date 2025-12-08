@@ -14,10 +14,12 @@
 ### Theory
 
 - **Accuracy** = (TP + TN) / (TP + TN + FP + FN) - Overall correctness
-- **Precision** = TP / (TP + FP) - Of all "positive" predictions, how many were correct? [For `Precision`, Think about the `Prediction` as the baseline]
-- **NPV** = TN / (TN + FN) - Negative Predictive Value (NPV)
-- **Recall** = TP / (TP + FN) - Of all actual positives, how many did we find? [For `Recall`, Think about the `Truth` as the baseline]
-- **F1-Score** = 2 × (Precision × Recall) / (Precision + Recall) - Balanced metric
+- **Precision (Positive Class)** = TP / (TP + FP) - Of all "positive" predictions, how many were correct? [For `Precision`, Think about the `Prediction` as the baseline]
+- **Recall (Positive Class)** = TP / (TP + FN) - Of all actual positives, how many did we find? [For `Recall`, Think about the `Truth` as the baseline]
+- **F1-Score (Positive Class)** = 2 × (Precision × Recall) / (Precision + Recall) - Balanced metric for positive class
+- **Precision (Negative Class)** = TN / (TN + FN) - Of all "negative" predictions, how many were correct? [Same as NPV - Negative Predictive Value]
+- **Recall (Negative Class)** = TN / (TN + FP) - Of all actual negatives, how many did we find?
+- **F1-Score (Negative Class)** = 2 × (Precision_Neg × Recall_Neg) / (Precision_Neg + Recall_Neg) - Balanced metric for negative class
 
 ### Example (GPT-4 extracting from 100 sentences):
 
@@ -30,12 +32,18 @@
 
 - **Accuracy** = (65 + 20) / (65 + 20 + 10 + 5) = 85%
   - "Overall, GPT correctly identified 85% of sentences"
-- **Precision** = 65 / (65 + 10) = 86.7%
+- **Precision (Positive)** = 65 / (65 + 10) = 86.7%
   - "Of sentences GPT said had claims, 86.7% actually did"
-- **Recall** = 65 / (65 + 5) = 92.9%
+- **Recall (Positive)** = 65 / (65 + 5) = 92.9%
   - "Of sentences that actually had claims, GPT found 92.9%"
-- **F1-Score** = 2 × (0.867 × 0.929) / (0.867 + 0.929) = 89.7%
-  - "Harmonic average of precision and recall"
+- **F1-Score (Positive)** = 2 × (0.867 × 0.929) / (0.867 + 0.929) = 89.7%
+  - "Harmonic average of precision and recall for positive class"
+- **Precision (Negative)** = 20 / (20 + 5) = 80.0%
+  - "Of sentences GPT said did not have claims, 80.0% actually did not"
+- **Recall (Negative)** = 20 / (20 + 10) = 66.7%
+  - "Of sentences that actually did not have claims, GPT found 66.7%"
+- **F1-Score (Negative)** = 2 × (0.800 × 0.667) / (0.800 + 0.667) = 72.7%
+  - "Harmonic average of precision and recall for negative class"
 
 ## Multi-class Classification Metrics (Phase 2: Verification)
 
