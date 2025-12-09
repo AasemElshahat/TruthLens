@@ -47,8 +47,9 @@ async def _decomposition_stage(
     sentence = disambiguated_item.disambiguated_sentence
     logger.debug(f"Processing decomposition for: '{sentence}'")
 
-    # Get zero-temp LLM for consistent results
-    llm = get_llm(completions=COMPLETIONS)
+    # Get zero-temp LLM for consistent results with configured provider
+    from utils.settings import settings
+    llm = get_llm(completions=COMPLETIONS, provider=settings.llm_provider)
 
     # Get context without following sentences
     original_context = (

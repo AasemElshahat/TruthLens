@@ -4,7 +4,13 @@ import uuid
 from langgraph_sdk import get_client
 
 payload = {
-    "claim": "Neil Armstrong and Buzz Aldrin were the first humans to walk on the Moon on July 20, 1969.",
+    "claim": {
+        "claim_text": "Neil Armstrong and Buzz Aldrin were the first humans to walk on the Moon on July 20, 1969.",
+        "is_complete_declarative": True,
+        "disambiguated_sentence": "Neil Armstrong and Buzz Aldrin were the first humans to walk on the lunar surface on July 20, 1969.",
+        "original_sentence": "Neil Armstrong and Buzz Aldrin were the first humans to walk on the Moon on July 20, 1969.",
+        "original_index": 0
+    },
     "context": "Apollo 11 mission historical verification",
 }
 

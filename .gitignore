@@ -190,5 +190,7 @@ docs/research-papers/
 # Claude Code directory
 .claude/
 
-# Thesis proposal (personal academic work)
-docs/thesis-proposal.tex
+ground_truth_data-BingCheck
+
+test_reports/
+script_logs/

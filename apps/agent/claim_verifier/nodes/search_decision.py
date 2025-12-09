@@ -57,8 +57,9 @@ async def search_decision_node(
         )
         return Command(goto="evaluate_evidence")
 
-    # Assess evidence sufficiency with LLM
-    llm = get_llm()
+    # Assess evidence sufficiency with LLM using configured provider
+    from utils.settings import settings
+    llm = get_llm(provider=settings.llm_provider)
 
     evidence_summary = "\n".join(
         [

@@ -4,7 +4,7 @@ import uuid
 from langgraph_sdk import get_client
 
 payload = {
-    "text": (
+    "answer_text": (
         "The Apollo 11 mission was a major success for NASA. It was the first mission to land humans on the Moon. "
         "Neil Armstrong and Buzz Aldrin walked on the lunar surface on July 20, 1969. This was truly amazing. "
         "They collected samples of lunar material and returned safely to Earth. Some say it changed humanity. "

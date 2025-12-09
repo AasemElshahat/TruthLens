@@ -124,8 +124,9 @@ async def selection_node(state: State) -> Dict[str, List[SelectedContent]]:
         logger.warning("No sentences to process")
         return {}
 
-    # Get LLM with temperature 0.2 since we're using multiple completions
-    llm = get_llm(completions=COMPLETIONS)
+    # Get LLM with temperature 0.2 since we're using multiple completions with configured provider
+    from utils.settings import settings
+    llm = get_llm(completions=COMPLETIONS, provider=settings.llm_provider)
 
     # Process all sentences with voting
     selected_contents = await process_with_voting(

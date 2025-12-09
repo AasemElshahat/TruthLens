@@ -36,16 +36,43 @@ def _validate_brave_api_key(v: str | None) -> str | None:
     return v
 
 
+def _validate_google_api_key(v: str | None) -> str | None:
+    """Validate that the Google API key starts with 'AIza'."""
+    if v and not v.startswith("AIza"):
+        raise ValueError("Google API key must start with 'AIza'")
+    return v
+
+
+def _validate_deepseek_api_key(v: str | None) -> str | None:
+    """Validate that the DeepSeek API key is a non-empty string."""
+    if v and len(v.strip()) == 0:
+        raise ValueError("DeepSeek API key cannot be empty")
+    return v
+
+
+def _validate_llm_provider(v: str | None) -> str | None:
+    """Validate that the LLM provider is supported."""
+    if v and v not in ["openai", "gemini", "deepseek"]:
+        raise ValueError("LLM provider must be 'openai', 'gemini', or 'deepseek'")
+    return v
+
+
 OpenAIAPIKey = Annotated[str | None, AfterValidator(_validate_openai_api_key)]
 ExaAPIKey = Annotated[str | None, AfterValidator(_validate_exa_api_key)]
 TavilyAPIKey = Annotated[str | None, AfterValidator(_validate_tavily_api_key)]
 BraveAPIKey = Annotated[str | None, AfterValidator(_validate_brave_api_key)]
+GoogleAPIKey = Annotated[str | None, AfterValidator(_validate_google_api_key)]
+DeepSeekAPIKey = Annotated[str | None, AfterValidator(_validate_deepseek_api_key)]
+LLMProviderType = Annotated[str, AfterValidator(_validate_llm_provider)]
 
 
 class Settings(BaseSettings):
     """Manages application settings and environment variables."""
 
+    llm_provider: LLMProviderType = Field(default="openai", alias="LLM_PROVIDER")
     openai_api_key: OpenAIAPIKey = Field(default=None, alias="OPENAI_API_KEY")
+    google_api_key: GoogleAPIKey = Field(default=None, alias="GOOGLE_API_KEY")
+    deepseek_api_key: DeepSeekAPIKey = Field(default=None, alias="DEEPSEEK_API_KEY")
     exa_api_key: ExaAPIKey = Field(default=None, alias="EXA_API_KEY")
     tavily_api_key: TavilyAPIKey = Field(default=None, alias="TAVILY_API_KEY")
     brave_api_key: BraveAPIKey = Field(default=None, alias="BRAVE_API_KEY")
