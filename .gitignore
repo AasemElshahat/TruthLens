@@ -185,7 +185,7 @@ build/
 #playwright-mcp-images
 .playwright-mcp*
 # Research papers (copyrighted)
-docs/research-papers/
+docs/
 
 # Claude Code directory
 .claude/
