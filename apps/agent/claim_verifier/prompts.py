@@ -168,14 +168,9 @@ INSUFFICIENT INFORMATION - Use when:
 - Key information missing for verification
 - Evidence is outdated for time-sensitive claims
 
-CONFLICTING EVIDENCE - Use when:
-- Multiple credible sources present opposing views
-- No clear resolution from available evidence
-- Both sides have credible support
-
 Decision rule: Be conservative - when evidence is ambiguous or insufficient, choose "Insufficient Information."
 
-Source reporting: Always identify which evidence sources were relevant to your decision, regardless of the verdict. For "Insufficient Information" and "Conflicting Evidence" verdicts, include sources that were considered even if they were inadequate, to maintain transparency in the fact-checking process.
+Source reporting: Always identify which evidence sources were relevant to your decision, regardless of the verdict. For "Insufficient Information" verdicts, include sources that were considered even if they were inadequate, to maintain transparency in the fact-checking process.
 
 Think step by step through the evidence before reaching your verdict."""
 

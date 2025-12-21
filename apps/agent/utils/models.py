@@ -223,6 +223,44 @@ class DeepSeekChatWrapper(BaseChatModel):
                                 return text[start : idx + 1]
                     return None
 
+                def _normalize_enum_fields(self, data: dict) -> dict:
+                    """Normalize enum field values to match expected casing.
+                    
+                    DeepSeek sometimes returns enum values in uppercase (e.g., 'SUPPORTED')
+                    when the schema expects title case (e.g., 'Supported').
+                    """
+                    if not isinstance(data, dict):
+                        return data
+                    
+                    # Known enum value mappings (lowercase -> correct case)
+                    enum_mappings = {
+                        # VerificationResult enum values
+                        'supported': 'Supported',
+                        'refuted': 'Refuted',
+                        'insufficient information': 'Insufficient Information',
+                        'insufficient_information': 'Insufficient Information',
+                    }
+                    
+                    normalized = {}
+                    for key, value in data.items():
+                        if isinstance(value, str):
+                            lower_value = value.lower()
+                            if lower_value in enum_mappings:
+                                normalized[key] = enum_mappings[lower_value]
+                            else:
+                                normalized[key] = value
+                        elif isinstance(value, dict):
+                            normalized[key] = self._normalize_enum_fields(value)
+                        elif isinstance(value, list):
+                            normalized[key] = [
+                                self._normalize_enum_fields(item) if isinstance(item, dict) else item
+                                for item in value
+                            ]
+                        else:
+                            normalized[key] = value
+                    
+                    return normalized
+
                 def _parse_response(self, content: Any):
                     text = self._coerce_text_content(content)
                     json_payload = self._extract_json_segment(text)
@@ -233,7 +271,11 @@ class DeepSeekChatWrapper(BaseChatModel):
 
                     try:
                         parsed_data = json.loads(json_payload)
-                        return self.schema(**parsed_data) if parsed_data else None  # CHANGED: Return None on empty data
+                        if not parsed_data:
+                            return None
+                        # Normalize enum fields before Pydantic validation
+                        normalized_data = self._normalize_enum_fields(parsed_data)
+                        return self.schema(**normalized_data)
                     except (json.JSONDecodeError, TypeError, ValueError) as exc:
                         logger.warning("Failed to parse DeepSeek JSON response: %s", exc)
                         return None  # CHANGED: Return None on parse error

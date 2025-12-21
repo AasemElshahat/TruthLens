@@ -70,13 +70,24 @@ def normalize_verdict(verdict: str) -> str:
         return 'supported'
     elif 'refuted' in verdict_lower or 'false' in verdict_lower or 'incorrect' in verdict_lower or 'contradicted' in verdict_lower:
         return 'refuted'
-    elif 'neutral' in verdict_lower or 'mixed' in verdict_lower or 'incomplete' in verdict_lower:
-        return 'neutral'
+    elif (
+        'insufficient' in verdict_lower
+        or 'not enough evidence' in verdict_lower
+        or 'inconclusive' in verdict_lower
+        or 'cannot verify' in verdict_lower
+        or 'can\'t verify' in verdict_lower
+        or 'unconfirmed' in verdict_lower
+        or 'unclear' in verdict_lower
+        or 'neutral' in verdict_lower
+        or 'mixed' in verdict_lower
+        or 'incomplete' in verdict_lower
+    ):
+        return 'insufficient'
     elif 'unknown' in verdict_lower or 'undetermined' in verdict_lower or 'unverifiable' in verdict_lower:
         return 'unknown'
     else:
         # For cases where the verdict is already a simple category
-        if verdict_lower in ['supported', 'refuted', 'neutral', 'unknown']:
+        if verdict_lower in ['supported', 'refuted', 'insufficient', 'unknown']:
             return verdict_lower
         else:
             # If it's an unexpected verdict type, categorize as "other"
