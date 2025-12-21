@@ -26,6 +26,10 @@ langchain-google-genai = "^2.1.12"
 pydantic = "^2.12.3"
 pandas = "^2.3.3"
 
+[tool.poetry.group.dev.dependencies]
+matplotlib = "^3.10.8"
+seaborn = "^0.13.2"
+
 [tool.poetry]
 authors = ["Bharath Lakshman Kumar <bharathxxd@gmail.com>"]
 description = "Development environment for fact-checking agents"

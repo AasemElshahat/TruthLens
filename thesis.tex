@@ -162,7 +162,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
     \textbf{Chapter \ref{ch:implementation}} describes the technical implementation of the evaluation pipeline, including the Python-based agent architecture, the integration of LLM APIs, and the automated benchmarking scripts.
     
-    \textbf{Chapter \ref{ch:results}} presents the quantitative results of the experiments. It offers a statistical comparison of GPT-4, Gemini, and DeepSeek across both extraction and verification phases, highlighting the trade-offs between cost, speed, and accuracy across multiple experimental runs.
+    \textbf{Chapter \ref{ch:results}} presents the quantitative results of the experiments. It offers a statistical comparison of GPT-4, Gemini, and DeepSeek across both extraction and verification phases, analyzing accuracy, reliability, and inter-model agreement across multiple experimental runs.
     
     \textbf{Chapter \ref{ch:discussion}} interprets the findings, discussing the implications of the ``precision-recall trade-off'' observed in the models. It also provides a qualitative error analysis of specific failure cases.
     
@@ -374,9 +374,15 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     Additionally, we calculate the \textbf{Macro-Averaged F1-Score} across all three classes. This ensures that the model is evaluated not just on its ability to verify facts, but also on its ability to correctly identify when evidence is missing (Recall for the ``Insufficient'' class), preventing bias towards the majority class.
     
     \section{Reliability and Reproducibility}
-    Given that Large Language Models are non-deterministic by nature, a single experimental run may not accurately reflect the model's stable performance characteristics. To mitigate this variability and ensure statistical reliability, the entire evaluation pipeline (Phase 1 and Phase 2) is executed in \textbf{three independent runs} ($k=3$).
+    Given that Large Language Models are non-deterministic by nature, a single experimental run may not accurately reflect the model's stable performance characteristics. To mitigate this variability and ensure statistical reliability, the evaluation pipeline is executed across \textbf{multiple independent runs}.
     
-    For each metric $M$ (Precision, Recall, F1-Score), the reported result is the mean across all three runs:
+    Due to the computational intensity and API costs associated with the verification phase (which requires multiple search queries per claim), the number of runs differs between phases:
+    \begin{itemize}
+        \item \textbf{Phase 1 (Extraction):} $k=3$ independent runs
+        \item \textbf{Phase 2 (Verification):} $k=2$ independent runs
+    \end{itemize}
+    
+    For each metric $M$ (Precision, Recall, F1-Score), the reported result is the mean across all runs:
     \begin{equation}
         M_{final} = \frac{1}{k} \sum_{i=1}^{k} M_i
     \end{equation}
@@ -590,14 +596,212 @@ class LLMProvider(ABC):
 
 \chapter{Results and Evaluation}
 \label{ch:results}
-    \section{Phase 1: Claim Extraction Performance}
-        \subsection{Quantitative Metric Comparison (Table)}
-        \subsection{Visual Comparison (Bar Charts)}
-        \subsection{Reliability Analysis Across Multiple Runs}
-    \section{Phase 2: Claim Verification Performance}
-        \subsection{Quantitative Metric Comparison (Table)}
-        \subsection{Visual Comparison (Bar Charts)}
-    \section{Experimental Cost and Time Analysis}
+
+This chapter presents the quantitative results of the comparative analysis. The experiments were conducted following the methodology defined in Chapter \ref{ch:methodology}, with $k=3$ independent runs for the extraction phase and $k=2$ runs for the verification phase. All metrics are reported as mean values with standard deviation to demonstrate reliability across runs.
+
+\section{Phase 1: Claim Extraction Performance}
+
+The claim extraction phase evaluated each model's ability to identify verifiable factual claims from unstructured text. A total of $N=150$ sentences were processed, with a ground truth distribution of 78 sentences containing factual claims (positive class) and 72 sentences containing non-factual content (negative class).
+
+\subsection{Quantitative Metric Comparison}
+
+Table \ref{tab:extraction_results} presents the aggregated performance metrics for all three models across the extraction task. The results reveal a distinct precision-recall trade-off pattern that directly addresses \textbf{RQ1}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|X|X|X|}
+        \hline
+        \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+        \hline
+        GPT-4 & 80.2\% $\pm$ 1.7\% & 83.1\% $\pm$ 2.5\% & 77.8\% $\pm$ 0.7\% & 80.4\% $\pm$ 1.5\% \\
+        \hline
+        Gemini & 66.4\% $\pm$ 1.5\% & 89.5\% $\pm$ 1.8\% & 40.2\% $\pm$ 2.7\% & 55.4\% $\pm$ 2.8\% \\
+        \hline
+        DeepSeek & 72.7\% $\pm$ 2.9\% & 95.8\% $\pm$ 1.7\% & 49.6\% $\pm$ 4.9\% & 65.3\% $\pm$ 4.6\% \\
+        \hline
+    \end{tabularx}
+    \caption{Phase 1 Extraction Metrics (Positive Class). Mean $\pm$ standard deviation across $k=3$ runs. $N=150$ sentences (78 positive, 72 negative).}
+    \label{tab:extraction_results}
+\end{table}
+
+\textbf{Key Finding:} GPT-4 achieves the highest F1-Score (80.4\%), demonstrating a balanced trade-off between precision and recall. In contrast, Gemini and DeepSeek exhibit a \textit{conservative extraction strategy}---achieving exceptionally high precision (89.5\% and 95.8\% respectively) at the cost of significantly reduced recall (40.2\% and 49.6\%).
+
+This pattern has important practical implications: while Gemini and DeepSeek rarely misclassify non-factual content as claims (high precision), they fail to identify approximately half of the actual factual claims present in the text (low recall). For a fact-checking pipeline where \textit{coverage} is critical, this represents a significant limitation.
+
+\subsection{Negative Class Performance}
+
+To fully characterize the models' filtering capabilities, Table \ref{tab:extraction_negative} presents the negative class metrics---measuring each model's ability to correctly reject non-factual content.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|X|X|}
+        \hline
+        \textbf{Model} & \textbf{Specificity} & \textbf{NPV} & \textbf{F1-Score (--)} \\
+        \hline
+        GPT-4 & 83.3\% $\pm$ 3.5\% & 77.5\% $\pm$ 1.5\% & 80.1\% $\pm$ 1.9\% \\
+        \hline
+        Gemini & 95.4\% $\pm$ 1.6\% & 59.4\% $\pm$ 1.6\% & 73.1\% $\pm$ 1.7\% \\
+        \hline
+        DeepSeek & 98.2\% $\pm$ 1.0\% & 64.8\% $\pm$ 2.9\% & 77.5\% $\pm$ 2.3\% \\
+        \hline
+    \end{tabularx}
+    \caption{Phase 1 Extraction Metrics (Negative Class). Specificity measures the ability to correctly identify non-factual content; NPV (Negative Predictive Value) indicates reliability when predicting ``no claim.''}
+    \label{tab:extraction_negative}
+\end{table}
+
+The specificity scores confirm the conservative behavior of Gemini (95.4\%) and DeepSeek (98.2\%)---these models almost never incorrectly flag subjective content as factual. However, their lower NPV scores (59.4\% and 64.8\%) indicate that when they predict ``no claim,'' there is a substantial probability that they have missed an actual factual claim.
+
+\subsection{Visual Analysis: Precision-Recall Trade-off}
+
+Figure \ref{fig:precision_recall} visualizes the precision-recall trade-off, with iso-F1 curves providing reference contours. The spatial positioning of each model clearly illustrates the divergent extraction strategies.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/fig_precision_recall_tradeoff.png}
+    \caption{Precision-Recall trade-off for claim extraction. GPT-4 occupies the balanced region near F1=0.8, while Gemini and DeepSeek cluster in the high-precision, low-recall quadrant.}
+    \label{fig:precision_recall}
+\end{figure}
+
+\subsection{Confusion Matrix Analysis}
+
+Figure \ref{fig:confusion_matrices} presents the averaged confusion matrices across all experimental runs. These matrices provide insight into the specific error patterns of each model.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/fig_extraction_confusion_matrices.png}
+    \caption{Confusion matrices for claim extraction (averaged across $k=3$ runs). GPT-4 shows balanced errors, while Gemini and DeepSeek exhibit high false negative counts (35--49 missed claims).}
+    \label{fig:confusion_matrices}
+\end{figure}
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item \textbf{GPT-4:} Exhibits relatively balanced error distribution with 14 false positives and 18 false negatives on average.
+    \item \textbf{Gemini:} Shows extreme conservatism with only 4 false positives but 49 false negatives---missing nearly two-thirds of actual claims.
+    \item \textbf{DeepSeek:} Similar conservative pattern with 1 false positive and 35 false negatives.
+\end{itemize}
+
+\subsection{Reliability Analysis Across Multiple Runs}
+
+To assess the stability of each model's performance, Figure \ref{fig:reliability} presents box plots showing the distribution of F1-scores across experimental runs.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/fig_reliability_analysis.png}
+    \caption{Run-to-run variability for extraction (left, $k=3$) and verification (right, $k=2$). GPT-4 demonstrates the most consistent performance across runs.}
+    \label{fig:reliability}
+\end{figure}
+
+GPT-4 demonstrates the most stable performance with the smallest standard deviation ($\pm$1.5\% for F1-Score), while DeepSeek exhibits the highest variability ($\pm$4.6\%). This variability in DeepSeek's performance may be attributed to its less deterministic response patterns when processing ambiguous sentences.
+
+\section{Phase 2: Claim Verification Performance}
+
+The verification phase evaluated each model's ability to assess the veracity of factual claims using search-augmented reasoning. A standardized benchmark of $N=100$ atomic claims was used, with ground truth labels distributed as: 85 \textit{Supported}, 3 \textit{Refuted}, and 12 \textit{Insufficient Information}.
+
+\subsection{Quantitative Metric Comparison}
+
+Table \ref{tab:verification_results} presents the verification performance across all models.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|X|X|X|X|}
+        \hline
+        \textbf{Model} & \textbf{Accuracy} & \textbf{Macro-F1} & \textbf{Supported F1} & \textbf{Refuted F1} & \textbf{Insufficient F1} \\
+        \hline
+        GPT-4 & 79.0\% $\pm$ 0.0\% & 51.2\% $\pm$ 3.9\% & 89.2\% & 36.7\% & 27.8\% \\
+        \hline
+        Gemini & 82.0\% $\pm$ 1.4\% & 52.7\% $\pm$ 2.0\% & 90.9\% & 34.8\% & 32.5\% \\
+        \hline
+        DeepSeek & 77.5\% $\pm$ 2.1\% & 55.9\% $\pm$ 0.4\% & 87.3\% & 40.0\% & 40.5\% \\
+        \hline
+    \end{tabularx}
+    \caption{Phase 2 Verification Metrics. Mean $\pm$ standard deviation across $k=2$ runs. $N=100$ claims (85 Supported, 3 Refuted, 12 Insufficient).}
+    \label{tab:verification_results}
+\end{table}
+
+\textbf{Key Finding:} Gemini achieves the highest accuracy (82.0\%), while DeepSeek achieves the highest Macro-F1 score (55.9\%). The divergence between these metrics is explained by the severe class imbalance in the benchmark dataset.
+
+\subsection{Impact of Class Imbalance}
+
+The substantial gap between accuracy and Macro-F1 scores (approximately 25--30 percentage points) reveals a critical limitation: all models perform well on the majority class (\textit{Supported}, F1 $\approx$ 87--91\%) but struggle significantly with minority classes (\textit{Refuted}, F1 $\approx$ 35--40\%; \textit{Insufficient}, F1 $\approx$ 28--41\%).
+
+Figure \ref{fig:per_class_heatmap} visualizes this class-dependent performance disparity.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/fig_per_class_f1_heatmap.png}
+    \caption{Per-class F1-scores for verification. The heatmap reveals consistently poor performance on minority classes (Refuted: $n=3$, Insufficient: $n=12$) compared to the majority class (Supported: $n=85$).}
+    \label{fig:per_class_heatmap}
+\end{figure}
+
+\textbf{Important Caveat:} The \textit{Refuted} class contains only 3 samples in the ground truth, making the F1-scores for this class statistically unreliable. This limitation is acknowledged as a threat to validity (see Section \ref{sec:limitations}).
+
+\subsection{Visual Comparison}
+
+Figure \ref{fig:verification_accuracy} provides a comparative visualization of accuracy versus Macro-F1 for all models.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/fig_verification_accuracy.png}
+    \caption{Verification performance comparison. The gap between Accuracy and Macro-F1 indicates that high accuracy is driven primarily by majority class performance.}
+    \label{fig:verification_accuracy}
+\end{figure}
+
+\subsection{Inter-Model Agreement Analysis}
+
+To assess whether models converge on similar verdicts (potentially indicating ``easy'' vs. ``hard'' claims), pairwise agreement rates were computed. Figure \ref{fig:inter_model} presents these results alongside Fleiss' Kappa for overall inter-rater reliability.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/fig_inter_model_agreement.png}
+    \caption{Inter-model agreement rates for verification verdicts. Fleiss' $\kappa = 0.41$ indicates moderate agreement across all three models.}
+    \label{fig:inter_model}
+\end{figure}
+
+\textbf{Key Observations:}
+\begin{itemize}
+    \item GPT-4 and DeepSeek show the highest pairwise agreement (86\%), suggesting similar reasoning patterns.
+    \item Gemini and DeepSeek show the lowest agreement (73\%), indicating divergent decision boundaries.
+    \item All three models agree on 71\% of claims, with Fleiss' $\kappa = 0.41$ (moderate agreement).
+\end{itemize}
+
+The 29\% of claims where models disagree represent ``ambiguous'' cases that warrant qualitative analysis (see Chapter \ref{ch:discussion}).
+
+\section{Summary of Key Findings}
+\label{sec:key_findings}
+
+Figure \ref{fig:radar} provides a holistic multi-dimensional comparison of all models across both phases.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/fig_radar_comparison.png}
+    \caption{Radar chart comparing model performance across all key metrics. GPT-4 demonstrates the most balanced profile, while Gemini and DeepSeek show specialized strengths.}
+    \label{fig:radar}
+\end{figure}
+
+Table \ref{tab:summary} synthesizes the key findings from both experimental phases.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|X|X|}
+        \hline
+        \textbf{Criterion} & \textbf{GPT-4} & \textbf{Gemini} & \textbf{DeepSeek} \\
+        \hline
+        \textbf{Best For} & Balanced extraction & High-precision extraction; Verification accuracy & Verification (minority classes) \\
+        \hline
+        \textbf{Extraction F1} & \textbf{80.4\%} (Best) & 55.4\% & 65.3\% \\
+        \hline
+        \textbf{Extraction Strategy} & Balanced & Conservative & Conservative \\
+        \hline
+        \textbf{Verification Accuracy} & 79.0\% & \textbf{82.0\%} (Best) & 77.5\% \\
+        \hline
+        \textbf{Verification Macro-F1} & 51.2\% & 52.7\% & \textbf{55.9\%} (Best) \\
+        \hline
+        \textbf{Stability ($\sigma$)} & \textbf{Most Stable} & Stable & Variable \\
+        \hline
+    \end{tabularx}
+    \caption{Summary of model performance across both experimental phases. Bold indicates best performance for each criterion.}
+    \label{tab:summary}
+\end{table}
 
 \chapter{Discussion}
 \label{ch:discussion}
@@ -608,6 +812,7 @@ class LLMProvider(ABC):
         \subsection{Common Failures in Claim Extraction}
         \subsection{Common Failures in Claim Verification (Analysis of \texttt{reason} field)}
     \section{Limitations of the Study}
+    \label{sec:limitations}
         \subsection{Impact of Sample Size (N=150)}
         \subsection{Constraints of the \texttt{truthlens} Agents}
 
