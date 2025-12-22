@@ -311,11 +311,11 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     \begin{itemize}
         \item \textbf{Phase 1 (Extraction):} The ground truth for extraction was derived from the expert annotations published by the authors of the \textit{Claimify} framework \cite{Metropolitansky2025}. Each of the 150 sampled sentences possesses a binary label (\textit{True/False}) indicating whether it contains a factual claim.
         
-        \item \textbf{Phase 2 (Verification):} For the verification phase, a curated set of 100 atomic claims was derived from the extraction output across all models. To ensure a fair evaluation of the model's reasoning and safety behaviors, the ground truth was established via manual human annotation using a \textbf{three-label schema}:
+        \item \textbf{Phase 2 (Verification):} For the verification phase, a standardized benchmark of 100 atomic claims was required. To ensure all models were evaluated on identical inputs, the Phase 2 benchmark was derived from the extraction output of the best-performing extractor (GPT-4, with 80.4\% F1-Score), providing a standardized set of 100 atomic claims for verification. The ground truth was established via manual human annotation using a \textbf{three-label schema}:
         \begin{itemize}
             \item \textbf{Supported:} The claim is explicitly confirmed by authoritative sources.
             \item \textbf{Refuted:} The claim is explicitly contradicted by authoritative sources.
-            \item \textbf{Insufficient Information:} No reliable evidence could be found to either support or refute the claim (e.g., unverifiable private information or ambiguous predictions).
+            \item \textbf{Insufficient Information:} No reliable evidence could be found to either support or refute the claim (e.g., unverifiable private information or ambiguous predictions), or the claim itself was too ambiguous or unclear to be verified (e.g., ambiguous subjects).
         \end{itemize}
         This alignment ensures that if a model correctly identifies a claim as unverifiable, it is penalized not as an error but rewarded as a correct assessment of uncertainty.
     \end{itemize}
@@ -527,9 +527,9 @@ class LLMProvider(ABC):
     \end{itemize}
     
     \subsection{DeepSeek Integration Strategy}
-    A significant technical challenge was DeepSeek's lack of native support for complex structured output (JSON Schema enforcement) compared to OpenAI's function calling. To resolve this, a \textbf{custom formatting strategy} was implemented within the provider.
+    A significant technical challenge was DeepSeek's lack of native support for complex structured output (JSON Schema enforcement) compared to OpenAI's function calling. To resolve this, a \textbf{custom wrapper class} (\texttt{DeepSeekChatWrapper}) was implemented that overrides the \texttt{with\_structured\_output()} method to handle JSON schema enforcement manually.
     
-    This implementation acts as a middleware that:
+    This implementation:
     \begin{enumerate}
         \item Intercepts the prompt and injects a strict JSON schema definition into the system message.
         \item Appends a ``force-formatting'' instruction to the end of the user prompt.
@@ -544,11 +544,11 @@ class LLMProvider(ABC):
     The implementation in \texttt{search/provider.py} abstracts these distinct backends behind a unified asynchronous interface. This allows the agents to switch between providers without logic changes:
     
     \begin{enumerate}
-        \item \textbf{Brave Search:} Integrated specifically for this thesis to provide cost-effective, keyword-based retrieval.
-        \item \textbf{Exa \& Tavily:} Retained from the original codebase for legacy support, though not used in the primary bulk experiments due to cost factors.
+        \item \textbf{Brave Search:} Integrated specifically for this thesis to provide cost-effective, keyword-based retrieval at scale.
+        \item \textbf{Exa \& Tavily:} Retained from the original codebase for legacy support, though not used in the primary experiments due to cost.
     \end{enumerate}
     
-    To handle the inherent instability of network requests during large-scale benchmarking (e.g., 450 total runs), the provider was wrapped with an exponential backoff retry mechanism to ensure transient API failures do not invalidate experimental data.
+    To handle the inherent instability of network requests during large-scale benchmarking (1,950 total API calls across both phases: 1,350 for extraction, 600 for verification), the provider was wrapped with an exponential backoff retry mechanism to ensure transient API failures do not invalidate experimental data.
 
     \section{Benchmark Automation}
     
@@ -638,18 +638,18 @@ To fully characterize the models' filtering capabilities, Table \ref{tab:extract
         \hline
         \textbf{Model} & \textbf{Specificity} & \textbf{NPV} & \textbf{F1-Score (--)} \\
         \hline
-        GPT-4 & 83.3\% $\pm$ 3.5\% & 77.5\% $\pm$ 1.5\% & 80.1\% $\pm$ 1.9\% \\
+        GPT-4 & 82.9\% $\pm$ 2.9\% & 77.5\% $\pm$ 1.1\% & 80.1\% $\pm$ 1.9\% \\
         \hline
-        Gemini & 95.4\% $\pm$ 1.6\% & 59.4\% $\pm$ 1.6\% & 73.1\% $\pm$ 1.7\% \\
+        Gemini & 94.9\% $\pm$ 0.8\% & 59.4\% $\pm$ 1.1\% & 73.1\% $\pm$ 1.0\% \\
         \hline
-        DeepSeek & 98.2\% $\pm$ 1.0\% & 64.8\% $\pm$ 2.9\% & 77.5\% $\pm$ 2.3\% \\
+        DeepSeek & 97.7\% $\pm$ 0.8\% & 64.2\% $\pm$ 2.4\% & 77.5\% $\pm$ 2.0\% \\
         \hline
     \end{tabularx}
     \caption{Phase 1 Extraction Metrics (Negative Class). Specificity measures the ability to correctly identify non-factual content; NPV (Negative Predictive Value) indicates reliability when predicting ``no claim.''}
     \label{tab:extraction_negative}
 \end{table}
 
-The specificity scores confirm the conservative behavior of Gemini (95.4\%) and DeepSeek (98.2\%)---these models almost never incorrectly flag subjective content as factual. However, their lower NPV scores (59.4\% and 64.8\%) indicate that when they predict ``no claim,'' there is a substantial probability that they have missed an actual factual claim.
+The specificity scores confirm the conservative behavior of Gemini (94.9\%) and DeepSeek (97.7\%)---these models almost never incorrectly flag subjective content as factual. However, their lower NPV scores (59.4\% and 64.2\%) indicate that when they predict ``no claim,'' there is a substantial probability that they have missed an actual factual claim.
 
 \subsection{Visual Analysis: Precision-Recall Trade-off}
 
@@ -657,7 +657,7 @@ Figure \ref{fig:precision_recall} visualizes the precision-recall trade-off, wit
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/fig_precision_recall_tradeoff.png}
+    \includegraphics[width=0.75\textwidth]{images/fig_precision_recall_tradeoff.png}
     \caption{Precision-Recall trade-off for claim extraction. GPT-4 occupies the balanced region near F1=0.8, while Gemini and DeepSeek cluster in the high-precision, low-recall quadrant.}
     \label{fig:precision_recall}
 \end{figure}
@@ -669,15 +669,15 @@ Figure \ref{fig:confusion_matrices} presents the averaged confusion matrices acr
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/fig_extraction_confusion_matrices.png}
-    \caption{Confusion matrices for claim extraction (averaged across $k=3$ runs). GPT-4 shows balanced errors, while Gemini and DeepSeek exhibit high false negative counts (35--49 missed claims).}
+    \caption{Confusion matrices for claim extraction (averaged across $k=3$ runs). GPT-4 shows balanced errors, while Gemini and DeepSeek exhibit high false negative counts (39--47 missed claims).}
     \label{fig:confusion_matrices}
 \end{figure}
 
 \textbf{Interpretation:}
 \begin{itemize}
-    \item \textbf{GPT-4:} Exhibits relatively balanced error distribution with 14 false positives and 18 false negatives on average.
-    \item \textbf{Gemini:} Shows extreme conservatism with only 4 false positives but 49 false negatives---missing nearly two-thirds of actual claims.
-    \item \textbf{DeepSeek:} Similar conservative pattern with 1 false positive and 35 false negatives.
+    \item \textbf{GPT-4:} Exhibits relatively balanced error distribution with 12 false positives and 17 false negatives on average.
+    \item \textbf{Gemini:} Shows extreme conservatism with only 4 false positives but 47 false negatives---missing over half of actual claims.
+    \item \textbf{DeepSeek:} Similar conservative pattern with 2 false positives and 39 false negatives.
 \end{itemize}
 
 \subsection{Reliability Analysis Across Multiple Runs}
@@ -741,7 +741,7 @@ Figure \ref{fig:verification_accuracy} provides a comparative visualization of a
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/fig_verification_accuracy.png}
+    \includegraphics[width=0.8\textwidth]{images/fig_verification_accuracy.png}
     \caption{Verification performance comparison. The gap between Accuracy and Macro-F1 indicates that high accuracy is driven primarily by majority class performance.}
     \label{fig:verification_accuracy}
 \end{figure}
@@ -805,16 +805,129 @@ Table \ref{tab:summary} synthesizes the key findings from both experimental phas
 
 \chapter{Discussion}
 \label{ch:discussion}
-    \section{Comparative Analysis of LLMs}
-        \subsection{Best Performing LLM for Extraction}
-        \subsection{Best Performing LLM for Verification}
-    \section{Qualitative Error Analysis}
-        \subsection{Common Failures in Claim Extraction}
-        \subsection{Common Failures in Claim Verification (Analysis of \texttt{reason} field)}
-    \section{Limitations of the Study}
-    \label{sec:limitations}
-        \subsection{Impact of Sample Size (N=150)}
-        \subsection{Constraints of the \texttt{truthlens} Agents}
+
+This chapter interprets the empirical findings presented in Chapter \ref{ch:results}, contextualizes them within the broader literature, and provides a qualitative analysis of model failure modes. We adopt a useful analogy throughout: if these LLMs were members of a legal research team, \textbf{GPT-4} would be the balanced researcher who finds most evidence, while \textbf{Gemini} and \textbf{DeepSeek} are the overly cautious lawyers who only cite a fact if they are highly confident---even if it means ignoring half of the relevant material.
+
+\section{Comparative Analysis of LLMs}
+
+\subsection{Best Performing LLM for Extraction}
+
+The extraction phase results clearly establish \textbf{GPT-4} as the most effective model for claim extraction, achieving an F1-Score of 80.4\% compared to 55.4\% (Gemini) and 65.3\% (DeepSeek). This superiority stems from GPT-4's balanced approach to the precision-recall trade-off.
+
+The critical distinction lies in \textit{extraction strategy}:
+\begin{itemize}
+    \item \textbf{GPT-4 (Balanced):} Achieves 83.1\% precision and 77.8\% recall, correctly identifying approximately 8 out of 10 actual factual claims while maintaining high precision.
+    \item \textbf{Gemini \& DeepSeek (Conservative):} Achieve exceptionally high precision (89.5\% and 95.8\% respectively) but at severe cost to recall (40.2\% and 49.6\%). These models fail to identify approximately half of all factual claims present in the text.
+\end{itemize}
+
+This conservative behavior has significant practical implications. In a fact-checking pipeline, a missed claim (false negative) represents information that will never be verified---a silent failure that undermines the system's utility. The high specificity of Gemini (94.9\%) and DeepSeek (97.7\%) indicates excellent ability to filter out subjective content, but their low Negative Predictive Value (NPV: 59.4\% and 64.2\%) reveals that when these models classify a sentence as ``non-factual,'' there is approximately a 35--40\% chance it actually contained a verifiable claim.
+
+\textbf{Recommendation:} For extraction tasks where comprehensive coverage is important, GPT-4 is the clear choice. Gemini and DeepSeek may be appropriate only when precision is paramount and missing claims is acceptable.
+
+\subsection{Best Performing LLM for Verification}
+
+The verification phase presents a more nuanced picture, with different models excelling on different metrics:
+\begin{itemize}
+    \item \textbf{Gemini} achieves the highest accuracy (82.0\%), making it the best choice when the primary concern is overall correctness on a representative dataset.
+    \item \textbf{DeepSeek} achieves the highest Macro-F1 (55.9\%), indicating superior performance on minority classes despite lower overall accuracy.
+    \item \textbf{GPT-4} demonstrates the highest determinism (0.0\% standard deviation in accuracy), producing identical results across runs.
+\end{itemize}
+
+The 25--30 percentage point gap between accuracy and Macro-F1 across all models reveals a fundamental challenge: all LLMs struggle with minority class identification. This is not a model-specific failure but rather reflects the difficulty of the task itself---detecting misinformation (\textit{Refuted}) and recognizing evidential insufficiency (\textit{Insufficient Information}) requires more sophisticated reasoning than confirming supported claims.
+
+\textbf{Comparison with SAFE:} Wei et al. \cite{SAFE2024} reported that their SAFE method achieves 72\% agreement with human annotators while often surpassing humans in precision through more targeted search queries. Our results show comparable patterns: all three models achieve 77--82\% accuracy on claims where human annotators established ground truth, suggesting that LLM-based verification has reached a level of reliability suitable for practical deployment, at least for majority-class claims.
+
+\subsection{The Stability-Performance Trade-off}
+
+An unexpected finding was the relationship between model stability and performance variability:
+\begin{itemize}
+    \item \textbf{GPT-4:} Most stable ($\pm$0.0\% accuracy SD, $\pm$1.5\% extraction F1 SD)
+    \item \textbf{Gemini:} Moderately stable ($\pm$1.4\% accuracy SD, $\pm$2.8\% extraction F1 SD)
+    \item \textbf{DeepSeek:} Most variable ($\pm$2.1\% accuracy SD, $\pm$4.6\% extraction F1 SD)
+\end{itemize}
+
+DeepSeek's higher variability may be attributed to its sensitivity to prompt formatting. As noted in Chapter \ref{ch:implementation}, DeepSeek required custom middleware to enforce structured JSON output, suggesting that open-weights models may require additional engineering effort to achieve production-level consistency.
+
+\section{Qualitative Error Analysis}
+
+To understand \textit{why} models fail, we analyzed the 29\% of verification cases (29 out of 100 claims) where at least two models produced different verdicts.
+
+\subsection{Common Failure Patterns in Claim Extraction}
+
+Analysis of extraction errors revealed three primary failure modes:
+
+\textbf{1. Over-Filtering of Context-Dependent Claims:} Gemini and DeepSeek frequently rejected claims that required contextual interpretation. For example, sentences containing demonstrative pronouns (``This process...'', ``These results...'') were often classified as non-factual despite containing verifiable information.
+
+\textbf{2. Ambiguous Factuality Boundaries:} All models struggled with claims at the boundary between factual and subjective content. Statements like ``Improving sleep quality is a common goal for many people'' were inconsistently classified---GPT-4 tended to accept such claims as factual (high recall), while Gemini and DeepSeek rejected them (high precision).
+
+\textbf{3. Markdown Formatting Artifacts:} The BingCheck dataset contains Markdown formatting (e.g., ``**bold text**'', bullet points). Some models were confused by these artifacts, occasionally treating formatting as content or failing to parse claims embedded in list structures.
+
+\subsection{Common Failure Patterns in Claim Verification}
+
+Analysis of the \texttt{reasoning} field in model outputs revealed distinct failure patterns:
+
+\textbf{1. Over-Cautious ``Insufficient Information'' Verdicts:}
+The most common error pattern was models returning \textit{Insufficient Information} for claims that were actually \textit{Supported}. This occurred in:
+\begin{itemize}
+    \item GPT-4: 10 cases (10\% of claims)
+    \item Gemini: 2 cases (2\% of claims)
+    \item DeepSeek: 18 cases (18\% of claims)
+\end{itemize}
+
+Interestingly, this pattern is \textit{inverse} to extraction behavior: DeepSeek, which was the most conservative extractor (highest precision), is also the most cautious verifier. This suggests a consistent ``personality'' characterized by epistemic caution.
+
+\textbf{2. Search Query Quality:}
+Examination of the reasoning traces revealed that verification failures often originated in the search phase rather than the reasoning phase. When models generated overly specific or poorly-phrased search queries, they retrieved irrelevant evidence and subsequently issued incorrect verdicts. For example, for the claim ``The hot climate caused around 15 million gallons of water to condense from the structure,'' all models struggled to find relevant sources because the claim lacked sufficient context about \textit{which} structure was being referenced.
+
+\textbf{3. Temporal and Specificity Challenges:}
+Claims containing specific dates, quantities, or proper nouns proved difficult when web search results did not contain exact matches. The claim ``The Mayans invented the concept independently circa 4 A.D.'' (ground truth: \textit{Refuted}) produced three different verdicts: GPT-4 returned \textit{Insufficient Information}, Gemini correctly identified it as \textit{Refuted}, and DeepSeek incorrectly classified it as \textit{Supported}.
+
+\subsection{The 69\% Unanimous Correctness}
+
+While all three models \textit{agreed} on 71\% of claims (Figure \ref{fig:inter_model}), they were unanimously \textit{correct} on 69\%---meaning 2 claims saw all models confidently agree on an incorrect verdict. This distinction between agreement and correctness is important: high inter-model agreement does not guarantee accuracy.
+
+Nevertheless, the 69\% unanimous correctness rate is a positive finding. It suggests that for straightforward factual claims with clear web evidence, current LLMs have achieved reliable verification capability. The remaining 31\% of claims represent genuinely difficult cases---either due to ambiguous evidence, context-dependent claims, or limitations in web search coverage.
+
+\section{Limitations of the Study}
+\label{sec:limitations}
+
+\subsection{Sample Size and Domain Specificity}
+
+While $N=150$ sentences for extraction and $N=100$ claims for verification provide sufficient statistical power for comparative analysis, several limitations must be acknowledged:
+
+\textbf{1. Class Imbalance:} The verification benchmark contains 85 \textit{Supported}, 12 \textit{Insufficient Information}, and only 3 \textit{Refuted} claims. This severe imbalance means that:
+\begin{itemize}
+    \item Accuracy metrics are dominated by majority-class performance
+    \item Per-class F1-scores for \textit{Refuted} (based on $n=3$) are statistically unreliable and should be interpreted as indicative rather than definitive
+    \item The models' true ability to detect misinformation cannot be conclusively assessed from this dataset
+\end{itemize}
+
+\textbf{2. Domain Generalization:} The BingCheck dataset represents general-knowledge claims from Bing Chat responses. Results may not generalize to specialized domains such as:
+\begin{itemize}
+    \item Medical claims (requiring clinical evidence)
+    \item Legal statements (requiring jurisdictional specificity)
+    \item Scientific claims (requiring peer-reviewed source evaluation)
+\end{itemize}
+
+\textbf{3. Temporal Validity:} Web search results change over time. A claim that was verifiable during our experiments (December 2024) may produce different search results in the future, potentially affecting reproducibility.
+
+\subsection{Constraints of the TruthLens Architecture}
+
+\textbf{1. Single Search Provider:} All experiments used Brave Search exclusively. Different search APIs (Google, Bing, Exa) may retrieve different evidence, potentially affecting verification outcomes.
+
+\textbf{2. Fixed Iteration Limits:} The verification agent uses a maximum of 5 search iterations. Some claims may require more extensive evidence gathering than this limit permits.
+
+\textbf{3. Binary Extraction Ground Truth:} The extraction phase uses binary labels (factual/non-factual) from BingCheck. This simplification does not capture the spectrum of factuality (e.g., partially factual claims, opinions presented as facts).
+
+\textbf{4. Model Version Sensitivity:} LLM capabilities evolve rapidly. The specific model versions tested (GPT-4o-mini, Gemini-2.0-flash, DeepSeek-chat V3) represent a snapshot in time; newer versions may exhibit different performance characteristics.
+
+\subsection{Threats to Validity}
+
+\textbf{Internal Validity:} The use of multiple independent runs ($k=3$ for extraction, $k=2$ for verification) mitigates concerns about result variability, but the limited number of runs for verification (due to API costs) means that standard deviation estimates for that phase are less precise.
+
+\textbf{External Validity:} Results are specific to the English language, the BingCheck dataset's claim distribution, and the particular prompt templates used in the TruthLens agents. Generalization to other languages, domains, or prompt formulations requires further investigation.
+
+\textbf{Construct Validity:} The metrics used (F1-Score, Accuracy, Macro-F1) are standard in NLP evaluation but may not fully capture the practical utility of a fact-checking system. Real-world deployment would require additional metrics such as user trust, explanation quality, and end-to-end latency.
 
 \chapter{Conclusion and Future Work}
 \label{ch:conclusion}
