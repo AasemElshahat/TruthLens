@@ -1,0 +1,175 @@
+% --- METHODOLOGY & FRAMEWORKS ---
+
+@article{SAFE2024,
+  title={Long-form factuality in large language models},
+  author={Wei, Jerry and Huang, Jie and Yang, Chengrun and others},
+  journal={arXiv preprint arXiv:2403.18802},
+  year={2024},
+  note={The SAFE Framework paper}
+}
+
+@article{Metropolitansky2025,
+  title={Towards Effective Extraction and Evaluation of Factual Claims},
+  author={Metropolitansky, Dasha and Larson, Jonathan},
+  journal={arXiv preprint arXiv:2502.10855},
+  year={2025},
+  note={The Claimify Paper. Source of the dataset downloaded from HuggingFace for phase 1.}
+}
+
+@article{BingCheck,
+  title={Self-Checker: Plug-and-Play Modules for Fact-Checking with Large Language Models},
+  author={Li, Miaoran and Peng, Baolin and Galley, Michel and Gao, Jianfeng and Zhang, Zhu},
+  journal={Findings of the Association for Computational Linguistics: NAACL 2024},
+  year={2024},
+  note={Original creators of the BingCheck dataset}
+}
+
+% --- THEORETICAL BACKGROUND ---
+
+@article{Ji2023Survey,
+  title={Survey of hallucination in large language models},
+  author={Ji, Ziwei and others},
+  journal={ACM Computing Surveys},
+  volume={55},
+  number={12},
+  year={2023},
+  publisher={ACM New York, NY},
+  note={Standard survey paper defining Hallucinations (Intrinsic/Extrinsic)}
+}
+
+@article{Huang2024Survey,
+  title={A survey on hallucination in large language models: Principles, taxonomy, challenges, and open questions},
+  author={Huang, Lei and Yu, Weijiang and Ma, Weitao and others},
+  journal={ACM Transactions on Information Systems},
+  volume={1},
+  number={1},
+  year={2024},
+  publisher={ACM New York, NY},
+  note={Defines Factuality vs. Faithfulness Hallucinations}
+}
+
+@inproceedings{LLMJudge,
+  title={Judging LLM-as-a-judge with MT-Bench and Chatbot Arena},
+  author={Zheng, Lianmin and Chiang, Wei-Lin and Sheng, Ying and others},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={36},
+  year={2023},
+  note={Standard citation for the LLM-as-a-Judge concept}
+}
+
+@inproceedings{FEVER,
+  title={FEVER: a large-scale dataset for Fact Extraction and VERification},
+  author={Thorne, James and Vlachos, Andreas and Christodoulopoulos, Christos and Mittal, Arpit},
+  booktitle={Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  year={2018},
+  note={Standard citation for traditional fact-checking pipelines}
+}
+
+@article{Cheng2024,
+  title={Dated Data: Tracing Knowledge Cutoffs in Large Language Models},
+  author={Cheng, Jeffrey and Marone, Marc and Weller, Orion and Lawrie, Dawn and Khashabi, Daniel and Van Durme, Benjamin},
+  journal={arXiv preprint arXiv:2403.12958},
+  year={2024},
+  note={Analysis of static knowledge limitations in LLMs}
+}
+
+@book{Gamma1994,
+  title={Design Patterns: Elements of Reusable Object-Oriented Software},
+  author={Gamma, Erich and Helm, Richard and Johnson, Ralph and Vlissides, John},
+  year={1994},
+  publisher={Addison-Wesley},
+  note={The definitive reference for the Strategy Pattern}
+}
+
+
+% --- SELF-CORRECTION & HALLUCINATION MITIGATION ---
+
+@inproceedings{Dhuliawala2024CoVe,
+  title={Chain-of-Verification Reduces Hallucination in Large Language Models},
+  author={Dhuliawala, Shehzaad and Komeili, Mojtaba and Xu, Jing and Raileanu, Roberta and Li, Xian and Celikyilmaz, Asli and Weston, Jason},
+  booktitle={Findings of the Association for Computational Linguistics: ACL 2024},
+  pages={3563--3578},
+  year={2024},
+  note={Chain-of-Verification (CoVe) method for self-correction in LLMs}
+}
+
+@article{Varshney2023,
+  title={A Stitch in Time Saves Nine: Detecting and Mitigating Hallucinations of LLMs by Validating Low-Confidence Generation},
+  author={Varshney, Neeraj and Yao, Wenlin and Zhang, Hongming and Chen, Jianshu and Yu, Dong},
+  journal={arXiv preprint arXiv:2307.03987},
+  year={2023},
+  note={Confidence-based hallucination detection and mitigation}
+}
+
+@inproceedings{Pan2024CAG,
+  title={Not All Contexts Are Equal: Teaching LLMs Credibility-aware Generation},
+  author={Pan, Ruotong and Cao, Boxi and Lin, Hongyu and Han, Xianpei and Zheng, Jia and Wang, Sirui and Cai, Xunliang and Sun, Le},
+  booktitle={Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages={19873--19889},
+  year={2024},
+  note={Credibility-aware Generation (CAG) for evidence quality assessment}
+}
+
+% --- SOFTWARE & REPOSITORIES ---
+
+@misc{ClaimeAI_Repo,
+  author = {BharathxD},
+  title = {ClaimeAI: Open Source Fact-Checking Pipeline},
+  year = {2024},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/BharathxD/ClaimeAI}},
+  note = {The baseline architecture adapted for the TruthLens framework}
+}
+
+@misc{LangGraph,
+  author = {{LangChain AI}},
+  title = {LangGraph: Building Stateful Multi-Actor Applications with LLMs},
+  year = {2024},
+  url = {https://langchain-ai.github.io/langgraph/},
+  note = {Graph-based orchestration framework for agentic workflows}
+}
+
+@misc{Pydantic,
+  author = {Colvin, Samuel and others},
+  title = {Pydantic: Data Validation using Python Type Hints},
+  year = {2024},
+  url = {https://docs.pydantic.dev/},
+  note = {Data validation library used for structured output enforcement}
+}
+
+@misc{BraveSearchAPI,
+  title = {Brave Search API},
+  author = {{Brave Software}},
+  year = {2024},
+  howpublished = {\url{https://brave.com/search/api/}},
+}
+
+% --- MODEL TECHNICAL REPORTS ---
+
+@article{Gemini25,
+  title={Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities},
+  author={Gemini Team, Google},
+  journal={arXiv preprint arXiv:2507.06261},
+  year={2025},
+  url={https://arxiv.org/abs/2507.06261},
+  note={Technical Report for Gemini 2.5 Flash}
+}
+
+@article{DeepSeekV3.2,
+  title={DeepSeek-V3.2: Pushing the Frontier of Open Large Language Models},
+  author={DeepSeek-AI},
+  journal={arXiv preprint arXiv:2512.02556},
+  year={2025},
+  url={https://arxiv.org/abs/2512.02556},
+  note={Technical Report for DeepSeek-V3.2}
+}
+
+@misc{GPT4omini,
+  title={GPT-4o mini: Advancing Cost-Efficient Intelligence},
+  author={OpenAI},
+  year={2024},
+  howpublished={\url{https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/}},
+  note={Accessed: 2025-12-09}
+}
+

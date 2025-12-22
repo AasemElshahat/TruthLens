@@ -184,13 +184,6 @@ build/
 
 #playwright-mcp-images
 .playwright-mcp*
-# Research papers (copyrighted)
-docs/
-
-# Claude Code directory
-.claude/
-
-ground_truth_data-BingCheck
 
 test_reports/
 script_logs/
