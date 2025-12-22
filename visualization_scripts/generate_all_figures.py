@@ -42,9 +42,9 @@ COLORS = {
 }
 
 MODEL_LABELS = {
-    "gpt4": "GPT-4",
-    "gemini": "Gemini",
-    "deepseek": "DeepSeek",
+    "gpt4": "GPT-4o-mini",
+    "gemini": "Gemini-2.5-Flash",
+    "deepseek": "DeepSeek-V3.2",
 }
 
 # Plot styling
@@ -169,10 +169,9 @@ def figure_extraction_f1_comparison(ext_data):
     ax.axhline(y=50, color="gray", linestyle=":", alpha=0.5, label="_nolegend_")
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_extraction_f1_comparison.pdf")
     fig.savefig(OUTPUT_DIR / "fig_extraction_f1_comparison.png")
     plt.close(fig)
-    print("✓ Generated: fig_extraction_f1_comparison.pdf")
+    print("✓ Generated: fig_extraction_f1_comparison.png")
 
 
 # ==============================================================================
@@ -225,15 +224,14 @@ def figure_precision_recall_tradeoff(ext_data):
     ax.annotate("High Precision,\nLow Recall", 
                 xy=(45, 95), fontsize=9, style="italic", color="gray",
                 ha="center")
-    ax.annotate("Balanced\n(GPT-4)", 
+    ax.annotate("Balanced\n(GPT-4o-mini)", 
                 xy=(80, 82), fontsize=9, style="italic", color="gray",
                 ha="center")
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_precision_recall_tradeoff.pdf")
     fig.savefig(OUTPUT_DIR / "fig_precision_recall_tradeoff.png")
     plt.close(fig)
-    print("✓ Generated: fig_precision_recall_tradeoff.pdf")
+    print("✓ Generated: fig_precision_recall_tradeoff.png")
 
 
 # ==============================================================================
@@ -285,10 +283,9 @@ def figure_verification_accuracy(ver_data):
     ax.grid(axis="y", alpha=0.3, linestyle="--")
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_verification_accuracy.pdf")
     fig.savefig(OUTPUT_DIR / "fig_verification_accuracy.png")
     plt.close(fig)
-    print("✓ Generated: fig_verification_accuracy.pdf")
+    print("✓ Generated: fig_verification_accuracy.png")
 
 
 # ==============================================================================
@@ -341,10 +338,9 @@ def figure_per_class_f1_heatmap(ver_per_run):
     ax.set_xlabel("Verdict Class (with ground truth support)")
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_per_class_f1_heatmap.pdf")
     fig.savefig(OUTPUT_DIR / "fig_per_class_f1_heatmap.png")
     plt.close(fig)
-    print("✓ Generated: fig_per_class_f1_heatmap.pdf")
+    print("✓ Generated: fig_per_class_f1_heatmap.png")
 
 
 # ==============================================================================
@@ -395,10 +391,9 @@ def figure_extraction_confusion_matrix(ext_per_run):
     
     # No suptitle - use LaTeX caption instead
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_extraction_confusion_matrices.pdf")
     fig.savefig(OUTPUT_DIR / "fig_extraction_confusion_matrices.png")
     plt.close(fig)
-    print("✓ Generated: fig_extraction_confusion_matrices.pdf")
+    print("✓ Generated: fig_extraction_confusion_matrices.png")
 
 
 # ==============================================================================
@@ -435,10 +430,9 @@ def figure_extraction_reliability(ext_per_run):
     ax.set_ylim(40, 90)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_extraction_reliability.pdf")
     fig.savefig(OUTPUT_DIR / "fig_extraction_reliability.png")
     plt.close(fig)
-    print("✓ Generated: fig_extraction_reliability.pdf")
+    print("✓ Generated: fig_extraction_reliability.png")
 
 
 # ==============================================================================
@@ -475,10 +469,9 @@ def figure_verification_reliability(ver_per_run):
     ax.set_ylim(70, 90)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_verification_reliability.pdf")
     fig.savefig(OUTPUT_DIR / "fig_verification_reliability.png")
     plt.close(fig)
-    print("✓ Generated: fig_verification_reliability.pdf")
+    print("✓ Generated: fig_verification_reliability.png")
 
 
 # ==============================================================================
@@ -537,10 +530,9 @@ def figure_reliability_analysis(ext_per_run, ver_per_run):
     ax2.set_ylim(70, 90)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_reliability_analysis.pdf")
     fig.savefig(OUTPUT_DIR / "fig_reliability_analysis.png")
     plt.close(fig)
-    print("✓ Generated: fig_reliability_analysis.pdf (combined - legacy)")
+    print("✓ Generated: fig_reliability_analysis.png (combined - legacy)")
 
 
 # ==============================================================================
@@ -589,10 +581,9 @@ def figure_radar_comparison(ext_data, ver_data):
     # No title - use LaTeX caption instead
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_radar_comparison.pdf")
     fig.savefig(OUTPUT_DIR / "fig_radar_comparison.png")
     plt.close(fig)
-    print("✓ Generated: fig_radar_comparison.pdf")
+    print("✓ Generated: fig_radar_comparison.png")
 
 
 # ==============================================================================
@@ -606,7 +597,7 @@ def figure_inter_model_agreement():
     fig, ax = plt.subplots(figsize=(8, 5))
     
     # Data from inter_model_metrics_run1.csv
-    pairs = ["GPT-4 ↔ Gemini", "GPT-4 ↔ DeepSeek", "Gemini ↔ DeepSeek", "All Three Agree"]
+    pairs = ["GPT-4o-mini ↔ Gemini-2.5-Flash", "GPT-4o-mini ↔ DeepSeek-V3", "Gemini-2.5-Flash ↔ DeepSeek-V3", "All Three Agree"]
     agreement = [82, 86, 73, 71]  # From the inter-model metrics
     
     colors_bars = ["#7B68EE", "#20B2AA", "#FF7F50", "#4169E1"]
@@ -629,10 +620,9 @@ def figure_inter_model_agreement():
                 ha="center", va="top", color="gray")
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "fig_inter_model_agreement.pdf")
     fig.savefig(OUTPUT_DIR / "fig_inter_model_agreement.png")
     plt.close(fig)
-    print("✓ Generated: fig_inter_model_agreement.pdf")
+    print("✓ Generated: fig_inter_model_agreement.png")
 
 
 # ==============================================================================
@@ -683,7 +673,7 @@ def main():
     
     # List generated files
     print("\nGenerated files:")
-    for f in sorted(OUTPUT_DIR.glob("*.pdf")):
+    for f in sorted(OUTPUT_DIR.glob("*.png")):
         print(f"  - {f.name}")
 
 
