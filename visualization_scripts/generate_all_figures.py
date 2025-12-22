@@ -158,7 +158,7 @@ def figure_extraction_f1_comparison(ext_data):
     
     ax.set_ylabel("F1-Score (%)")
     ax.set_xlabel("Model")
-    ax.set_title("Phase 1: Claim Extraction F1-Score Comparison")
+    # No title - use LaTeX caption instead
     ax.set_xticks(x)
     ax.set_xticklabels([MODEL_LABELS[m] for m in models])
     ax.set_ylim(0, 100)
@@ -215,7 +215,7 @@ def figure_precision_recall_tradeoff(ext_data):
     
     ax.set_xlabel("Recall (%)")
     ax.set_ylabel("Precision (%)")
-    ax.set_title("Phase 1: Precision-Recall Trade-off for Claim Extraction")
+    # No title - use LaTeX caption instead
     ax.set_xlim(30, 100)
     ax.set_ylim(75, 100)
     ax.legend(loc="lower left")
@@ -277,7 +277,7 @@ def figure_verification_accuracy(ver_data):
     
     ax.set_ylabel("Score (%)")
     ax.set_xlabel("Model")
-    ax.set_title("Phase 2: Claim Verification Performance")
+    # No title - use LaTeX caption instead
     ax.set_xticks(x)
     ax.set_xticklabels([MODEL_LABELS[m] for m in models])
     ax.set_ylim(0, 100)
@@ -330,15 +330,14 @@ def figure_per_class_f1_heatmap(ver_per_run):
     ax.set_xticklabels(["Supported\n(n=85)", "Refuted\n(n=3)", "Insufficient\n(n=12)"])
     ax.set_yticklabels([MODEL_LABELS[m] for m in models])
     
-    # Add text annotations
+    # Add text annotations - always use black for readability
     for i in range(len(models)):
         for j in range(len(classes)):
             val = data[i, j]
-            text_color = "white" if val < 50 else "black"
             ax.text(j, i, f"{val:.1f}%", ha="center", va="center", 
-                    color=text_color, fontsize=11, fontweight="bold")
+                    color="black", fontsize=11, fontweight="bold")
     
-    ax.set_title("Phase 2: Per-Class F1-Score for Verification")
+    # No title - use LaTeX caption instead
     ax.set_xlabel("Verdict Class (with ground truth support)")
     
     plt.tight_layout()
@@ -390,10 +389,11 @@ def figure_extraction_confusion_matrix(ext_per_run):
         ax.set_yticklabels(["No Claim", "Claim"])
         ax.set_xlabel("Predicted")
         ax.set_ylabel("Actual")
+        # Model name as subplot label (not a title)
         ax.set_title(MODEL_LABELS[model], fontsize=12, fontweight="bold",
                      color=COLORS[model])
     
-    fig.suptitle("Phase 1: Confusion Matrices (Averaged across 3 runs)", y=1.02)
+    # No suptitle - use LaTeX caption instead
     plt.tight_layout()
     fig.savefig(OUTPUT_DIR / "fig_extraction_confusion_matrices.pdf")
     fig.savefig(OUTPUT_DIR / "fig_extraction_confusion_matrices.png")
@@ -402,13 +402,95 @@ def figure_extraction_confusion_matrix(ext_per_run):
 
 
 # ==============================================================================
-# FIGURE 6: RELIABILITY ANALYSIS (Run-to-Run Variability)
+# FIGURE 6a: EXTRACTION RELIABILITY ANALYSIS (Run-to-Run Variability)
+# ==============================================================================
+
+def figure_extraction_reliability(ext_per_run):
+    """
+    Box plot showing run-to-run variability for extraction F1-scores.
+    Demonstrates consistency across multiple experimental runs.
+    """
+    fig, ax = plt.subplots(figsize=(7, 5))
+    
+    models = ["gpt4", "gemini", "deepseek"]
+    
+    data_ext = []
+    positions = []
+    colors = []
+    for i, model in enumerate(models):
+        model_data = ext_per_run[ext_per_run["provider"] == model]["f1_score"] * 100
+        data_ext.append(model_data.values)
+        positions.append(i)
+        colors.append(COLORS[model])
+    
+    bp = ax.boxplot(data_ext, positions=positions, widths=0.6, patch_artist=True)
+    for patch, color in zip(bp["boxes"], colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.7)
+    
+    ax.set_xticklabels([MODEL_LABELS[m] for m in models])
+    ax.set_ylabel("F1-Score (%)")
+    # No title - use LaTeX caption instead
+    ax.grid(axis="y", alpha=0.3, linestyle="--")
+    ax.set_ylim(40, 90)
+    
+    plt.tight_layout()
+    fig.savefig(OUTPUT_DIR / "fig_extraction_reliability.pdf")
+    fig.savefig(OUTPUT_DIR / "fig_extraction_reliability.png")
+    plt.close(fig)
+    print("✓ Generated: fig_extraction_reliability.pdf")
+
+
+# ==============================================================================
+# FIGURE 6b: VERIFICATION RELIABILITY ANALYSIS (Run-to-Run Variability)
+# ==============================================================================
+
+def figure_verification_reliability(ver_per_run):
+    """
+    Box plot showing run-to-run variability for verification accuracy.
+    Demonstrates consistency across multiple experimental runs.
+    """
+    fig, ax = plt.subplots(figsize=(7, 5))
+    
+    models = ["gpt4", "gemini", "deepseek"]
+    
+    data_ver = []
+    positions = []
+    colors = []
+    for i, model in enumerate(models):
+        model_data = ver_per_run[ver_per_run["provider"] == model]["accuracy"] * 100
+        data_ver.append(model_data.values)
+        positions.append(i)
+        colors.append(COLORS[model])
+    
+    bp = ax.boxplot(data_ver, positions=positions, widths=0.6, patch_artist=True)
+    for patch, color in zip(bp["boxes"], colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.7)
+    
+    ax.set_xticklabels([MODEL_LABELS[m] for m in models])
+    ax.set_ylabel("Accuracy (%)")
+    # No title - use LaTeX caption instead
+    ax.grid(axis="y", alpha=0.3, linestyle="--")
+    ax.set_ylim(70, 90)
+    
+    plt.tight_layout()
+    fig.savefig(OUTPUT_DIR / "fig_verification_reliability.pdf")
+    fig.savefig(OUTPUT_DIR / "fig_verification_reliability.png")
+    plt.close(fig)
+    print("✓ Generated: fig_verification_reliability.pdf")
+
+
+# ==============================================================================
+# FIGURE 6 (LEGACY): COMBINED RELIABILITY ANALYSIS - kept for reference
 # ==============================================================================
 
 def figure_reliability_analysis(ext_per_run, ver_per_run):
     """
     Box plots showing run-to-run variability for key metrics.
     Demonstrates consistency across multiple experimental runs.
+    NOTE: This combined figure is kept for backward compatibility.
+    Use figure_extraction_reliability and figure_verification_reliability instead.
     """
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -458,7 +540,7 @@ def figure_reliability_analysis(ext_per_run, ver_per_run):
     fig.savefig(OUTPUT_DIR / "fig_reliability_analysis.pdf")
     fig.savefig(OUTPUT_DIR / "fig_reliability_analysis.png")
     plt.close(fig)
-    print("✓ Generated: fig_reliability_analysis.pdf")
+    print("✓ Generated: fig_reliability_analysis.pdf (combined - legacy)")
 
 
 # ==============================================================================
@@ -504,7 +586,7 @@ def figure_radar_comparison(ext_data, ver_data):
     ax.set_yticks([20, 40, 60, 80, 100])
     ax.set_yticklabels(["20%", "40%", "60%", "80%", "100%"], size=8)
     ax.legend(loc="upper right", bbox_to_anchor=(1.15, 1.1))
-    ax.set_title("Overall Model Comparison", y=1.08)
+    # No title - use LaTeX caption instead
     
     plt.tight_layout()
     fig.savefig(OUTPUT_DIR / "fig_radar_comparison.pdf")
@@ -537,7 +619,7 @@ def figure_inter_model_agreement():
                     va="center", fontsize=11, fontweight="bold")
     
     ax.set_xlabel("Agreement Rate (%)")
-    ax.set_title("Phase 2: Inter-Model Agreement on Verification Verdicts")
+    # No title - use LaTeX caption instead
     ax.set_xlim(0, 100)
     ax.grid(axis="x", alpha=0.3, linestyle="--")
     
@@ -586,7 +668,9 @@ def main():
     figure_verification_accuracy(ver_data)
     figure_per_class_f1_heatmap(ver_per_run)
     figure_extraction_confusion_matrix(ext_per_run)
-    figure_reliability_analysis(ext_per_run, ver_per_run)
+    figure_extraction_reliability(ext_per_run)        # NEW: Extraction only
+    figure_verification_reliability(ver_per_run)      # NEW: Verification only
+    figure_reliability_analysis(ext_per_run, ver_per_run)  # Legacy combined
     figure_radar_comparison(ext_data, ver_data)
     figure_inter_model_agreement()
     

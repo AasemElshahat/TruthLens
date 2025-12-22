@@ -68,8 +68,11 @@
 % --- Abstract / Acknowledgements ---
 
 \begin{abstract}
-    % A brief, one-paragraph summary of the entire thesis.
-    % will write this last.
+Large Language Models (LLMs) have transformed natural language processing, yet their tendency to generate factually incorrect information---known as hallucination---poses significant risks for applications requiring factual accuracy. This thesis presents a comparative analysis of three state-of-the-art LLMs (GPT-4, Gemini, and DeepSeek) within the TruthLens framework, a decoupled two-phase architecture for automated fact-checking that separates claim extraction from search-augmented verification.
+
+Using the BingCheck dataset, we evaluated model performance across 1,950 API calls: $N=150$ sentences for extraction ($k=3$ runs) and $N=100$ claims for verification ($k=2$ runs). The results reveal distinct behavioral patterns. For claim extraction, GPT-4 achieves the highest F1-Score (80.4\%) through a balanced precision-recall strategy, while Gemini and DeepSeek adopt conservative approaches with high precision (89.5\% and 95.8\%) but significantly reduced recall (40.2\% and 49.6\%). For verification, Gemini achieves the highest accuracy (82.0\%), DeepSeek the highest Macro-F1 (55.9\%), and GPT-4 the most deterministic outputs. All models struggle with minority class identification, with a 25--30 percentage point gap between accuracy and Macro-F1 scores.
+
+Qualitative analysis identifies three primary failure modes: over-filtering of context-dependent claims, search query quality limitations, and class imbalance sensitivity. Despite these challenges, the models achieve 69\% unanimous correctness on verification tasks, demonstrating that LLM-based fact-checking has reached practical reliability for straightforward factual claims. This work contributes a reusable multi-model framework, empirical performance benchmarks, and guidance for deploying LLM-based fact-checking systems in real-world applications.
 \end{abstract}
 
 \clearpage
@@ -682,13 +685,13 @@ Figure \ref{fig:confusion_matrices} presents the averaged confusion matrices acr
 
 \subsection{Reliability Analysis Across Multiple Runs}
 
-To assess the stability of each model's performance, Figure \ref{fig:reliability} presents box plots showing the distribution of F1-scores across experimental runs.
+To assess the stability of each model's extraction performance, Figure \ref{fig:extraction_reliability} presents box plots showing the distribution of F1-scores across experimental runs.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/fig_reliability_analysis.png}
-    \caption{Run-to-run variability for extraction (left, $k=3$) and verification (right, $k=2$). GPT-4 demonstrates the most consistent performance across runs.}
-    \label{fig:reliability}
+    \includegraphics[width=0.7\textwidth]{images/fig_extraction_reliability.png}
+    \caption{Run-to-run variability for extraction phase ($k=3$ runs). GPT-4 demonstrates the most consistent performance with minimal variance.}
+    \label{fig:extraction_reliability}
 \end{figure}
 
 GPT-4 demonstrates the most stable performance with the smallest standard deviation ($\pm$1.5\% for F1-Score), while DeepSeek exhibits the highest variability ($\pm$4.6\%). This variability in DeepSeek's performance may be attributed to its less deterministic response patterns when processing ambiguous sentences.
@@ -728,7 +731,7 @@ Figure \ref{fig:per_class_heatmap} visualizes this class-dependent performance d
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{images/fig_per_class_f1_heatmap.png}
+    \includegraphics[width=0.85\textwidth]{images/fig_per_class_f1_heatmap.png}
     \caption{Per-class F1-scores for verification. The heatmap reveals consistently poor performance on minority classes (Refuted: $n=3$, Insufficient: $n=12$) compared to the majority class (Supported: $n=85$).}
     \label{fig:per_class_heatmap}
 \end{figure}
@@ -765,6 +768,19 @@ To assess whether models converge on similar verdicts (potentially indicating ``
 \end{itemize}
 
 The 29\% of claims where models disagree represent ``ambiguous'' cases that warrant qualitative analysis (see Chapter \ref{ch:discussion}).
+
+\subsection{Reliability Analysis Across Multiple Runs}
+
+To assess the stability of each model's verification performance, Figure \ref{fig:verification_reliability} presents box plots showing the distribution of accuracy scores across experimental runs.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/fig_verification_reliability.png}
+    \caption{Run-to-run variability for verification phase ($k=2$ runs). GPT-4 produces identical results across runs, while DeepSeek shows the highest variability.}
+    \label{fig:verification_reliability}
+\end{figure}
+
+GPT-4 demonstrates perfect consistency with 0.0\% standard deviation in accuracy, producing identical verdicts across independent runs. Gemini shows moderate variability ($\pm$1.4\%), while DeepSeek exhibits the highest variability ($\pm$2.1\%). This pattern mirrors the extraction phase results, confirming that GPT-4 is the most deterministic model across both tasks.
 
 \section{Summary of Key Findings}
 \label{sec:key_findings}
@@ -931,13 +947,118 @@ While $N=150$ sentences for extraction and $N=100$ claims for verification provi
 
 \chapter{Conclusion and Future Work}
 \label{ch:conclusion}
-    \section{Summary of Findings}
-        \subsection{Answering Research Question 1 (Extraction)}
-        \subsection{Answering Research Question 2 (Verification)}
-        \subsection{Answering Research Question 3 (Qualitative)}
-    \section{Future Work}
-        \subsection{Scaling the Experiment}
-        \subsection{Evaluating Other Agent Architectures}
+
+This thesis presented a comparative analysis of three Large Language Models---GPT-4, Gemini, and DeepSeek---within the TruthLens framework for automated fact-checking. Through rigorous experimentation across 1,950 API calls, we evaluated model performance on both claim extraction and verification tasks. This chapter summarizes the key findings, articulates the contributions of this work, offers practical guidance for deployment, and outlines directions for future research.
+
+\section{Summary of Findings}
+
+The experimental results provide clear answers to the three research questions posed in Chapter \ref{ch:introduction}.
+
+\subsection{Answering Research Question 1 (Extraction)}
+
+\textbf{RQ1:} \textit{Which LLM most accurately identifies verifiable factual claims from text at the sentence level?}
+
+\textbf{Answer: GPT-4} emerges as the most effective model for claim extraction, achieving an F1-Score of \textbf{80.4\%} compared to 55.4\% (Gemini) and 65.3\% (DeepSeek).
+
+The critical distinction lies in extraction strategy. GPT-4 adopts a \textit{balanced approach}, achieving 83.1\% precision and 77.8\% recall---correctly identifying approximately 8 out of 10 factual claims while maintaining high precision. In contrast, Gemini and DeepSeek employ a \textit{conservative strategy}, achieving exceptionally high precision (89.5\% and 95.8\% respectively) but at severe cost to recall (40.2\% and 49.6\%). These models fail to identify approximately half of all factual claims present in the input text.
+
+For fact-checking pipelines where \textit{comprehensive coverage} is the priority, GPT-4 is the clear choice. The conservative models may be appropriate only in specialized contexts where false positives carry higher costs than missed claims.
+
+\subsection{Answering Research Question 2 (Verification)}
+
+\textbf{RQ2:} \textit{Which LLM most accurately assesses the veracity of identified claims when provided with claims?}
+
+\textbf{Answer:} The verification phase presents a nuanced picture depending on the evaluation metric:
+
+\begin{itemize}
+    \item \textbf{Gemini} achieves the highest accuracy (\textbf{82.0\%}), making it the optimal choice when overall correctness on representative datasets is the primary concern.
+    \item \textbf{DeepSeek} achieves the highest Macro-F1 (\textbf{55.9\%}), indicating superior balanced performance across all verdict categories, including minority classes.
+    \item \textbf{GPT-4} demonstrates the highest determinism (0.0\% standard deviation), producing identical results across independent runs.
+\end{itemize}
+
+The substantial gap between accuracy (77--82\%) and Macro-F1 (50--56\%) across all models reveals a fundamental challenge: all LLMs struggle with minority class identification. Performance on the \textit{Supported} class (F1 $\approx$ 87--91\%) significantly exceeds performance on \textit{Refuted} (F1 $\approx$ 35--40\%) and \textit{Insufficient Information} (F1 $\approx$ 28--41\%). This reflects the inherent difficulty of detecting misinformation and recognizing evidential insufficiency compared to confirming supported claims.
+
+\subsection{Answering Research Question 3 (Qualitative)}
+
+\textbf{RQ3:} \textit{What are the common failure modes in LLM-based fact-checking?}
+
+The qualitative error analysis identified three primary failure patterns:
+
+\textbf{1. Over-Filtering in Extraction:} Gemini and DeepSeek frequently rejected context-dependent claims containing demonstrative pronouns (``This process...'', ``These results...''), despite containing verifiable information. This conservative behavior contributed to their low recall scores.
+
+\textbf{2. Search Query Quality:} Verification failures often originated in the search phase rather than the reasoning phase. Poorly-phrased or overly-specific search queries led to irrelevant evidence retrieval, subsequently causing incorrect verdicts. Claims lacking sufficient context (e.g., references to ``the structure'' without specifying which structure) were particularly problematic.
+
+\textbf{3. Class Imbalance Sensitivity:} All models exhibited bias toward the majority class (\textit{Supported}), frequently returning over-cautious \textit{Insufficient Information} verdicts for claims that were actually supported. DeepSeek showed this pattern most prominently (18\% of claims), while Gemini was least affected (2\%).
+
+Despite these challenges, the models achieved 69\% unanimous correctness across all verification cases, demonstrating that for straightforward factual claims with clear web evidence, LLM-based verification has reached a level of reliability suitable for practical deployment.
+
+\section{Contributions}
+
+This thesis makes three primary contributions to the field of automated fact-checking:
+
+\textbf{1. Framework Adaptation and Extension:} We adapted the open-source ClaimeAI repository into the TruthLens framework, extending it to support multi-model comparative analysis. The engineering contributions include a unified LLM abstraction layer implementing the Strategy Pattern, custom middleware for DeepSeek's structured output requirements, and integration of the cost-effective Brave Search API for large-scale benchmarking.
+
+\textbf{2. Empirical Comparative Analysis:} We conducted the first systematic comparison of GPT-4, Gemini, and DeepSeek within a decoupled two-phase fact-checking architecture. The experimental design---with $k=3$ runs for extraction and $k=2$ runs for verification across 1,950 total API calls---provides statistically reliable performance estimates with quantified variability. The results establish clear performance hierarchies: GPT-4 for extraction (balanced precision-recall), Gemini for verification accuracy, and DeepSeek for balanced multi-class verification.
+
+\textbf{3. Methodological Contribution:} We demonstrated the value of decoupled evaluation in diagnosing LLM capabilities. By separating extraction from verification, we identified that the same model can exhibit different behavioral patterns across tasks (e.g., DeepSeek's conservative extraction correlates with cautious verification). This granular analysis would be impossible with monolithic end-to-end evaluation approaches.
+
+\section{Practical Implications}
+
+Based on the empirical findings, we offer the following guidance for practitioners deploying LLM-based fact-checking systems:
+
+\textbf{Model Selection by Use Case:}
+\begin{itemize}
+    \item \textbf{High-Coverage Fact-Checking:} Use GPT-4 for extraction to maximize claim identification (77.8\% recall), accepting moderate false positives.
+    \item \textbf{High-Precision Applications:} Use Gemini or DeepSeek for extraction when false positives are costly, understanding that approximately half of factual claims will be missed.
+    \item \textbf{Verification Tasks:} Use Gemini for highest overall accuracy (82.0\%) on representative datasets, or DeepSeek when balanced performance across verdict categories is required.
+\end{itemize}
+
+\textbf{Stability Considerations:} GPT-4 offers the most deterministic outputs ($\pm$0.0\% accuracy SD), making it suitable for applications requiring reproducible results. DeepSeek's higher variability ($\pm$4.6\% extraction F1 SD) suggests it may require additional engineering effort (e.g., ensemble approaches or multiple inference passes) to achieve production-level consistency.
+
+\textbf{Cost-Accuracy Trade-offs:} Open-weights models like DeepSeek offer competitive performance at reduced API costs compared to proprietary alternatives. For budget-constrained deployments, DeepSeek provides a viable option, particularly for verification tasks where its Macro-F1 performance exceeds the other models.
+
+\section{Future Work}
+
+The findings of this thesis suggest several promising directions for future research:
+
+\subsection{Alternative Search Providers}
+
+This study exclusively utilized the Brave Search API due to budget constraints. Future work should investigate the impact of different search providers on verification accuracy:
+\begin{itemize}
+    \item \textbf{Neural Search APIs} (Exa, Tavily) may retrieve more semantically relevant evidence compared to keyword-based approaches.
+    \item \textbf{Major Search Engines} (Google, Bing) offer broader web coverage but at higher cost and with different result ranking algorithms.
+\end{itemize}
+A systematic comparison across search providers would isolate the contribution of evidence retrieval quality to overall verification performance.
+
+\subsection{Multi-Agent Consensus Architectures}
+
+A significant limitation of the current architecture is single-agent decision-making. Future work should explore \textbf{multi-agent consensus mechanisms}:
+\begin{itemize}
+    \item \textbf{Judge Agents:} Introducing a separate LLM to review and validate the decisions of the extraction and verification agents before finalizing outputs.
+    \item \textbf{Unanimous Decision Requirements:} Requiring agreement across multiple independent agents before accepting a verdict, similar to ensemble methods in machine learning.
+    \item \textbf{Adversarial Review:} Implementing agents that specifically attempt to refute or challenge preliminary verdicts, forcing more rigorous evidence evaluation.
+\end{itemize}
+While these approaches increase computational cost and API expenses, they may substantially improve accuracy and reliability---particularly for the minority classes where current models struggle.
+
+\subsection{Real-World Deployment and User Studies}
+
+The ultimate test of any fact-checking system is its utility to real users. Future work should include:
+\begin{itemize}
+    \item \textbf{Browser Extension Deployment:} The TruthLens framework already includes a prototype browser extension. Deploying this to real users would provide invaluable feedback on practical usability, latency requirements, and explanation quality.
+    \item \textbf{User Trust Studies:} Investigating how users perceive and interact with LLM-generated fact-checking verdicts, including how explanation quality affects user trust.
+    \item \textbf{Iterative UX Refinement:} Using real-world feedback to guide interface improvements, determining how to present verdicts, confidence scores, and evidence sources in ways that users find helpful and actionable.
+\end{itemize}
+Such studies would inform the productization of LLM-based fact-checking tools and identify the gap between technical performance metrics and genuine user benefit.
+
+\section{Closing Remarks}
+
+The rise of Large Language Models has created both the problem and the potential solution for automated fact-checking. These models generate fluent but sometimes factually incorrect content at unprecedented scale, yet they also possess the reasoning capabilities to verify claims against external evidence.
+
+This thesis demonstrates that current LLMs, when deployed within a structured agentic framework, can achieve human-comparable performance on straightforward factual claims. GPT-4's 80.4\% extraction F1 and Gemini's 82.0\% verification accuracy represent meaningful progress toward reliable automated fact-checking.
+
+However, significant challenges remain. The struggle with minority classes, the sensitivity to search query quality, and the 31\% of claims where models disagree all indicate that LLM-based fact-checking is not yet ready to operate without human oversight. The path forward lies in hybrid systems that leverage LLM capabilities while acknowledging their limitations---using multi-agent architectures, diverse evidence sources, and human-in-the-loop validation for high-stakes decisions.
+
+As misinformation continues to proliferate in the digital information ecosystem, the development of trustworthy, transparent, and accessible fact-checking tools becomes increasingly critical. This thesis contributes a step toward that goal, providing both empirical evidence of current capabilities and a foundation for future improvements.
 
 % --- Appendices ---
 \appendix
