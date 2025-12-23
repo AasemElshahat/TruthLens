@@ -30,13 +30,13 @@ logger = logging.getLogger(__name__)
 
 class EvidenceEvaluationOutput(BaseModel):
     verdict: VerificationResult = Field(
-        description="The final fact-checking verdict. Use 'Supported' only when evidence clearly and consistently supports the claim from reliable sources. Use 'Refuted' when evidence clearly contradicts the claim with authoritative sources. Use 'Insufficient Information' when evidence is limited, unclear, or not comprehensive enough for a definitive conclusion. Use 'Conflicting Evidence' when reliable sources provide contradictory information about the claim."
+        description="The final fact-checking verdict. Use 'Supported' only when evidence clearly and consistently supports the claim from reliable sources. Use 'Refuted' when evidence clearly contradicts the claim with authoritative sources. Use 'Insufficient Information' when evidence is limited, unclear, or not comprehensive enough for a definitive conclusion."
     )
     reasoning: str = Field(
         description="Clear, concise reasoning for the verdict (1-2 sentences). Explain what specific evidence led to this conclusion, mentioning the reliability of sources and any limitations in the evidence. Avoid speculation and base reasoning strictly on the provided evidence."
     )
     influential_source_indices: List[int] = Field(
-        description="1-based indices of the evidence sources that were most important in reaching this verdict. These sources will be marked for prominent display in the user interface while all sources remain visible. For 'Supported' and 'Refuted' verdicts, include sources that directly support the decision. For 'Insufficient Information' and 'Conflicting Evidence' verdicts, include the most relevant sources that were considered. Select 2-4 of the most critical sources.",
+        description="1-based indices of the evidence sources that were most important in reaching this verdict. These sources will be marked for prominent display in the user interface while all sources remain visible. For 'Supported' and 'Refuted' verdicts, include sources that directly support the decision. For 'Insufficient Information' verdicts, include the most relevant sources that were considered. Select 2-4 of the most critical sources.",
         default_factory=list,
     )
 
@@ -115,7 +115,7 @@ async def evaluate_evidence_node(state: ClaimVerifierState) -> dict:
             disambiguated_sentence=claim.disambiguated_sentence,
             original_sentence=claim.original_sentence,
             original_index=claim.original_index,
-            result=VerificationResult.REFUTED,
+            result=VerificationResult.INSUFFICIENT_INFORMATION,
             reasoning="Failed to evaluate the evidence due to technical issues.",
             sources=[],
         )
@@ -124,9 +124,9 @@ async def evaluate_evidence_node(state: ClaimVerifierState) -> dict:
             result = VerificationResult(response.verdict)
         except ValueError:
             logger.warning(
-                f"Invalid verdict '{response.verdict}', defaulting to REFUTED"
+                f"Invalid verdict '{response.verdict}', defaulting to INSUFFICIENT_INFORMATION"
             )
-            result = VerificationResult.REFUTED
+            result = VerificationResult.INSUFFICIENT_INFORMATION
 
         influential_urls = (
             {

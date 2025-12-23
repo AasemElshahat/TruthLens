@@ -23,6 +23,35 @@ from sklearn.metrics import (
 )
 
 
+def generate_unique_filename(base_path: str) -> str:
+    """
+    Generate a unique filename by checking if the file exists and appending a counter if needed.
+
+    Args:
+        base_path: The original intended file path
+
+    Returns:
+        str: A unique file path that doesn't conflict with existing files
+    """
+    base_path = Path(base_path)
+    output_dir = base_path.parent
+    stem = base_path.stem
+    suffix = base_path.suffix
+
+    # Check if the original file exists
+    if not base_path.exists():
+        return str(base_path)
+
+    # File exists, so we need to find a unique name
+    counter = 2
+    while True:
+        new_name = f"{stem}_run{counter}{suffix}"
+        new_path = output_dir / new_name
+        if not new_path.exists():
+            return str(new_path)
+        counter += 1
+
+
 def load_benchmark_with_verifications(benchmark_path: str) -> pd.DataFrame:
     """Load the benchmark that includes verification results."""
     df = pd.read_csv(benchmark_path)
@@ -41,13 +70,24 @@ def normalize_verdict(verdict: str) -> str:
         return 'supported'
     elif 'refuted' in verdict_lower or 'false' in verdict_lower or 'incorrect' in verdict_lower or 'contradicted' in verdict_lower:
         return 'refuted'
-    elif 'neutral' in verdict_lower or 'mixed' in verdict_lower or 'incomplete' in verdict_lower:
-        return 'neutral'
+    elif (
+        'insufficient' in verdict_lower
+        or 'not enough evidence' in verdict_lower
+        or 'inconclusive' in verdict_lower
+        or 'cannot verify' in verdict_lower
+        or 'can\'t verify' in verdict_lower
+        or 'unconfirmed' in verdict_lower
+        or 'unclear' in verdict_lower
+        or 'neutral' in verdict_lower
+        or 'mixed' in verdict_lower
+        or 'incomplete' in verdict_lower
+    ):
+        return 'insufficient'
     elif 'unknown' in verdict_lower or 'undetermined' in verdict_lower or 'unverifiable' in verdict_lower:
         return 'unknown'
     else:
         # For cases where the verdict is already a simple category
-        if verdict_lower in ['supported', 'refuted', 'neutral', 'unknown']:
+        if verdict_lower in ['supported', 'refuted', 'insufficient', 'unknown']:
             return verdict_lower
         else:
             # If it's an unexpected verdict type, categorize as "other"
@@ -198,7 +238,12 @@ def analyze_verification_phase(benchmark_path: str, output_path: str):
     print("🔍 Analyzing verification phase results...")
     print(f"Benchmark: {benchmark_path}")
     print(f"Output: {output_path}")
-    
+
+    # Generate a unique output path if the target file already exists
+    unique_output_path = generate_unique_filename(output_path)
+    if unique_output_path != output_path:
+        print(f"⚠️  Output file already exists. Using unique filename: {unique_output_path}")
+
     # Load benchmark with verifications
     df = load_benchmark_with_verifications(benchmark_path)
     print(f"Loaded benchmark with {len(df)} claims")
@@ -246,11 +291,11 @@ def analyze_verification_phase(benchmark_path: str, output_path: str):
     
     if metrics_data:
         metrics_df = pd.DataFrame(metrics_data)
-        metrics_df.to_csv(output_path, index=False)
-        print(f"\n📈 Verification metrics saved to {output_path}")
+        metrics_df.to_csv(unique_output_path, index=False)
+        print(f"\n📈 Verification metrics saved to {unique_output_path}")
     else:
         print("⚠️  No metrics to save")
-    
+
     return summary
 
 

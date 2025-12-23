@@ -23,6 +23,35 @@ from claim_extractor.schemas import ValidatedClaim
 from claim_verifier.schemas import VerificationResult, Evidence
 
 
+def generate_unique_filename(base_path: str) -> str:
+    """
+    Generate a unique filename by checking if the file exists and appending a counter if needed.
+
+    Args:
+        base_path: The original intended file path
+
+    Returns:
+        str: A unique file path that doesn't conflict with existing files
+    """
+    base_path = Path(base_path)
+    output_dir = base_path.parent
+    stem = base_path.stem
+    suffix = base_path.suffix
+
+    # Check if the original file exists
+    if not base_path.exists():
+        return str(base_path)
+
+    # File exists, so we need to find a unique name
+    counter = 2
+    while True:
+        new_name = f"{stem}_run{counter}{suffix}"
+        new_path = output_dir / new_name
+        if not new_path.exists():
+            return str(new_path)
+        counter += 1
+
+
 def serialize_sources(sources: Optional[List[Evidence]]) -> str:
     """Convert Evidence objects into a JSON string for CSV storage."""
     if not sources:
@@ -105,6 +134,25 @@ async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[st
         settings.llm_provider = original_provider
 
 
+def clear_verification_results_for_fresh_run(df: pd.DataFrame) -> pd.DataFrame:
+    """Clear all existing verification results for a fresh run."""
+    print("🔄 Clearing existing verification results for fresh run...")
+
+    verification_columns = [
+        'gpt4_verdict', 'gpt4_reasoning', 'gpt4_sources',
+        'gemini_verdict', 'gemini_reasoning', 'gemini_sources',
+        'deepseek_verdict', 'deepseek_reasoning', 'deepseek_sources'
+    ]
+
+    for col in verification_columns:
+        if col in df.columns:
+            df[col] = None  # Reset to None
+            print(f"   Cleared {col}")
+
+    print("✅ All verification results cleared")
+    return df
+
+
 def add_verification_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Add verification result columns to the dataframe if they don't exist."""
     required_columns = [
@@ -112,18 +160,18 @@ def add_verification_columns(df: pd.DataFrame) -> pd.DataFrame:
         'gemini_verdict', 'gemini_reasoning', 'gemini_sources',
         'deepseek_verdict', 'deepseek_reasoning', 'deepseek_sources'
     ]
-    
+
     for col in required_columns:
         if col not in df.columns:
             df[col] = None  # Initialize with null values
-    
+
     return df
 
 
 def is_verification_complete_for_provider(df: pd.DataFrame, provider_prefix: str) -> bool:
     """Check if verification is complete for a particular provider (all claims have results)."""
     verdict_col = f"{provider_prefix}_verdict"
-    
+
     # Check if all non-null values exist for this provider
     return df[verdict_col].notna().all()
 
@@ -199,8 +247,9 @@ async def run_verification_for_provider(
 
 
 async def run_verification_phase(
-    benchmark_path: str, 
-    output_path: str, 
+    df: pd.DataFrame,
+    benchmark_path: str,
+    output_path: str,
     providers: List[str] = ['openai', 'gemini', 'deepseek']
 ):
     """Run verification phase for all providers with per-claim updates."""
@@ -208,9 +257,7 @@ async def run_verification_phase(
     print(f"Benchmark: {benchmark_path}")
     print(f"Output: {output_path}")
     print(f"Providers: {providers}")
-    
-    # Load the benchmark claims
-    df = pd.read_csv(benchmark_path)
+
     print(f"Loaded benchmark with {len(df)} claims")
     
     # Add required columns if they don't exist
@@ -252,19 +299,35 @@ async def main():
         default="../../my_thesis_benchmark_claims.csv",
         help="Path to save results CSV file (default: same as input for in-place update)"
     )
+    parser.add_argument(
+        "--fresh-run",
+        action="store_true",
+        help="Clear all existing verification results and re-process all claims"
+    )
 
     args = parser.parse_args()
 
     print(f"📄 Benchmark: {args.benchmark}")
     print(f"💾 Output: {args.output}")
+    print(f"🔄 Fresh run: {args.fresh_run}")
 
     # Verify the benchmark exists
     if not Path(args.benchmark).exists():
         print(f"❌ Benchmark file not found: {args.benchmark}")
         sys.exit(1)
 
+    # Load the benchmark claims
+    df = pd.read_csv(args.benchmark)
+
+    # If fresh run is requested, clear all existing verification results
+    if args.fresh_run:
+        df = clear_verification_results_for_fresh_run(df)
+        # Update output path to use a unique name to prevent overwriting previous runs
+        args.output = generate_unique_filename(args.output)
+        print(f"🆕 Using unique output path for fresh run: {args.output}")
+
     # Run verification phase
-    await run_verification_phase(args.benchmark, args.output)
+    await run_verification_phase(df, args.benchmark, args.output)
 
     print("✅ Verification phase completed successfully!")
 
