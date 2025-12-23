@@ -18,7 +18,27 @@
 \usepackage{array}      % Required for custom column formatting
 \usepackage{tabularx}   % Required for auto-width tables that fill the page
 \usepackage{breakcites}
-\usepackage{amsmath} 
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+% Define prompt box style for appendix
+\newtcolorbox{promptbox}[1][]{
+    enhanced,
+    breakable,
+    colback=gray!5,
+    colframe=gray!50,
+    fonttitle=\bfseries\small,
+    left=2mm,
+    right=2mm,
+    top=1mm,
+    bottom=1mm,
+    boxrule=0.5pt,
+    arc=2pt,
+    fontupper=\small\ttfamily,
+    #1
+}
 
 % --- Begin Document ---
 \begin{document}
@@ -1079,9 +1099,434 @@ As misinformation continues to proliferate in the digital information ecosystem,
 % --- Appendices ---
 \appendix
 \chapter{Appendix}
-    \section{Full Benchmark Results Table}
-    \section{Benchmark Runner Script (\texttt{run\_my\_thesis.py})}
-    \section{Analysis Script (\texttt{analyze\_results.py})}
+
+\section{Full Benchmark Results Tables}
+\label{sec:appendix_results}
+
+This section presents the complete experimental results across all independent runs, providing full transparency for reproducibility.
+
+\subsection{Phase 1: Extraction Results Per Run}
+
+Table \ref{tab:extraction_per_run} presents the detailed extraction metrics for each of the $k=3$ experimental runs.
+
+\begin{table}[ht]
+    \centering
+    \caption{Claim Extraction Metrics Per Run ($N=150$ sentences)}
+    \label{tab:extraction_per_run}
+    \small
+    \begin{tabular}{llcccccc}
+        \hline
+        \textbf{Model} & \textbf{Run} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{TP} & \textbf{FN} \\
+        \hline
+        \multirow{3}{*}{GPT-4o-mini} 
+            & Run 1 & 78.7\% & 81.1\% & 76.9\% & 78.9\% & 60 & 18 \\
+            & Run 2 & 82.0\% & 85.9\% & 78.2\% & 81.9\% & 61 & 17 \\
+            & Run 3 & 80.0\% & 82.4\% & 78.2\% & 80.3\% & 61 & 17 \\
+        \hline
+        \multirow{3}{*}{Gemini-2.5-Flash} 
+            & Run 1 & 64.7\% & 87.9\% & 37.2\% & 52.3\% & 29 & 49 \\
+            & Run 2 & 67.3\% & 89.2\% & 42.3\% & 57.4\% & 33 & 45 \\
+            & Run 3 & 67.3\% & 91.4\% & 41.0\% & 56.6\% & 32 & 46 \\
+        \hline
+        \multirow{3}{*}{DeepSeek-V3.2} 
+            & Run 1 & 76.0\% & 97.7\% & 55.1\% & 70.5\% & 43 & 35 \\
+            & Run 2 & 70.7\% & 94.7\% & 46.2\% & 62.1\% & 36 & 42 \\
+            & Run 3 & 71.3\% & 94.9\% & 47.4\% & 63.2\% & 37 & 41 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Phase 2: Verification Results Per Run}
+
+Table \ref{tab:verification_per_run} presents the detailed verification metrics for each of the $k=2$ experimental runs.
+
+\begin{table}[ht]
+    \centering
+    \caption{Claim Verification Metrics Per Run ($N=100$ claims)}
+    \label{tab:verification_per_run}
+    \small
+    \begin{tabular}{llcccc}
+        \hline
+        \textbf{Model} & \textbf{Run} & \textbf{Accuracy} & \textbf{Macro-F1} & \textbf{Supported F1} & \textbf{Insufficient F1} \\
+        \hline
+        \multirow{2}{*}{GPT-4o-mini} 
+            & Run 1 & 79.0\% & 48.5\% & 89.8\% & 22.2\% \\
+            & Run 2 & 79.0\% & 53.9\% & 88.5\% & 33.3\% \\
+        \hline
+        \multirow{2}{*}{Gemini-2.5-Flash} 
+            & Run 1 & 83.0\% & 54.1\% & 90.7\% & 35.3\% \\
+            & Run 2 & 81.0\% & 51.3\% & 91.0\% & 29.6\% \\
+        \hline
+        \multirow{2}{*}{DeepSeek-V3.2} 
+            & Run 1 & 76.0\% & 55.6\% & 85.9\% & 41.0\% \\
+            & Run 2 & 79.0\% & 56.3\% & 88.8\% & 40.0\% \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Confusion Matrices}
+
+Table \ref{tab:confusion_matrices_extraction} presents the averaged confusion matrices for the extraction phase.
+
+\begin{table}[ht]
+    \centering
+    \caption{Averaged Confusion Matrices for Claim Extraction ($k=3$ runs)}
+    \label{tab:confusion_matrices_extraction}
+    \small
+    \begin{tabular}{l|cc|cc|cc}
+        \hline
+        & \multicolumn{2}{c|}{\textbf{GPT-4o-mini}} & \multicolumn{2}{c|}{\textbf{Gemini-2.5-Flash}} & \multicolumn{2}{c}{\textbf{DeepSeek-V3.2}} \\
+        & Pred + & Pred $-$ & Pred + & Pred $-$ & Pred + & Pred $-$ \\
+        \hline
+        Actual + & 60.7 & 17.3 & 31.3 & 46.7 & 38.7 & 39.3 \\
+        Actual $-$ & 12.3 & 59.7 & 3.7 & 68.3 & 1.7 & 70.3 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Inter-Model Agreement Analysis}
+
+Table \ref{tab:inter_model_agreement} presents the pairwise agreement rates and error analysis for the verification phase.
+
+\begin{table}[ht]
+    \centering
+    \caption{Inter-Model Agreement and Error Analysis (Verification Phase)}
+    \label{tab:inter_model_agreement}
+    \small
+    \begin{tabular}{lc}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        GPT-4o-mini $\leftrightarrow$ Gemini-2.5-Flash Agreement & 82\% \\
+        GPT-4o-mini $\leftrightarrow$ DeepSeek-V3.2 Agreement & 86\% \\
+        Gemini-2.5-Flash $\leftrightarrow$ DeepSeek-V3.2 Agreement & 73\% \\
+        All Three Models Agree & 71\% \\
+        Fleiss' Kappa ($\kappa$) & 0.41 \\
+        \hline
+        \multicolumn{2}{l}{\textbf{Error Patterns (Run 1)}} \\
+        \hline
+        GPT-4o-mini Over-Cautious Errors & 10 \\
+        Gemini-2.5-Flash Over-Cautious Errors & 2 \\
+        DeepSeek-V3.2 Over-Cautious Errors & 18 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\section{Prompt Templates}
+\label{sec:appendix_prompts}
+
+This section documents excerpts from the system prompts used in the TruthLens framework. These prompts are \textbf{not original contributions} of this thesis; they are adapted from the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}, which implemented methodologies from two foundational papers:
+
+\begin{itemize}
+    \item \textbf{Extraction Prompts:} Based on the \textit{Claimify} framework by Metropolitansky \& Larson \cite{Metropolitansky2025}, which established the selection-disambiguation-decomposition pipeline for atomic claim extraction.
+    \item \textbf{Verification Prompts:} Based on the \textit{Search-Augmented Factuality Evaluator (SAFE)} by Wei et al.\ \cite{SAFE2024}, which introduced the iterative search-reason-verify paradigm.
+\end{itemize}
+
+The complete prompts with all examples are available in the project repository (\texttt{apps/agent/claim\_extractor/prompts.py} and \texttt{apps/agent/claim\_verifier/prompts.py}). Below are condensed excerpts showing the core instructions.
+
+\subsection{Claim Extraction Prompts}
+
+\subsubsection{Selection Prompt}
+
+The selection prompt determines whether a sentence contains verifiable factual claims:
+
+\begin{promptbox}[title=Selection System Prompt (Excerpt)]
+You are an assistant to a fact-checker. You will be given an excerpt from a text and a particular sentence of interest. Your task is to determine whether this particular sentence contains at least one specific and verifiable proposition.
+
+Note the following rules:
+- If the sentence is about a lack of information, it does NOT contain a specific and verifiable proposition.
+- It does NOT matter whether the proposition is true or false.
+- Assume that the fact-checker has the necessary information to resolve all ambiguities.
+
+Here are some examples of sentences that do NOT contain any specific and verifiable propositions:
+- By prioritizing ethical considerations, companies can ensure that their innovations are socially responsible
+- Technological progress should be inclusive
+- AI could lead to advancements in healthcare
+
+Here are some examples of sentences that likely contain a specific and verifiable proposition:
+- The partnership between Company X and Company Y illustrates the power of innovation -> ``There is a partnership between Company X and Company Y''
+- Jane Doe's approach includes embracing adaptability and prioritizing customer feedback
+\end{promptbox}
+
+\subsubsection{Disambiguation Prompt}
+
+The disambiguation prompt resolves referential and structural ambiguities:
+
+\begin{promptbox}[title=Disambiguation System Prompt (Excerpt)]
+You are an assistant to a fact-checker. Your task is to ``decontextualize'' the sentence, which means:
+1. Resolve partial names and undefined acronyms/abbreviations
+2. Resolve linguistic ambiguity that has a clear resolution
+
+``Linguistic ambiguity'' refers to the presence of multiple possible meanings in a sentence. Vagueness and generality are NOT linguistic ambiguity.
+
+Example:
+- Context: ``John Smith was an early employee who transitioned to management in 2010''
+- Sentence: ``At the time, he led the company's operations and finance teams.''
+- Decontextualized: ``In 2010, John Smith led the company's operations team and finance team.''
+\end{promptbox}
+
+\subsubsection{Decomposition Prompt}
+
+The decomposition prompt breaks complex sentences into atomic claims:
+
+\begin{promptbox}[title=Decomposition System Prompt (Excerpt)]
+You are an assistant for a group of fact-checkers. Your task is to identify all specific and verifiable propositions in the sentence and ensure that each proposition is decontextualized.
+
+A proposition is ``decontextualized'' if:
+1. It is fully self-contained (can be understood in isolation)
+2. Its meaning in isolation matches its meaning when interpreted alongside the context
+
+The propositions should be the simplest possible discrete units of information.
+
+Example:
+- Sentence: ``John Smith and Jane Doe (writers of `Fighting for Better Tech')''
+- Propositions: [``John Smith is a writer of `Fighting for Better Tech''', ``Jane Doe is a writer of `Fighting for Better Tech''']
+\end{promptbox}
+
+\subsection{Claim Verification Prompts}
+
+\subsubsection{Query Generation Prompt}
+
+\begin{promptbox}[title=Query Generation System Prompt (Excerpt)]
+You are an expert search query generator for fact-checking claims.
+
+Your task: Create a single, effective search query to find evidence that could verify or refute the given claim.
+
+Requirements:
+- Include key entities, names, dates, and specific details
+- Use search-engine-friendly language (no special characters)
+- Target authoritative sources (news, government, academic)
+- Keep it concise (5--15 words optimal)
+- Design to find both supporting AND contradictory evidence
+
+Examples:
+- Policy claim: ``Biden student loan forgiveness program 2023''
+- Statistics: ``unemployment rate March 2024 Bureau Labor''
+- Events: ``Taylor Swift concert cancellation official statement''
+\end{promptbox}
+
+\subsubsection{Evidence Evaluation Prompt}
+
+\begin{promptbox}[title=Evidence Evaluation System Prompt (Excerpt)]
+You are an expert fact-checker. Evaluate claims based ONLY on the evidence provided---do not use prior knowledge.
+
+Verdict criteria:
+
+SUPPORTED---Use when:
+- Multiple reliable sources confirm the claim
+- Evidence directly addresses the core assertion
+- No credible contradictory evidence
+
+REFUTED---Use when:
+- Authoritative sources explicitly contradict the claim
+- Evidence provides clear counter-factual information
+
+INSUFFICIENT INFORMATION---Use when:
+- Limited evidence (too few sources)
+- Evidence is indirect, vague, or incomplete
+- Key information missing for verification
+
+Decision rule: Be conservative---when evidence is ambiguous, choose ``Insufficient Information.''
+\end{promptbox}
+
+
+\section{Model Configuration}
+\label{sec:appendix_config}
+
+Table \ref{tab:model_config} documents the exact model identifiers and API configurations used in all experiments.
+
+\begin{table}[ht]
+    \centering
+    \caption{LLM API Configuration for Experiments}
+    \label{tab:model_config}
+    \small
+    \begin{tabular}{p{3cm}p{4cm}p{5cm}}
+        \hline
+        \textbf{Display Name} & \textbf{API Model ID} & \textbf{Provider Endpoint} \\
+        \hline
+        GPT-4o-mini & \texttt{gpt-4o-mini} & OpenAI API (\texttt{api.openai.com}) \\
+        Gemini-2.5-Flash & \texttt{gemini-2.5-flash} & Google AI API (\texttt{generativelanguage.googleapis.com}) \\
+        DeepSeek-V3.2 & \texttt{deepseek-chat} & DeepSeek API (\texttt{api.deepseek.com}) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Search Configuration}
+
+\begin{itemize}
+    \item \textbf{Search Provider:} Brave Search API
+    \item \textbf{Maximum Search Iterations:} 5 per claim
+    \item \textbf{Results per Query:} 10
+    \item \textbf{Freshness Filter:} None (all time)
+\end{itemize}
+
+\subsection{Environment Variables}
+
+The following environment variables must be configured:
+
+\begin{verbatim}
+LLM_PROVIDER=openai|gemini|deepseek
+OPENAI_API_KEY=sk-proj-...
+GOOGLE_API_KEY=AIza...
+DEEPSEEK_API_KEY=sk-...
+BRAVE_API_KEY=BSA...
+\end{verbatim}
+
+
+\section{Benchmark Runner Script}
+\label{sec:appendix_runner}
+
+The following Python script orchestrates the experimental pipeline. The complete implementation is available in the project repository.
+
+\begin{verbatim}
+#!/usr/bin/env python3
+"""
+Script to run the extraction phase for all three LLMs
+on the thesis dataset with per-sentence updates and 
+resume capability for cost protection.
+"""
+
+import asyncio
+import pandas as pd
+from pathlib import Path
+
+# Provider mapping
+PROVIDERS = {
+    'gpt4': 'openai',
+    'gemini': 'gemini', 
+    'deepseek': 'deepseek'
+}
+
+async def run_extraction_for_sentence(sentence: str, 
+                                       provider: str) -> dict:
+    """
+    Run claim extraction for a single sentence using 
+    the specified LLM provider.
+    """
+    from utils.settings import settings
+    settings.llm_provider = provider
+    
+    payload = {
+        "answer_text": sentence,
+        "metadata": f"extraction-{provider}"
+    }
+    
+    result = await claim_extractor_graph.ainvoke(payload)
+    validated_claims = result.get('validated_claims', [])
+    
+    return {
+        'binary_result': len(validated_claims) > 0,
+        'num_claims': len(validated_claims),
+        'claims_json': [c.dict() for c in validated_claims]
+    }
+
+async def main(dataset_path: str, output_path: str):
+    """Main execution loop with resume capability."""
+    df = pd.read_csv(dataset_path)
+    
+    for idx, row in df.iterrows():
+        for prefix, provider in PROVIDERS.items():
+            if not has_result(df, idx, prefix):
+                result = await run_extraction_for_sentence(
+                    row['sentence'], provider
+                )
+                df.at[idx, f'{prefix}_binary_result'] = \
+                    result['binary_result']
+                df.to_csv(output_path, index=False)
+                print(f"Processed {idx+1}/{len(df)}")
+\end{verbatim}
+
+
+\section{Analysis Script}
+\label{sec:appendix_analysis}
+
+The following script calculates extraction metrics by comparing LLM outputs against BingCheck ground truth.
+
+\begin{verbatim}
+#!/usr/bin/env python3
+"""
+Script to analyze extraction results from all three LLMs 
+and determine performance metrics.
+"""
+
+import pandas as pd
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, 
+    f1_score, confusion_matrix
+)
+
+def calculate_extraction_metrics(df: pd.DataFrame, 
+                                  provider_prefix: str) -> dict:
+    """
+    Calculate extraction metrics for a specific LLM provider.
+    """
+    # Ground truth column
+    y_true = df['contains_factual_claim'].values
+    
+    # Model predictions
+    y_pred = df[f'{provider_prefix}_binary_result'].values
+    
+    # Calculate metrics
+    metrics = {
+        'accuracy': accuracy_score(y_true, y_pred),
+        'precision': precision_score(y_true, y_pred),
+        'recall': recall_score(y_true, y_pred),
+        'f1_score': f1_score(y_true, y_pred),
+    }
+    
+    # Confusion matrix
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    metrics.update({'tp': tp, 'tn': tn, 'fp': fp, 'fn': fn})
+    
+    # Negative class metrics
+    metrics['specificity'] = tn / (tn + fp) if (tn + fp) > 0 else 0
+    metrics['npv'] = tn / (tn + fn) if (tn + fn) > 0 else 0
+    
+    return metrics
+
+def main(dataset_path: str, output_path: str):
+    """Analyze all providers and save metrics."""
+    df = pd.read_csv(dataset_path)
+    
+    results = []
+    for provider in ['gpt4', 'gemini', 'deepseek']:
+        metrics = calculate_extraction_metrics(df, provider)
+        metrics['provider'] = provider
+        results.append(metrics)
+    
+    pd.DataFrame(results).to_csv(output_path, index=False)
+    print(f"Metrics saved to {output_path}")
+\end{verbatim}
+
+
+\section{Dataset Sample}
+\label{sec:appendix_dataset}
+
+Table \ref{tab:dataset_sample} presents representative examples from the experimental dataset, illustrating the range of sentence types and ground truth labels. All sentences are taken directly from the BingCheck-derived corpus used in the experiments.
+
+\begin{table}[ht]
+    \centering
+    \caption{Sample Sentences from Experimental Dataset (BingCheck-derived)}
+    \label{tab:dataset_sample}
+    \small
+    \begin{tabular}{p{10cm}c}
+        \hline
+        \textbf{Sentence} & \textbf{GT} \\
+        \hline
+        ``The Argentine tango is a dance and musical form that originated in Buenos Aires in the late 19th century, and has since become a revered art form worldwide.'' & True \\
+        ``Epigenetics is the study of how the environment and other factors can change the way that genes are expressed.'' & True \\
+        ``However, they have few predators due to their thick skin and large size.'' & True \\
+        \hline
+        ``Improving sleep quality is a common goal for many people who want to enhance their health and well-being.'' & False \\
+        ``Together, we can make a difference for our oceans and our planet.'' & False \\
+        ``Each city has its own challenges and opportunities, but also can learn from the experiences and best practices of others.'' & False \\
+        \hline
+    \end{tabular}
+    
+    \vspace{0.3cm}
+    \footnotesize{GT = Ground Truth (True = contains factual claim, False = no factual claim)}
+\end{table}
 
 % --- Bibliography ---
 \clearpage
