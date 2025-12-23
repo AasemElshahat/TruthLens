@@ -3,16 +3,14 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage[german, english]{babel} % Use 'german' if you are writing in German
+\usepackage[english]{babel}
 
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{microtype}
+\usepackage[left=4cm, right=2cm, top=2.5cm, bottom=2cm]{geometry}
+\usepackage[nopatch=footnote]{microtype}
 
 % --- Title Page Information ---
-% (Your university will likely have a specific format for this)
 \title{A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
 \author{Aasem Elshahat}
-\date{\today} % Or your submission date
 
 \usepackage[hidelinks, breaklinks=true]{hyperref} % Makes citations clickable without ugly red boxes
 \usepackage{array}      % Required for custom column formatting
@@ -22,13 +20,15 @@
 \usepackage{multirow}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable,skins}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{parskip}
 
 % Define prompt box style for appendix
 \newtcolorbox{promptbox}[1][]{
     enhanced,
     breakable,
-    colback=gray!5,
-    colframe=gray!50,
+    colback=white,
+    colframe=black,
     fonttitle=\bfseries\small,
     left=2mm,
     right=2mm,
@@ -44,49 +44,92 @@
 \begin{document}
 
 % --- Title Page ---
+% \begin{titlepage}
+%     \begin{center}
+%         \vspace*{1cm}
+
+%         \includegraphics[width=0.6\textwidth]{bht_logo_horizontal.png}
+%         \vspace{1.5cm}
+
+%         \textbf{\Large Medieninformatik / Fachbereich VI} \\
+%         \vspace{0.5cm}
+        
+%         % \vspace{1.5cm}
+
+%         \textbf{\Huge A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
+
+%         \vspace{1.5cm}
+
+%         {\Large \textbf{Bachelor's Thesis}}
+
+%         \vspace{1.5cm}
+
+%         Submitted by: \\
+%         \vspace{0.3cm}
+%         \textbf{\Large Aasem Elshahat} \\
+%         \vspace{0.5cm}
+%         Matriculation Number: 954435 \\
+
+%         \vspace{1cm}
+
+%         \textbf{Supervisors:} \\
+%         Prof. Dr. Siamak Haschemi \\
+%         Dipl.-Inf. (FH) Markus Schubert
+
+%         \vspace{1cm}
+
+%         \Large
+%         January 2, 2026
+
+%     \end{center}
+% \end{titlepage}
 \begin{titlepage}
     \begin{center}
-        \vspace*{1cm}
+        \includegraphics[width=0.8\textwidth]{bht_logo_horizontal.png}
+        \vspace{.5cm}
 
-        \includegraphics[width=0.6\textwidth]{bht_logo_horizontal.png}
-        \vspace{1.5cm}
-
-        % \textbf{\LARGE Berliner Hochschule für Technik (BHT)} \\
-        % \vspace{0.5cm}
-        % \textbf{\Large Medieninformatik/ Fachbereich VI} \\
+        \textbf{\large Fachbereich VI - Informatik und Medien} \\
+        \textbf{\large Medieninformatik} \\
         
-        % \vspace{1.5cm}
+        \vspace{1cm}
 
-        \textbf{\Huge A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
+        % Title with manual spacing for better readability
+        \textbf{\LARGE A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
 
-        \vspace{1.5cm}
+        \vspace{1.2cm}
 
-        {\Large \textbf{Bachelor's Thesis}}
+        {\large \textbf{Bachelor's Thesis}}
 
-        \vspace{1.5cm}
+        \vspace{1.2cm}
 
         Submitted by: \\
         \vspace{0.3cm}
-        \textbf{\Large Aasem Elshahat} \\
+        \textbf{\large Aasem Elshahat} \\
         \vspace{0.5cm}
         Matriculation Number: 954435 \\
 
-        \vspace{2cm}
+        \vspace{1.5cm}
 
-        \textbf{Supervisors:} \\
+        % --- UPDATED SECTION BASED ON THEMENBLATT ---
+        
+        \textbf{Betreuer / Supervisors:} \\
         Prof. Dr. Siamak Haschemi \\
         Dipl.-Inf. (FH) Markus Schubert
+
+        \vspace{0.8cm}
+
+        \textbf{Gutachter / Examiner:} \\
+        Prof. Dr. Felix Gers
 
         \vspace{2cm}
 
         \Large
-        \today
+        January 2, 2026
 
     \end{center}
 \end{titlepage}
-
 % --- Abstract / Acknowledgements ---
-
+\pagenumbering{Roman}
 \begin{abstract}
 Large Language Models (LLMs) have transformed natural language processing, yet their tendency to generate factually incorrect information---known as hallucination---poses significant risks for applications requiring factual accuracy. This thesis presents a comparative analysis of three state-of-the-art LLMs (GPT-4o-mini, Gemini-2.5-Flash, and DeepSeek-V3.2) within the TruthLens framework, a decoupled two-phase architecture for automated fact-checking that separates claim extraction from search-augmented verification.
 
@@ -112,7 +155,7 @@ Qualitative analysis identifies three primary failure modes: over-filtering of c
 % --- Main Thesis Content ---
 
 
-
+\pagenumbering{arabic}
 \chapter{Introduction}
 \label{ch:introduction}
 
@@ -296,7 +339,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
 
     \section{Experimental Framework}
-    To perform a fair and reproducible comparative analysis, this study utilizes \textbf{TruthLens}—an experimental adaptation of the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}.\footnote{Original repository available at: \url{https://github.com/BharathxD/ClaimeAI}}
+    To perform a fair and reproducible comparative analysis, this study utilizes \textbf{TruthLens}—an experimental adaptation of the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}.\footnote{Original repository available at: \url{https://github.com/BharathxD/ClaimeAI} (Accessed: 2025-12-22)}
     
     While the original repository provided a baseline implementation for single-model execution (utilizing only GPT-4o-mini), this study introduces significant architectural extensions required for comparative analysis:
     \begin{itemize}
@@ -958,7 +1001,7 @@ While $N=150$ sentences for extraction and $N=100$ claims for verification provi
 
 \textbf{3. Binary Extraction Ground Truth:} The extraction phase uses binary labels (factual/non-factual) from BingCheck. This simplification does not capture the spectrum of factuality (e.g., partially factual claims, opinions presented as facts).
 
-\textbf{4. Model Version Sensitivity:} LLM capabilities evolve rapidly. The specific model versions tested (GPT-4o-mini, Gemini-2.0-flash, DeepSeek-chat V3) represent a snapshot in time; newer versions may exhibit different performance characteristics.
+\textbf{4. Model Version Sensitivity:} LLM capabilities evolve rapidly. The specific model versions tested (GPT-4o-mini, Gemini-2.5-flash, DeepSeek-V3.2) represent a snapshot in time; newer versions may exhibit different performance characteristics.
 
 \subsection{Threats to Validity}
 
@@ -1232,21 +1275,22 @@ The complete prompts with all examples are available in the project repository (
 The selection prompt determines whether a sentence contains verifiable factual claims:
 
 \begin{promptbox}[title=Selection System Prompt (Excerpt)]
-You are an assistant to a fact-checker. You will be given an excerpt from a text and a particular sentence of interest. Your task is to determine whether this particular sentence contains at least one specific and verifiable proposition.
+\vspace{.2cm}
+You are an assistant to a fact-checker. You will be given an excerpt from a text and a particular sentence of interest. Your task is to determine whether this particular sentence contains at least one specific and verifiable proposition.\\
 
-Note the following rules:
-- If the sentence is about a lack of information, it does NOT contain a specific and verifiable proposition.
-- It does NOT matter whether the proposition is true or false.
-- Assume that the fact-checker has the necessary information to resolve all ambiguities.
+Note the following rules:\\
+- If the sentence is about a lack of information, it does NOT contain a specific and verifiable proposition. \\
+- It does NOT matter whether the proposition is true or false.\\
+- Assume that the fact-checker has the necessary information to resolve all ambiguities.\\
 
-Here are some examples of sentences that do NOT contain any specific and verifiable propositions:
-- By prioritizing ethical considerations, companies can ensure that their innovations are socially responsible
-- Technological progress should be inclusive
-- AI could lead to advancements in healthcare
+Here are some examples of sentences that do NOT contain any specific and verifiable propositions:\\
+- By prioritizing ethical considerations, companies can ensure that their innovations are socially responsible\\
+- Technological progress should be inclusive\\
+- AI could lead to advancements in healthcare\\
 
-Here are some examples of sentences that likely contain a specific and verifiable proposition:
-- The partnership between Company X and Company Y illustrates the power of innovation -> ``There is a partnership between Company X and Company Y''
-- Jane Doe's approach includes embracing adaptability and prioritizing customer feedback
+Here are some examples of sentences that likely contain a specific and verifiable proposition:\\
+- The partnership between Company X and Company Y illustrates the power of innovation -> ``There is a partnership between Company X and Company Y''\\
+- Jane Doe's approach includes embracing adaptability and prioritizing customer feedback\\
 \end{promptbox}
 
 \subsubsection{Disambiguation Prompt}
@@ -1254,16 +1298,17 @@ Here are some examples of sentences that likely contain a specific and verifiabl
 The disambiguation prompt resolves referential and structural ambiguities:
 
 \begin{promptbox}[title=Disambiguation System Prompt (Excerpt)]
-You are an assistant to a fact-checker. Your task is to ``decontextualize'' the sentence, which means:
-1. Resolve partial names and undefined acronyms/abbreviations
-2. Resolve linguistic ambiguity that has a clear resolution
+\vspace{.2cm}
+You are an assistant to a fact-checker. Your task is to ``decontextualize'' the sentence, which means:\\
+1. Resolve partial names and undefined acronyms/abbreviations\\
+2. Resolve linguistic ambiguity that has a clear resolution\\
 
-``Linguistic ambiguity'' refers to the presence of multiple possible meanings in a sentence. Vagueness and generality are NOT linguistic ambiguity.
+``Linguistic ambiguity'' refers to the presence of multiple possible meanings in a sentence. Vagueness and generality are NOT linguistic ambiguity.\\
 
-Example:
-- Context: ``John Smith was an early employee who transitioned to management in 2010''
-- Sentence: ``At the time, he led the company's operations and finance teams.''
-- Decontextualized: ``In 2010, John Smith led the company's operations team and finance team.''
+Example:\\
+- Context: ``John Smith was an early employee who transitioned to management in 2010''\\
+- Sentence: ``At the time, he led the company's operations and finance teams.''\\
+- Decontextualized: ``In 2010, John Smith led the company's operations team and finance team.''\\
 \end{promptbox}
 
 \subsubsection{Decomposition Prompt}
@@ -1271,17 +1316,18 @@ Example:
 The decomposition prompt breaks complex sentences into atomic claims:
 
 \begin{promptbox}[title=Decomposition System Prompt (Excerpt)]
-You are an assistant for a group of fact-checkers. Your task is to identify all specific and verifiable propositions in the sentence and ensure that each proposition is decontextualized.
+\vspace{.2cm}
+You are an assistant for a group of fact-checkers. Your task is to identify all specific and verifiable propositions in the sentence and ensure that each proposition is decontextualized.\\
 
-A proposition is ``decontextualized'' if:
-1. It is fully self-contained (can be understood in isolation)
-2. Its meaning in isolation matches its meaning when interpreted alongside the context
+A proposition is ``decontextualized'' if:\\
+1. It is fully self-contained (can be understood in isolation)\\
+2. Its meaning in isolation matches its meaning when interpreted alongside the context\\
 
-The propositions should be the simplest possible discrete units of information.
+The propositions should be the simplest possible discrete units of information.\\
 
-Example:
-- Sentence: ``John Smith and Jane Doe (writers of `Fighting for Better Tech')''
-- Propositions: [``John Smith is a writer of `Fighting for Better Tech''', ``Jane Doe is a writer of `Fighting for Better Tech''']
+Example:\\
+- Sentence: ``John Smith and Jane Doe (writers of `Fighting for Better Tech')''\\
+- Propositions: [``John Smith is a writer of `Fighting for Better Tech''', ``Jane Doe is a writer of `Fighting for Better Tech''']\\
 \end{promptbox}
 
 \subsection{Claim Verification Prompts}
@@ -1289,45 +1335,47 @@ Example:
 \subsubsection{Query Generation Prompt}
 
 \begin{promptbox}[title=Query Generation System Prompt (Excerpt)]
-You are an expert search query generator for fact-checking claims.
+\vspace{.2cm}
+You are an expert search query generator for fact-checking claims.\\
 
-Your task: Create a single, effective search query to find evidence that could verify or refute the given claim.
+Your task: Create a single, effective search query to find evidence that could verify or refute the given claim.\\
 
-Requirements:
-- Include key entities, names, dates, and specific details
-- Use search-engine-friendly language (no special characters)
-- Target authoritative sources (news, government, academic)
-- Keep it concise (5--15 words optimal)
-- Design to find both supporting AND contradictory evidence
+Requirements:\\
+- Include key entities, names, dates, and specific details\\
+- Use search-engine-friendly language (no special characters)\\
+- Target authoritative sources (news, government, academic)\\
+- Keep it concise (5--15 words optimal)\\
+- Design to find both supporting AND contradictory evidence\\
 
-Examples:
-- Policy claim: ``Biden student loan forgiveness program 2023''
-- Statistics: ``unemployment rate March 2024 Bureau Labor''
-- Events: ``Taylor Swift concert cancellation official statement''
+Examples:\\
+- Policy claim: ``Biden student loan forgiveness program 2023''\\
+- Statistics: ``unemployment rate March 2024 Bureau Labor''\\
+- Events: ``Taylor Swift concert cancellation official statement''\\
 \end{promptbox}
 
 \subsubsection{Evidence Evaluation Prompt}
 
 \begin{promptbox}[title=Evidence Evaluation System Prompt (Excerpt)]
-You are an expert fact-checker. Evaluate claims based ONLY on the evidence provided---do not use prior knowledge.
+\vspace{.2cm}
+You are an expert fact-checker. Evaluate claims based ONLY on the evidence provided---do not use prior knowledge.\\
 
-Verdict criteria:
+Verdict criteria:\\
 
-SUPPORTED---Use when:
-- Multiple reliable sources confirm the claim
-- Evidence directly addresses the core assertion
-- No credible contradictory evidence
+SUPPORTED---Use when:\\
+- Multiple reliable sources confirm the claim\\
+- Evidence directly addresses the core assertion\\
+- No credible contradictory evidence\\
 
-REFUTED---Use when:
-- Authoritative sources explicitly contradict the claim
-- Evidence provides clear counter-factual information
+REFUTED---Use when:\\
+- Authoritative sources explicitly contradict the claim\\
+- Evidence provides clear counter-factual information\\
 
-INSUFFICIENT INFORMATION---Use when:
-- Limited evidence (too few sources)
-- Evidence is indirect, vague, or incomplete
-- Key information missing for verification
+INSUFFICIENT INFORMATION---Use when:\\
+- Limited evidence (too few sources)\\
+- Evidence is indirect, vague, or incomplete\\
+- Key information missing for verification \\
 
-Decision rule: Be conservative---when evidence is ambiguous, choose ``Insufficient Information.''
+Decision rule: Be conservative---when evidence is ambiguous, choose ``Insufficient Information.''\\
 \end{promptbox}
 
 
@@ -1341,7 +1389,7 @@ Table \ref{tab:model_config} documents the exact model identifiers and API confi
     \caption{LLM API Configuration for Experiments}
     \label{tab:model_config}
     \small
-    \begin{tabular}{p{3cm}p{4cm}p{5cm}}
+    \begin{tabular}{p{3cm}p{4cm}p{7.5cm}}
         \hline
         \textbf{Display Name} & \textbf{API Model ID} & \textbf{Provider Endpoint} \\
         \hline
@@ -1510,7 +1558,7 @@ Table \ref{tab:dataset_sample} presents representative examples from the experim
     \caption{Sample Sentences from Experimental Dataset (BingCheck-derived)}
     \label{tab:dataset_sample}
     \small
-    \begin{tabular}{p{10cm}c}
+    \begin{tabular}{p{12cm}c}
         \hline
         \textbf{Sentence} & \textbf{GT} \\
         \hline
@@ -1527,6 +1575,138 @@ Table \ref{tab:dataset_sample} presents representative examples from the experim
     \vspace{0.3cm}
     \footnotesize{GT = Ground Truth (True = contains factual claim, False = no factual claim)}
 \end{table}
+
+\subsection{Phase 1: Claim Extraction Sample}
+\label{sec:appendix_extraction_sample}
+
+Table \ref{tab:extraction_sample} presents a representative example from the extraction phase dataset. This row shows how the three LLMs extract claims from a single factual sentence about the Argentine tango. The example demonstrates the different extraction strategies: GPT-4o-mini identifies 3 claims with balanced precision-recall, while Gemini and DeepSeek both extract multiple claims with higher selectivity.
+
+\begin{table}[ht]
+    \centering
+    \caption{Extraction Phase Sample: Argentine Tango Sentence (From my\_thesis\_dataset\_run1.csv)}
+    \label{tab:extraction_sample}
+    \small
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Field} & \textbf{Value} \\
+        \hline
+        \textbf{Original Sentence} & ``The Argentine tango is a dance and musical form that originated \\
+        & in Buenos Aires in the late 19th century, and has since become \\
+        & a revered art form worldwide.'' \\
+        \hline
+        \textbf{Ground Truth (Factual?)} & True \\
+        \hline
+        \textbf{GPT-4o-mini \# Claims} & 3 \\
+        \hline
+        \textbf{GPT-4o-mini Binary} & True \\
+        \hline
+        \textbf{Gemini-2.5-Flash \# Claims} & 5 \\
+        \hline
+        \textbf{Gemini-2.5-Flash Binary} & True \\
+        \hline
+        \textbf{DeepSeek-V3.2 \# Claims} & 5 \\
+        \hline
+        \textbf{DeepSeek-V3.2 Binary} & True \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{Extracted Claims Detail (GPT-4o-mini)}
+
+\begin{verbatim}
+1. The Argentine tango is a dance and musical form
+2. The Argentine tango originated in Buenos Aires
+3. The Argentine tango originated in the late 19th century
+\end{verbatim}
+
+\subsubsection{Extracted Claims Detail (Gemini-2.5-Flash)}
+
+\begin{verbatim}
+1. The Argentine tango is a dance
+2. The Argentine tango is a musical form
+3. The Argentine tango originated in Buenos Aires
+4. The Argentine tango originated in the late 19th century
+5. The Argentine tango has become an art form worldwide
+\end{verbatim}
+
+\subsubsection{Extracted Claims Detail (DeepSeek-V3.2)}
+
+\begin{verbatim}
+1. The Argentine tango is a dance form
+2. The Argentine tango is a musical form
+3. The Argentine tango originated in Buenos Aires
+4. The Argentine tango originated in the late 19th century
+5. The Argentine tango has become a revered art form worldwide
+\end{verbatim}
+
+\subsection{Phase 2: Claim Verification Sample}
+\label{sec:appendix_verification_sample}
+
+Table \ref{tab:verification_sample} presents a representative example from the verification phase. This claim about the Argentine tango was extracted in Phase 1 and then evaluated against web search results. The example demonstrates how all three models reached the same verdict (Supported) by finding multiple authoritative sources (UNESCO, Wikipedia, academic databases).
+
+\begin{table}[ht]
+    \centering
+    \caption{Verification Phase Sample: Argentine Tango Claim (From my\_thesis\_benchmark\_claims\_run1.csv)}
+    \label{tab:verification_sample}
+    \small
+    \begin{tabular}{|p{3cm}|p{10cm}|}
+        \hline
+        \textbf{Claim ID} & B001\_C00 \\
+        \hline
+        \textbf{Claim Text} & ``The Argentine tango is a dance and musical form'' \\
+        \hline
+        \textbf{Original Sentence} & ``The Argentine tango is a dance and musical form that originated in Buenos Aires in the late 19th century, and has since become a revered art form worldwide.'' \\
+        \hline
+        \textbf{Ground Truth Verdict} & Supported \\
+        \hline
+        \textbf{Ground Truth Source} & https://ich.unesco.org/en/RL/tango-00258 \\
+        \hline
+        \textbf{GPT-4o-mini Verdict} & Supported \\
+        \hline
+        \textbf{Gemini-2.5-Flash Verdict} & Supported \\
+        \hline
+        \textbf{DeepSeek-V3.2 Verdict} & Supported \\
+        \hline
+        \textbf{Inter-Model Agreement} & 100\% (unanimous) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{GPT-4o-mini Reasoning}
+
+``The claim that the Argentine tango is a dance and musical form is directly confirmed by multiple reliable sources. Source 2 explicitly states that Argentine tango is both a musical genre and a social dance, and Source 1 indicates that tango is a dance with musical origins. No contradictory evidence is presented.''
+
+\subsubsection{GPT-4o-mini Retrieved Sources}
+
+\begin{enumerate}
+    \item \textbf{Tango - Wikipedia}: ``Tango is a dance that has influences ... dance originated in working-class districts of Buenos Aires and Montevideo. Tango music derived from the fusion of various forms of music from Europe...''
+    \item \textbf{Argentine tango - Wikipedia}: ``Argentine tango is a musical genre and accompanying social dance originating at the end of the 19th century in the suburbs of Buenos Aires. It typically has a 2/4 or 4/4 rhythmic time signature...''
+    \item \textbf{Guide to Tango Music - MasterClass}: ``A tango orchestra, or orquesta ... well as vocalists and tango dancers. The history of tango dates back to the nineteenth century...''
+\end{enumerate}
+
+\subsubsection{Gemini-2.5-Flash Reasoning}
+
+``Multiple reliable sources explicitly state that Argentine tango is both a dance and a musical form or musical genre.''
+
+\subsubsection{Gemini-2.5-Flash Retrieved Sources}
+
+\begin{enumerate}
+    \item \textbf{Tango - Wikipedia}: ``Tango is a dance that has influences ... dance originated in working-class districts of Buenos Aires and Montevideo. Tango music derived from the fusion of various forms of music from Europe...''
+    \item \textbf{A Short History Of Argentine Tango - Tango.ORG}: ``Argentine Tango as a dance and musical form developed in Buenos Aires at the end of the 19th Century, and arrived in Europe and then the US in the first decades of the 1900s. This is the mode of dance that evolved into Ballroom tango.''
+    \item \textbf{Argentine tango - Wikipedia}: ``Argentine tango is a musical genre and accompanying social dance originating at the end of the 19th century in the suburbs of Buenos Aires. It typically has a 2/4 or 4/4 rhythmic time signature...''
+\end{enumerate}
+
+\subsubsection{DeepSeek-V3.2 Reasoning}
+
+``All three sources directly confirm the claim that Argentine tango is a dance and musical form. Source 1 describes it as a partner dance and social Latin dance, Source 2 explicitly states it as a dance and musical form, and Source 3 discusses its evolution as a dance, collectively providing authoritative and consistent evidence.''
+
+\subsubsection{DeepSeek-V3.2 Retrieved Sources}
+
+\begin{enumerate}
+    \item \textbf{Tango - Wikipedia}: ``Tango is a partner dance and social Latin dance that originated in the 1880s along the Río de la Plata, the natural border between Argentina and Uruguay. The tango was born in the impoverished port areas of these countries from a combination of Argentine Milonga, Spanish-Cuban Habanera, and...''
+    \item \textbf{A Short History Of Argentine Tango - Tango.ORG}: ``Argentine Tango as a dance and musical form developed in Buenos Aires at the end of the 19th Century, and arrived in Europe and then the US in the first decades of the 1900s. This is the mode of dance that evolved into Ballroom tango.''
+    \item \textbf{Tango | Argentine, Latin American, Couple - Britannica}: ``The tango evolved about 1880 in dance halls and perhaps brothels in the lower-class districts of Buenos Aires, where the Spanish tango, a light-spirited variety of flamenco, merged with the milonga, a fast, sensual, and disreputable Argentine...''
+\end{enumerate}
 
 % --- Bibliography ---
 \clearpage
