@@ -40,7 +40,7 @@ TruthLens is a **decoupled two-phase framework** for automated fact-checking tha
 | Model            | Provider | API Identifier             | Architecture |
 | ---------------- | -------- | -------------------------- | ------------ |
 | GPT-4o-mini      | OpenAI   | `gpt-4o-mini-2024-07-18` | Proprietary  |
-| Gemini-2.5-Flash | Google   | `gemini-2.5-flash-001`   | Proprietary  |
+| Gemini-2.5-Flash | Google   | `gemini-2.5-flash`       | Proprietary  |
 | DeepSeek-V3.2    | DeepSeek | `deepseek-chat` (V3.2)   | Open Weights |
 
 ### 1.3 Key Research Questions
