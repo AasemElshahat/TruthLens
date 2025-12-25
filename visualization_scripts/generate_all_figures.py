@@ -36,15 +36,15 @@ VERIFICATION_PER_RUN = RESULTS_DIR / "verification" / "per_run"
 
 # Color scheme - consistent across all figures
 COLORS = {
-    "gpt4": "#10A37F",      # OpenAI Green
-    "gemini": "#4285F4",    # Google Blue
-    "deepseek": "#FF6B35",  # DeepSeek Orange
+    "gpt4": "#00A78E",      # OpenAI Green
+    "gemini": "#FDA913",    # Google Yellow
+    "deepseek": "#0066FF",  # DeepSeek Blue
 }
 
 MODEL_LABELS = {
-    "gpt4": "GPT-4o-mini",
-    "gemini": "Gemini-2.5-Flash",
-    "deepseek": "DeepSeek-V3.2",
+    "gpt4": "gpt-4o-mini",
+    "gemini": "gemini-2.5-flash",
+    "deepseek": "deepseek-v3.2",
 }
 
 # Plot styling
