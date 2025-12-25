@@ -1399,16 +1399,16 @@ Table \ref{tab:model_config} documents the exact model identifiers and API endpo
 
 \begin{table}[ht]
     \centering
-    \caption{LLM API Configuration}
+    \caption{LLM API Configuration (exact model identifiers used in code)}
     \label{tab:model_config}
     \small
     \begin{tabular}{p{3cm}p{4cm}p{7cm}}
         \hline
-        \textbf{Display Name} & \textbf{API Model ID} & \textbf{Provider Endpoint} \\
+        \textbf{Display Name} & \textbf{API Model ID (in code)} & \textbf{Provider Endpoint} \\
         \hline
-        gpt-4o-mini & \texttt{gpt-4o-mini} & OpenAI API (\texttt{api.openai.com}) \\
+        gpt-4o-mini & \texttt{openai:gpt-4o-mini} & OpenAI API (\texttt{api.openai.com}) \\
         gemini-2.5-flash & \texttt{gemini-2.5-flash} & Google AI API (\texttt{generativelanguage.googleapis.com}) \\
-        deepseek-v3.2 & \texttt{deepseek-chat} & DeepSeek API (\texttt{api.deepseek.com}) \\
+        deepseek-v3.2 & \texttt{deepseek-chat} & DeepSeek API (\texttt{https://api.deepseek.com}) \\
         \hline
     \end{tabular}
 \end{table}
@@ -1419,16 +1419,16 @@ To minimize non-determinism, the generation parameters in Table \ref{tab:gen_par
 
 \begin{table}[ht]
     \centering
-    \caption{LLM Generation Parameters}
+    \caption{LLM Generation and network parameters (as implemented in code)}
     \label{tab:gen_params}
-    \begin{tabular}{lc}
+    \begin{tabular}{p{8cm}p{5cm}}
         \hline
-        \textbf{Parameter} & \textbf{Value} \\
+        	extbf{Parameter} & \textbf{Value (code)} \\
         \hline
-        Temperature & 0.0 \\
-        Max Retries (Exponential Backoff) & 3 \\
-        Request Timeout & 60 seconds \\
-        JSON Mode & Enabled (via Schema) \\
+        Temperature (default for deterministic runs) & 0.0 \\
+        Network retry attempts (search client) & 2 retries (up to 3 attempts total) \\
+        Request timeout (Brave search requests) & 30 seconds (per-request aiohttp timeout) \\
+        JSON / structured-output handling & Enabled for DeepSeek via \texttt{DeepSeekChatWrapper}; OpenAI/Gemini use provider-native mechanisms or client support \\
         \hline
     \end{tabular}
 \end{table}
@@ -1436,10 +1436,10 @@ To minimize non-determinism, the generation parameters in Table \ref{tab:gen_par
 \subsection{Search Configuration}
 
 \begin{itemize}
-    \item \textbf{Search Provider:} Brave Search API
-    \item \textbf{Maximum Search Iterations:} 3 per claim
-    \item \textbf{Results per Query:} 10
-    \item \textbf{Freshness Filter:} None (all time)
+    \item \textbf{Search Provider:} Brave Search API (default). The implementation supports alternative providers (Exa, Tavily) via the \texttt{SEARCH_PROVIDER} environment variable.
+    \item \textbf{Maximum Search Iterations:} 5 per claim (default configured in \texttt{claim\_verifier/config/nodes.py})
+    \item \textbf{Results per Query:} 3 (default configured in \texttt{claim\_verifier/config/nodes.py}; configurable)
+    \item \textbf{Freshness Filter:} None (all time) by default
 \end{itemize}
 
 \subsection{Environment Variables}
@@ -1451,7 +1451,10 @@ LLM_PROVIDER=openai|gemini|deepseek
 OPENAI_API_KEY=sk-proj-...
 GOOGLE_API_KEY=AIza...
 DEEPSEEK_API_KEY=sk-...
-BRAVE_API_KEY=BSA...
+BRAVE_API_KEY=your-brave-key-here
+EXA_API_KEY=<uuid4-or-EXA-key>
+TAVILY_API_KEY=tvly-...
+SEARCH_PROVIDER=brave|exa|tavily
 \end{verbatim}
 
 \section{Benchmark Runner Script}
