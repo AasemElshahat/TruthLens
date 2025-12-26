@@ -192,7 +192,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 \section{Motivation}
     
     \subsection{The Problem of LLM Hallucinations}
-    While LLMs are fluent and coherent, they lack an inherent understanding of truth. They operate as probabilistic systems, predicting the next token based on statistical patterns learned during training rather than querying a structured knowledge base of verified facts. Consequently, these models often conflate correct information with outdated data, common misconceptions, or complete fabrications \cite{Ji2023Survey}.
+    While LLMs are fluent and coherent, they lack an inherent understanding of truth. They operate as probabilistic systems, predicting the next token (the fundamental unit of text processing \cite{JurafskyMartin2025}) based on statistical patterns learned during training rather than querying a structured knowledge base of verified facts. Consequently, these models often conflate correct information with outdated data, common misconceptions, or complete fabrications \cite{Ji2023Survey}.
     
     The risk is not merely academic; in high-stakes applications, hallucinations can lead to the propagation of misinformation, legal liabilities, and the erosion of user trust. For instance, an LLM might generate a summary of a news article that accurately captures the tone but invents specific dates or statistics. This ``fluency-factuality gap''—where the text reads perfectly but is factually wrong—makes manual verification difficult and time-consuming for human users.
 
@@ -269,7 +269,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 
 
     \section{Large Language Models and Factuality}
-    The capabilities of Large Language Models (LLMs) have scaled dramatically in recent years, driven by advancements in transformer architectures and the expansion of pre-training datasets. However, these models remain prone to ``hallucination''—the generation of text that is fluent and coherent but factually incorrect \cite{Ji2023Survey}.
+    The capabilities of Large Language Models (LLMs) have scaled dramatically in recent years, driven by advancements in transformer architectures \cite{Vaswani2017} and the expansion of pre-training datasets. However, these models remain prone to ``hallucination''—the generation of text that is fluent and coherent but factually incorrect \cite{Ji2023Survey}.
     
     Early research in Natural Language Generation (NLG) primarily categorized these errors relative to a source document (e.g., in summarization tasks). This produced the standard distinction between \textbf{Intrinsic} and \textbf{Extrinsic} hallucinations (Table \ref{tab:hallucination_types}).
     
@@ -351,7 +351,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     While the original BingCheck dataset focuses on document-level verification, this thesis utilizes these sentence-level annotations to derive the binary classification ground truth for Phase 1 (Extraction).
     
     \section{Phase 2: Factual Claim Verification}
-    Once atomic claims are extracted, they must be verified against external evidence. Relying on an LLM's internal parametric knowledge is insufficient due to the ``knowledge cutoff'' problem and the risk of reinforcing existing hallucinations.
+    Once atomic claims are extracted, they must be verified against external evidence. Relying on an LLM's internal parametric knowledge (facts encoded in model weights during training) is insufficient due to the ``knowledge cutoff'' problem and the risk of reinforcing existing hallucinations.
     
     \subsection{The Knowledge Cutoff Problem}
     Large Language Models are trained on static datasets with fixed temporal boundaries, meaning their parametric knowledge becomes progressively outdated after training completion. Cheng et al. \cite{Cheng2024} systematically analyzed this phenomenon, demonstrating that LLMs exhibit measurable degradation in factual accuracy for events occurring after their training cutoff dates. For the models evaluated in this thesis, these cutoffs range from late 2023 to mid-2025, rendering them unreliable for verifying claims about recent events, updated statistics, or evolving scientific consensus. This limitation fundamentally motivates the search-augmented approach adopted in the TruthLens framework.
@@ -373,7 +373,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     To empirically evaluate the performance of gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2, this thesis implements \textbf{TruthLens}. TruthLens is a specialized adaptation and extension of the open-source \textit{ClaimeAI} framework, with significant architectural extensions to support systematic comparative multi-model benchmarking.
 
     \subsection{Foundation: The ClaimeAI Architecture}
-    The architectural foundation of this study is \textbf{ClaimeAI} \cite{ClaimeAI_Repo}, an open-source fact-checking tool designed by BharathxD. ClaimeAI introduced the concept of a \textbf{decoupled pipeline} utilizing \textbf{LangGraph}, where the fact-checking process is split into two autonomous agents:
+    The architectural foundation of this study is \textbf{ClaimeAI} \cite{ClaimeAI_Repo}, an open-source fact-checking tool designed by BharathxD. ClaimeAI introduced the concept of a decoupled pipeline utilizing \textbf{LangGraph} \cite{LangGraph}. Unlike traditional linear chains, LangGraph is a library specifically designed for building stateful, multi-actor applications with LLMs. It enables the creation of cyclical graphs, allowing agents to loop, persist state, and make iterative decisions—a critical capability for the complex reasoning required in fact-checking tasks. Within this framework, the process is split into two autonomous agents::
     \begin{enumerate}
         \item \textbf{Claim Extractor:} Uses a specific graph of prompt nodes (Selection $\rightarrow$ Disambiguation $\rightarrow$ Decomposition) to isolate atomic claims.
         \item \textbf{Claim Verifier:} Uses a search-augmented loop (Search $\rightarrow$ Reason $\rightarrow$ Verdict) to verify those claims.
@@ -403,7 +403,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
         The original ClaimeAI was designed for interactive, one-claim-at-a-time processing. However, rigorous benchmarking requires processing $N=150$ sentences across 3 models with $k=3$ runs each—a total of 1,350 extraction API calls, plus 600 verification calls. This scale necessitates automated batch processing with rate limiting (to respect API quotas), failure recovery (to handle transient network errors), and result serialization (to preserve data for analysis). Additionally, checkpointing mechanisms prevent data loss during long-running experiments.
 
         \item \textbf{Cost-Effective Search Infrastructure:}
-        The original ClaimeAI relied on expensive neural search providers (Tavily, Exa) unsuitable for thesis-scale experimentation. To enable the required experimental runs within budget constraints, support for the Brave Search API was added as a cost-effective, keyword-based retrieval backend. The design abstracts different search backends behind a unified interface, ensuring that the choice of search provider does not affect agent logic.
+        The original ClaimeAI relied on expensive neural search providers (Tavily, Exa) unsuitable for thesis-scale experimentation. To enable the required experimental runs within budget constraints, support for the Brave Search API \cite{BraveSearchAPI} was added as a cost-effective, keyword-based retrieval backend. The design abstracts different search backends behind a unified interface, ensuring that the choice of search provider does not affect agent logic.
 
         \item \textbf{Three-Label Verification Schema:}
         The original ClaimeAI had disabled support for \textit{Insufficient Information} verdicts, limiting verification to binary classification (\textit{Supported} vs. \textit{Refuted}). However, real-world fact-checking often encounters claims where evidence is genuinely inconclusive. Restoring the three-label schema (\textit{Supported}, \textit{Refuted}, \textit{Insufficient Information}) enables more realistic evaluation and aligns with standard fact-checking taxonomies used in datasets like BingCheck.
@@ -423,12 +423,12 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
     To ensure internal validity, the following controls were strictly enforced:
     \begin{itemize}
-        \item \textbf{Identical Prompts:} All three models received the exact same system instructions and few-shot examples for both extraction and verification tasks. No model-specific prompt engineering was applied.
-        \item \textbf{Deterministic Sampling:} To minimize variability in generation, the temperature settings were standardized (where applicable) to maximize output reproducibility.
+        \item \textbf{Identical Prompts:} All three models received the exact same system instructions and few-shot examples (task demonstrations included in the prompt \cite{JurafskyMartin2025}) for both extraction and verification tasks. No model-specific prompt engineering was applied.
+        \item \textbf{Deterministic Sampling:} To minimize variability in generation, the temperature settings (a hyperparameter controlling output randomness \cite{JurafskyMartin2025}) were standardized (where applicable) to maximize output reproducibility.
     \end{itemize}
     
     \subsection{LLM Providers}
-    The study benchmarks three models representing different architectural philosophies (Proprietary vs. Open Weights) and cost profiles. The specific versions used for all experiments are listed in Table \ref{tab:models_specs} (see Chapter 1).
+    The study benchmarks three models representing different architectural philosophies (Proprietary vs. Open Weights \cite{OSI2024}) and cost profiles. Open Weights models publicly release their model parameters, enabling local deployment and fine-tuning, while proprietary models are accessible only through vendor APIs. The specific versions used for all experiments are listed in Table \ref{tab:models_specs} (see Chapter 1).
     
     \section{Dataset Creation and Sampling}
     
@@ -875,7 +875,7 @@ Figure \ref{fig:verification_accuracy} provides a comparative visualization of a
 
 \subsection{Inter-Model Agreement Analysis}
 
-To assess whether models converge on similar verdicts (potentially indicating ``easy'' vs. ``hard'' claims), pairwise agreement rates were computed. Figure \ref{fig:inter_model} presents these results alongside Fleiss' Kappa for overall inter-rater reliability.
+To assess whether models converge on similar verdicts (potentially indicating ``easy'' vs. ``hard'' claims), pairwise agreement rates were computed. Figure \ref{fig:inter_model} presents these results alongside Fleiss' Kappa (a statistical measure of inter-rater agreement for categorical data) for overall inter-rater reliability \cite{LandisKoch1977}.
 
 \begin{figure}[H]
     \centering
@@ -986,7 +986,7 @@ An unexpected finding was the relationship between model stability and performan
     \item \textbf{DeepSeek:} Most variable ($\pm$2.1\% accuracy SD, $\pm$4.6\% extraction F1 SD)
 \end{itemize}
 
-deepseek-v3.2's higher variability may be attributed to its sensitivity to prompt formatting. As noted in Chapter \ref{ch:implementation}, deepseek-v3.2 required custom middleware to enforce structured JSON output, suggesting that open-weights models may require additional engineering effort to achieve production-level consistency.
+deepseek-v3.2's higher variability may be attributed to its sensitivity to prompt formatting. As noted in Chapter \ref{ch:implementation}, deepseek-v3.2 required custom middleware to enforce structured JSON output, suggesting that Open Weights models may require additional engineering effort to achieve production-level consistency.
 
 \section{Qualitative Error Analysis}
 
@@ -1146,7 +1146,7 @@ Based on the empirical findings, we offer the following guidance for practitione
 
 \textbf{Stability Considerations:} gpt-4o-mini offers the most deterministic outputs ($\pm$0.0\% accuracy SD), making it suitable for applications requiring reproducible results. deepseek-v3.2's higher variability ($\pm$4.6\% extraction F1 SD) suggests it may require additional engineering effort (e.g., ensemble approaches or multiple inference passes) to achieve production-level consistency.
 
-\textbf{Cost-Accuracy Trade-offs:} Open-weights models like deepseek-v3.2 offer competitive performance at reduced API costs compared to proprietary alternatives. For budget-constrained deployments, deepseek-v3.2 provides a viable option, particularly for verification tasks where its Macro-F1 performance exceeds the other models.
+\textbf{Cost-Accuracy Trade-offs:} Open Weights models like deepseek-v3.2 offer competitive performance at reduced API costs compared to proprietary alternatives. For budget-constrained deployments, deepseek-v3.2 provides a viable option, particularly for verification tasks where its Macro-F1 performance exceeds the other models.
 
 \section{Future Work}
 
