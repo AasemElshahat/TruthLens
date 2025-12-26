@@ -405,11 +405,11 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 
         \item \textbf{Expanded Search Provider Support:}
         \textit{Original:} Relies on expensive neural search providers (Tavily/Exa) without cost-effective alternatives.\\
-        \textit{Adaptation:} We extended the search module to support the \textbf{Brave Search API} as a cost-effective, keyword-based retrieval backend, enabling experimental runs within the scope of this thesis. The implementation provides a unified interface that abstracts different search backends while maintaining consistent functionality.
+        \textit{Adaptation:} We extended the search module to support the \textbf{Brave Search API} \cite{BraveSearchAPI} as a cost-effective, keyword-based retrieval backend, enabling experimental runs within the scope of this thesis. The implementation provides a unified interface that abstracts different search backends while maintaining consistent functionality.
 
-        \item \textbf{Enhanced Verification Capabilities:}
-        \textit{Original:} Verification was limited to Supported/Refuted verdicts.
-        \textit{Adaptation:} We expanded the verification system to include \textit{Insufficient Information} verdicts, providing a more comprehensive fact-checking framework that better reflects real-world scenarios where evidence may be inconclusive.
+        \item \textbf{Restored Verification Capabilities:}
+        \textit{Original:} The ClaimeAI framework initially included support for \textit{Insufficient Information} verdicts (alongside \textit{Supported}, \textit{Refuted}, and \textit{Conflicting Evidence}), but this capability had been disabled (commented out) in the codebase prior to our fork. The verification workflow was effectively limited to binary classification.\\
+        \textit{Adaptation:} We re-enabled the \textit{Insufficient Information} verdict category by restoring the previously commented-out enum value, providing a more comprehensive three-label fact-checking framework that better reflects real-world scenarios where evidence may be inconclusive. We removed support for the fourth category (\textit{Conflicting Evidence}) to align with standard fact-checking taxonomies and simplify the annotation process.
 
         \item \textbf{Multi-Run Statistical Analysis:}
         \textit{Original:} Single-run execution without statistical validation.
@@ -697,7 +697,7 @@ class LLMProvider(ABC):
     This adapter enables DeepSeek models to function within LangGraph's type-safe agent framework while maintaining the same structured output guarantees as the other providers.
 
     \subsection{Search Provider Extension}
-    The original repository included a search interface supporting expensive neural search APIs like Exa (formerly Metaphor) and Tavily. To enable large-scale benchmarking within the budget constraints of this study, this module was extended to support the \textbf{Brave Search API} \cite{BraveSearchAPI}.
+    The original repository included a search interface supporting expensive neural search APIs like Exa (formerly Metaphor) and Tavily. To enable large-scale benchmarking within the budget constraints of this study, this module was extended to support the \textbf{Brave Search API}.
     
     The implementation in \texttt{search/provider.py} abstracts these distinct backends behind a unified asynchronous interface. This allows the agents to switch between providers without logic changes:
     
