@@ -381,44 +381,8 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 
     However, the original ClaimeAI repository was configured to use a single LLM provider (OpenAI GPT-4) with the model identifier hardcoded in the configuration. While the underlying LangChain framework (via \texttt{init\_chat\_model}) theoretically supports multiple providers, the original implementation lacked the systematic infrastructure required for controlled comparative benchmarking across multiple LLM providers with different API capabilities.
 
-    \subsection{From ClaimeAI to TruthLens: Key Adaptations}
-    To answer the research questions of this thesis, significant architectural extensions were required to transform ClaimeAI from a single-provider configuration into a systematic multi-model benchmarking suite.
-
-    The specific adaptations implemented in TruthLens include:
-
-    \begin{enumerate}
-        \item \textbf{Unified Provider Management Infrastructure:}
-        \textit{Original:} ClaimeAI used LangChain's \texttt{init\_chat\_model} function for model initialization, with the model identifier hardcoded to OpenAI GPT-4 in the configuration file. While \texttt{init\_chat\_model} supports multiple providers through different model identifier strings, the original implementation lacked systematic provider management.
-
-        \textit{Adaptation:} We developed a unified provider abstraction layer that standardizes LLM interactions across three different initialization approaches:
-        \begin{itemize}
-            \item \textbf{OpenAI:} Uses \texttt{init\_chat\_model} with standard configuration
-            \item \textbf{Gemini:} Uses \texttt{ChatGoogleGenerativeAI} with provider-specific safety settings (HarmBlockThreshold.BLOCK\_NONE) to prevent false refusals on factual news content
-            \item \textbf{DeepSeek:} Uses \texttt{ChatOpenAI} with custom endpoint (\url{base_url="https://api.deepseek.com"}) and JSON mode configuration
-        \end{itemize}
-
-        By implementing the Strategy Pattern \cite{Gamma1994}, we created a uniform interface that eliminates code-path asymmetry as a potential confounding variable in our comparative analysis. All three models pass through identical configuration logic, validation, and error handling, ensuring behavioral differences can be attributed to model capabilities rather than implementation artifacts.
-
-        \item \textbf{Batch Benchmarking Engine:}
-        \textit{Original:} Designed for interactive, one-claim-at-a-time processing without systematic evaluation infrastructure.
-        \textit{Adaptation:} We developed a comprehensive batch-processing system capable of ingesting the BingCheck dataset ($N=150$), managing API rate limits, handling failures gracefully, and serializing results into structured CSV datasets for statistical analysis. This includes automated multi-run execution for statistical reliability and checkpointing mechanisms to prevent data loss during long-running experiments.
-
-        \item \textbf{Expanded Search Provider Support:}
-        \textit{Original:} Relies on expensive neural search providers (Tavily/Exa) without cost-effective alternatives.\\
-        \textit{Adaptation:} We extended the search module to support the \textbf{Brave Search API} \cite{BraveSearchAPI} as a cost-effective, keyword-based retrieval backend, enabling experimental runs within the scope of this thesis. The implementation provides a unified interface that abstracts different search backends while maintaining consistent functionality.
-
-        \item \textbf{Restored Verification Capabilities:}
-        \textit{Original:} The ClaimeAI framework initially included support for \textit{Insufficient Information} verdicts (alongside \textit{Supported}, \textit{Refuted}, and \textit{Conflicting Evidence}), but this capability had been disabled (commented out) in the codebase prior to our fork. The verification workflow was effectively limited to binary classification.\\
-        \textit{Adaptation:} We re-enabled the \textit{Insufficient Information} verdict category by restoring the previously commented-out enum value, providing a more comprehensive three-label fact-checking framework that better reflects real-world scenarios where evidence may be inconclusive. We removed support for the fourth category (\textit{Conflicting Evidence}) to align with standard fact-checking taxonomies and simplify the annotation process.
-
-        \item \textbf{Multi-Run Statistical Analysis:}
-        \textit{Original:} Single-run execution without statistical validation.
-        \textit{Adaptation:} We implemented automated multi-run execution ($k=3$ for extraction, $k=2$ for verification) with statistical analysis capabilities to ensure result reliability and quantify model performance variability.
-    \end{enumerate}
-
-
-    \subsection{Implementation Approach}
-    The TruthLens framework extends the original ClaimeAI codebase by building upon its LangGraph-based architecture while adding systematic provider management infrastructure. We developed a unified abstraction layer that standardizes interactions across providers with different API capabilities and configuration requirements. This design ensures experimental validity: all models are subject to identical initialization logic, error handling, and configuration management, eliminating implementation differences as potential confounding variables. The implementation preserves the core fact-checking methodologies established in the original framework while enabling rigorous comparative analysis.
+    \subsection{Scope of Adaptation}
+    The original ClaimeAI repository was configured for single-provider execution with OpenAI GPT-4 hardcoded in the configuration. To conduct the multi-model comparative analysis required by this thesis, systematic extensions were necessary. These extensions address four key requirements: (1) ensuring experimental consistency across providers with different API capabilities, (2) enabling large-scale batch processing for statistical validation, (3) providing cost-effective search infrastructure, and (4) restoring the three-label verification schema. Chapter \ref{ch:methodology} details the methodological rationale for these requirements, and Chapter \ref{ch:implementation} describes their technical implementation.
 
 \chapter{Methodology}
 \label{ch:methodology}
@@ -426,15 +390,26 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
 
     \section{Experimental Framework}
+    \label{sec:experimental_framework}
     To perform a fair and reproducible comparative analysis, this study utilizes \textbf{TruthLens}—an experimental adaptation of the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}.\footnote{Original repository available at: \url{https://github.com/BharathxD/ClaimeAI} (Accessed: 2025-12-22)}
     
-    While the original repository was configured for single-model execution (OpenAI GPT-4), this study required systematic infrastructure for controlled comparative benchmarking. The necessary extensions include:
-    \begin{itemize}
-        \item \textbf{Provider Management Infrastructure:} Developing a unified abstraction layer to standardize interactions across providers with different API capabilities (OpenAI's native structured output, Gemini's safety configuration requirements, and DeepSeek's custom endpoint and JSON mode limitations).
-        \item \textbf{Batch Benchmarking Pipeline:} Implementing automated scripts for large-scale execution ($N=150$ samples, $k=3$ runs, 3 models) with rate limiting, failure recovery, and result serialization.
-        \item \textbf{Statistical Validation Framework:} Developing multi-run execution with automated metric calculation to quantify performance variability.
-        \item \textbf{Dataset Integration:} Adapting the BingCheck corpus for ground-truth validation of extraction and verification phases.
-    \end{itemize}
+    While the original repository was configured for single-model execution (OpenAI GPT-4), this study required systematic infrastructure for controlled comparative benchmarking. Four methodological requirements drove the design of TruthLens:
+
+    \begin{enumerate}
+        \item \textbf{Experimental Consistency Across Providers:}
+        A fair comparison requires that all models receive identical treatment. However, the three target providers (OpenAI, Google, DeepSeek) have different API capabilities: OpenAI supports native structured output, Gemini requires explicit safety configuration to prevent false refusals on factual news content, and DeepSeek lacks native schema validation. Without a unified abstraction layer, these asymmetries would introduce confounding variables—observed differences might reflect implementation artifacts rather than model capabilities. The TruthLens design therefore mandates that all models pass through identical configuration logic, validation, and error handling.
+
+        \item \textbf{Large-Scale Batch Processing:}
+        The original ClaimeAI was designed for interactive, one-claim-at-a-time processing. However, rigorous benchmarking requires processing $N=150$ sentences across 3 models with $k=3$ runs each—a total of 1,350 extraction API calls, plus 600 verification calls. This scale necessitates automated batch processing with rate limiting (to respect API quotas), failure recovery (to handle transient network errors), and result serialization (to preserve data for analysis). Additionally, checkpointing mechanisms prevent data loss during long-running experiments.
+
+        \item \textbf{Cost-Effective Search Infrastructure:}
+        The original ClaimeAI relied on expensive neural search providers (Tavily, Exa) unsuitable for thesis-scale experimentation. To enable the required experimental runs within budget constraints, support for the Brave Search API was added as a cost-effective, keyword-based retrieval backend. The design abstracts different search backends behind a unified interface, ensuring that the choice of search provider does not affect agent logic.
+
+        \item \textbf{Three-Label Verification Schema:}
+        The original ClaimeAI had disabled support for \textit{Insufficient Information} verdicts, limiting verification to binary classification (\textit{Supported} vs. \textit{Refuted}). However, real-world fact-checking often encounters claims where evidence is genuinely inconclusive. Restoring the three-label schema (\textit{Supported}, \textit{Refuted}, \textit{Insufficient Information}) enables more realistic evaluation and aligns with standard fact-checking taxonomies used in datasets like BingCheck.
+    \end{enumerate}
+
+    The technical implementation of these requirements is detailed in Chapter \ref{ch:implementation}.
     
     \begin{figure}[ht]
         \centering
@@ -585,7 +560,7 @@ This chapter details the technical realization of the TruthLens framework. It de
     
     The TruthLens framework is built upon a modular, multi-agent architecture designed to decouple the task of claim extraction from claim verification. The system is implemented in Python using \textbf{LangGraph} \cite{LangGraph}, a library for building stateful, multi-actor applications with Large Language Models (LLMs).
     
-    While the initial prototype (based on the open-source \textit{ClaimeAI} repository) provided a baseline implementation configured for single-provider execution, this thesis required systematic infrastructure for controlled comparative benchmarking across multiple LLM providers. We extended the architecture to support provider management, batch processing with statistical validation, and automated metric calculation.
+    The initial prototype (based on the open-source \textit{ClaimeAI} repository) provided a baseline implementation configured for single-provider execution. To address the methodological requirements outlined in Section \ref{sec:experimental_framework}, the architecture was extended to support provider management, batch processing with statistical validation, and automated metric calculation.
 
     The high-level architecture consists of three primary components:
     \begin{enumerate}
@@ -648,17 +623,9 @@ This chapter details the technical realization of the TruthLens framework. It de
 
     \section{Provider Management Infrastructure}
 
-    To ensure experimental validity in our comparative analysis, we developed a unified provider management infrastructure that standardizes LLM interactions across all three models. While LangChain's \texttt{init\_chat\_model} function provides basic multi-provider initialization, our approach addresses two critical requirements for rigorous comparative benchmarking:
+    This section describes the technical implementation of the unified provider abstraction layer required for experimental consistency (see Section \ref{sec:experimental_framework} for the methodological rationale). The core challenge was reconciling the need for identical code paths across all models with the reality that each provider has different API capabilities: OpenAI supports native structured output, Gemini requires explicit safety configuration, and DeepSeek lacks schema validation.
 
-    \textbf{1. Experimental Consistency:} All models must pass through identical configuration, validation, and error-handling logic to eliminate implementation differences as confounding variables. Using different code paths for different providers (e.g., \texttt{init\_chat\_model} for OpenAI but direct provider classes for Gemini and DeepSeek) would introduce asymmetric treatment that could bias results.
-
-    \textbf{2. Provider-Specific Adaptations:} Each provider has different API capabilities and requirements:
-    \begin{itemize}
-        \item \textbf{Gemini} requires safety setting overrides (\texttt{HarmBlockThreshold.BLOCK\_NONE}) to prevent false refusals on factual news claims—these settings aren't easily exposed through \texttt{init\_chat\_model}'s generic interface
-        \item \textbf{DeepSeek} requires a custom API endpoint (\texttt{base\_url}) and lacks native support for LangChain's \texttt{with\_structured\_output()} method, necessitating custom middleware
-    \end{itemize}
-
-    By implementing the Strategy Pattern \cite{Gamma1994}, we created a design that balances experimental rigor (uniform treatment across providers) with practical requirements (provider-specific handling of API differences).
+    The solution implements the Strategy Pattern \cite{Gamma1994}, encapsulating provider-specific initialization logic behind a uniform interface while ensuring all models receive identical treatment in the agent workflows.
     
     \subsection{Provider Interface}
     We defined an abstract base class, \texttt{LLMProvider}, which enforces a uniform interface for all model interactions despite underlying differences in initialization methods and API requirements. This abstraction ensures that all three models—regardless of whether they use \texttt{init\_chat\_model}, \texttt{ChatGoogleGenerativeAI}, or \texttt{ChatOpenAI} with custom configuration—are accessed through identical code paths in the agent logic.
