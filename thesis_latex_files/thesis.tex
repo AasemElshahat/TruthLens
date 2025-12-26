@@ -3,7 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage[english]{babel}
+\usepackage[ngerman, english]{babel}
 
 \usepackage[left=4cm, right=2cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[nopatch=footnote]{microtype}
@@ -138,13 +138,30 @@ Qualitative analysis highlights three key failure modes: the tendency to reject 
 
 \clearpage
 
+% --- German Abstract (Zusammenfassung) ---
+\begin{otherlanguage}{ngerman} 
+    \begin{abstract}
+    Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache grundlegend verändert, doch ihre Tendenz, faktisch falsche Informationen zu generieren – bekannt als Halluzination – birgt erhebliche Risiken für Anwendungen, die faktische Genauigkeit erfordern. Diese Arbeit präsentiert eine vergleichende Analyse von drei hochmodernen LLMs (gpt-4o-mini, gemini-2.5-flash und deepseek-v3.2) innerhalb von TruthLens, einer eigens entwickelten Implementierung einer entkoppelten Zwei-Phasen-Architektur für Multi-Modell-Benchmarking.
+
+    Bei der Evaluierung anhand eines aus dem BingCheck-Datensatz abgeleiteten Benchmarks wurden unterschiedliche Verhaltensmuster der Modelle identifiziert. Bei der Behauptungsextraktion erzielt gpt-4o-mini einen überlegenen F1-Score (80,4\%) durch eine ausgewogene Precision-Recall-Strategie, während gemini-2.5-flash und deepseek-v3.2 konservative Ansätze mit hoher Precision, aber deutlich reduziertem Recall verfolgen. Bei der Verifikation erreichen die Modelle 77--82\% Genauigkeit bei eindeutigen Behauptungen, zeigen jedoch einen deutlichen Leistungsabfall bei Minderheitsklassen (Widerlegt und Unzureichende Informationen). Diese Diskrepanz verdeutlicht die Herausforderung, in unbalancierten Datensätzen zwischen falschen Informationen und fehlenden Belegen zu unterscheiden.
+    
+    Die qualitative Analyse hebt drei wesentliche Fehlermodi hervor: die Tendenz, kontextabhängige Behauptungen abzulehnen, die Generierung ineffektiver Suchanfragen sowie die Schwierigkeiten der Modelle mit Minderheitsklassen in unbalancierten Datensätzen. Trotz dieser Herausforderungen erreichen die Modelle bei 69\% der Verifikationsaufgaben einstimmige Korrektheit, was zeigt, dass LLM-basierte Faktenprüfung für eindeutige faktische Behauptungen eine praktische Zuverlässigkeit erreicht hat. Diese Arbeit liefert ein wiederverwendbares Multi-Modell-Framework, empirische Leistungsbenchmarks sowie praxisorientierte Empfehlungen für den realen Einsatz.
+    \end{abstract}
+\end{otherlanguage}
+\clearpage
+
+% --- Acknowledgements ---
+\chapter*{Acknowledgements}
+
+\textit{This section will be completed in the final version of the thesis.}
+
+\clearpage
+
 % --- Table of Contents ---
-% This command generates the Gliederung
 \tableofcontents
 \clearpage
 
 % --- List of Figures and Tables ---
-% (Good academic practice)
 \listoffigures
 \clearpage
 \listoftables
@@ -179,7 +196,6 @@ Qualitative analysis highlights three key failure modes: the tendency to reject 
 \clearpage
 
 % --- Main Thesis Content ---
-
 
 \pagenumbering{arabic}
 \chapter{Introduction}
@@ -315,12 +331,6 @@ As LLMs are increasingly integrated into search engines, the ability to automati
         \item \textbf{Decomposition:} Breaking complex compound sentences into individual atomic facts.
     \end{enumerate}
     This thesis adopts the Claimify methodology for Phase 1, positing that higher-quality extraction leads to more accurate verification downstream.
-    
-    % \subsection{The BingCheck Dataset}
-    To evaluate extraction performance, a rigorous ground truth is required. This study leverages the \textbf{BingCheck} corpus \cite{BingCheck}, a high-quality dataset originally designed for evaluating Retrieval-Augmented Generation (RAG) systems across diverse domains such as Finance, History, and Science.
-    
-    However, the original BingCheck dataset focuses on document-level verification. For the specific task of atomic claim extraction (Phase 1), this thesis utilizes the sentence-level annotations derived from BingCheck and published by \cite{Metropolitansky2025} alongside the Claimify framework. This derived corpus provides expert-labeled binary classifications for sentences (contains claim / does not contain claim), serving as the standard ground truth for our precision and recall measurements.
-    
 
     \subsection{The BingCheck Dataset}
     \label{sec:bingcheck_background}
@@ -351,7 +361,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     While the original BingCheck dataset focuses on document-level verification, this thesis utilizes these sentence-level annotations to derive the binary classification ground truth for Phase 1 (Extraction).
     
     \section{Phase 2: Factual Claim Verification}
-    Once atomic claims are extracted, they must be verified against external evidence. Relying on an LLM's internal parametric knowledge (facts encoded in model weights during training) is insufficient due to the ``knowledge cutoff'' problem and the risk of reinforcing existing hallucinations.
+    Once atomic claims are extracted, they must be verified against external evidence. As comprehensively surveyed by Guo et al.\ \cite{Guo2022Survey}, automated fact-checking has evolved from early rule-based systems to sophisticated neural approaches that integrate evidence retrieval with veracity prediction. Relying on an LLM's internal parametric knowledge (facts encoded in model weights during training) is insufficient due to the ``knowledge cutoff'' problem and the risk of reinforcing existing hallucinations.
     
     \subsection{The Knowledge Cutoff Problem}
     Large Language Models are trained on static datasets with fixed temporal boundaries, meaning their parametric knowledge becomes progressively outdated after training completion. Cheng et al. \cite{Cheng2024} systematically analyzed this phenomenon, demonstrating that LLMs exhibit measurable degradation in factual accuracy for events occurring after their training cutoff dates. For the models evaluated in this thesis, these cutoffs range from late 2023 to mid-2025, rendering them unreliable for verifying claims about recent events, updated statistics, or evolving scientific consensus. This limitation fundamentally motivates the search-augmented approach adopted in the TruthLens framework.
@@ -470,7 +480,9 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     Reliable measurement requires distinct metrics for each phase.
     
     \subsection{Phase 1: Claim Extraction Metrics (Binary)}
-    In Phase 1, the task is treated as a binary classification problem where the \textbf{Positive Class} represents the presence of a verifiable claim, and the \textbf{Negative Class} represents its absence (e.g., subjective opinions or conversational filler). To fully capture the Precision-Recall trade-off (RQ1), metrics are calculated for both classes.
+    In Phase 1, the task is treated as a binary classification problem where the \textbf{Positive Class} represents the presence of a verifiable claim, and the \textbf{Negative Class} represents its absence (e.g., subjective opinions or conversational filler). 
+    
+    While the Claimify study \cite{Metropolitansky2025} propose linguistic metrics such as Entailment and Decontextualization coverage, this study prioritizes Binary Recall as the primary success metric. In a high-throughput fact-checking pipeline, the critical failure mode is missing a claim entirely (False Negative). Therefore, we treat extraction as a detection task (Found/Not Found) rather than a generation quality task. To fully capture the Precision-Recall trade-off (RQ1), metrics are calculated for both classes.
     
     \subsubsection{Positive Class Metrics (Target: Factual Claims)}
     These metrics evaluate the model's ability to correctly identify factual content:
@@ -1016,9 +1028,9 @@ This conservative behavior has significant practical implications. In a fact-che
 
 The verification phase presents a more nuanced picture, with different models excelling on different metrics:
 \begin{itemize}
-    \item \textbf{Gemini} achieves the highest accuracy (82.0\%), making it the best choice when the primary concern is overall correctness on a representative dataset.
-    \item \textbf{DeepSeek} achieves the highest Macro-F1 (55.9\%), indicating superior performance on minority classes despite lower overall accuracy.
-    \item \textbf{GPT-4o-mini} demonstrates the highest determinism (0.0\% standard deviation in accuracy), producing identical results across runs.
+    \item \textbf{gemini-2.5-flash} achieves the highest accuracy (82.0\%), making it the best choice when the primary concern is overall correctness on a representative dataset.
+    \item \textbf{deepseek-v3.2} achieves the highest Macro-F1 (55.9\%), indicating superior performance on minority classes despite lower overall accuracy.
+    \item \textbf{gpt-4o-mini} demonstrates the highest determinism (0.0\% standard deviation in accuracy), producing identical results across runs.
 \end{itemize}
 
 The 25--30 percentage point gap between accuracy and Macro-F1 scores across all models highlights the statistical impact of class imbalance. While models perform well on the majority class (\textit{Supported}), their performance metrics on minority classes (\textit{Refuted}, \textit{Insufficient Information}) are volatile due to the small sample size (n=3 for Refuted), making it difficult to conclusively determine whether the lower scores reflect a lack of reasoning capability or a statistical artifact.
@@ -1030,8 +1042,8 @@ The 25--30 percentage point gap between accuracy and Macro-F1 scores across all 
 An unexpected finding was the relationship between model stability and performance variability:
 \begin{itemize}
     \item \textbf{gpt-4o-mini:} Most stable ($\pm$0.0\% accuracy SD, $\pm$1.5\% extraction F1 SD)
-    \item \textbf{Gemini:} Moderately stable ($\pm$1.4\% accuracy SD, $\pm$2.8\% extraction F1 SD)
-    \item \textbf{DeepSeek:} Most variable ($\pm$2.1\% accuracy SD, $\pm$4.6\% extraction F1 SD)
+    \item \textbf{gemini-2.5-flash:} Moderately stable ($\pm$1.4\% accuracy SD, $\pm$2.8\% extraction F1 SD)
+    \item \textbf{deepseek-v3.2:} Most variable ($\pm$2.1\% accuracy SD, $\pm$4.6\% extraction F1 SD)
 \end{itemize}
 
 deepseek-v3.2's higher variability may be attributed to its sensitivity to prompt formatting. As noted in Chapter \ref{ch:implementation}, deepseek-v3.2 required custom middleware to enforce structured JSON output, suggesting that Open Weights models may require additional engineering effort to achieve production-level consistency.
@@ -1231,6 +1243,37 @@ Potential implementations include:
 \end{itemize}
 
 Such mechanisms could particularly benefit minority class detection, where the current models show the weakest performance. By requiring explicit justification before finalizing verdicts on potentially \textit{Refuted} or \textit{Insufficient Information} claims, self-correction could reduce the over-cautious behavior observed in deepseek-v3.2 and improve the overall Macro-F1 scores.
+
+\subsection{Adversarial Robustness}
+
+A critical dimension not explored in this thesis is the vulnerability of automated fact-checking systems to adversarial attacks. As Liu et al.\ \cite{Liu2025Adversarial} comprehensively survey, fact-checking pipelines face threats from adversaries who manipulate claims, evidence, or claim-evidence pairs to distort verification outcomes. Such attacks can exploit weaknesses in both the extraction and verification phases, potentially causing systems to misclassify false claims as supported or vice versa.
+
+Future research should investigate:
+\begin{itemize}
+    \item \textbf{Attack Surface Analysis:} Systematic evaluation of how TruthLens-style architectures respond to adversarially crafted inputs, including paraphrased claims designed to evade detection and poisoned evidence injected into search results.
+    \item \textbf{Robustness Testing:} Benchmarking model performance under adversarial conditions, measuring the degradation in accuracy when claims are subtly modified while preserving their semantic meaning.
+    \item \textbf{Defense Mechanisms:} Developing adversary-aware protection strategies, such as ensemble verification across multiple models or anomaly detection for suspicious claim patterns.
+\end{itemize}
+As automated fact-checking systems are deployed in high-stakes environments, understanding and mitigating adversarial vulnerabilities becomes essential for maintaining user trust and system reliability.
+
+\subsection{Domain-Specific and Multilingual Extensions}
+
+This study evaluated models on the BingCheck dataset, which represents general-knowledge claims across diverse but primarily English-language domains. A significant limitation is the lack of evaluation on specialized domain-specific and multilingual benchmarks. Recent research has produced several datasets that could extend the generalizability of findings:
+
+\textbf{Domain-Specific Datasets:}
+\begin{itemize}
+    \item \textbf{Scientific Claims:} The SciFact-Open dataset \cite{Wadden2022SciFact} provides a large-scale benchmark of scientific claims against 500,000 research abstracts, revealing that systems trained on smaller corpora experience performance drops of at least 15 F1 points when applied to realistic retrieval settings.
+    \item \textbf{Health Misinformation:} COVID-Fact \cite{Saakyan2021COVIDFact} offers 4,086 pandemic-related claims with evidence, addressing the critical domain of health misinformation where verification errors carry significant real-world consequences.
+    \item \textbf{Climate Claims:} CLIMATE-FEVER \cite{Diggelmann2020CLIMATE} adapts the FEVER methodology---the widely-adopted benchmark framework that pairs claims with Wikipedia evidence sentences and three-way veracity labels (Supported, Refuted, Not Enough Info) \cite{FEVER}---to 1,535 real-world climate statements, demonstrating the ``subtle complexity'' of modeling authentic climate discourse.
+\end{itemize}
+
+\textbf{Multilingual Benchmarks:}
+\begin{itemize}
+    \item \textbf{Cross-Lingual Evaluation:} X-Fact \cite{Gupta2021XFact} provides expert-labeled claims across 25 languages, enabling evaluation of zero-shot multilingual capabilities---where models are tested on languages not seen during training, assessing their ability to transfer fact-checking skills across linguistic boundaries.
+    \item \textbf{Non-English Languages:} CHEF \cite{Hu2022CHEF} offers 10,000 Chinese claims with annotated evidence, addressing the gap in non-English fact-checking resources and demonstrating that ``misinformation spans both geographic and linguistic boundaries.''
+\end{itemize}
+
+Future work should evaluate the TruthLens architecture on these specialized benchmarks to assess whether the performance patterns observed in this thesis---particularly the precision-recall trade-offs and minority class challenges---generalize across domains and languages.
 
 \subsection{Real-World Deployment and User Studies}
 
