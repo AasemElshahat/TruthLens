@@ -79,7 +79,7 @@
             \vspace{1.5cm}
             {
                 \color{bhtblue} \bfseries \Large
-                A Comparative Analysis of Large Language Models (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2) for Factual Claim Extraction and Verification
+                A Comparative Analysis of Large Language Models for Factual Claim Extraction and Verification
                 % \par
             }
     
@@ -428,7 +428,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     \end{itemize}
     
     \subsection{LLM Providers}
-    The study benchmarks three models representing different architectural philosophies (Proprietary vs. Open Weights \cite{OSI2024}) and cost profiles. Open Weights models publicly release their model parameters, enabling local deployment and fine-tuning, while proprietary models are accessible only through vendor APIs. The specific versions used for all experiments are listed in Table \ref{tab:models_specs} (see Chapter 1).
+    The study benchmarks three models representing different architectural philosophies (Proprietary vs. Open Weights \cite{OSI2024}) and cost profiles. Open Weights models publicly release their model parameters, enabling local deployment and fine-tuning, while proprietary models are accessible only through vendor APIs. The specific versions used for all experiments are listed in Table \ref{tab:models_specs} (see Chapter \ref{ch:introduction}).
     
     \section{Dataset Creation and Sampling}
     
@@ -571,8 +571,8 @@ This chapter details the technical realization of the TruthLens framework. It de
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.9\textwidth]{images/system_architecture.png}
-        \caption{High-level architecture of the TruthLens Multi-Agent System. Adapted from \cite{ClaimeAI_Repo}.}
+        \includegraphics[width=\textwidth]{images/system_architecture.png}
+        \caption{High-level architecture of the TruthLens Multi-Agent System. Reproduced from \cite{ClaimeAI_Repo}.}
         \label{fig:system_arch}
     \end{figure}
     
@@ -580,7 +580,9 @@ This chapter details the technical realization of the TruthLens framework. It de
     The system utilizes two distinct \textbf{stateful cyclic graphs} to manage the state of the fact-checking process.
     
     \subsubsection{The Claim Extractor Agent}
-    The extraction phase is implemented as a five-stage pipeline. As illustrated in Figure \ref{fig:extractor_flow}, the agent receives raw text and processes it through sequential nodes:
+    The extraction pipeline is adopted directly from the ClaimeAI repository \cite{ClaimeAI_Repo}, which implements the Claimify methodology \cite{Metropolitansky2025}. \textbf{No modifications were made to the core extraction logic}; our adaptations (detailed in Section \ref{sec:experimental_framework}) occur at the provider and infrastructure layers, not within the pipeline itself.
+    
+    As illustrated in Figure \ref{fig:extractor_flow}, the agent receives raw text and processes it through five sequential nodes:
     \begin{itemize}
         \item \textbf{Sentence Splitter:} Segments text while preserving context windows (5 preceding sentences).
         \item \textbf{Selection Node:} Filters out non-factual sentences using a consensus voting mechanism ($k=3$ completions) to reduce false positives.
@@ -591,14 +593,16 @@ This chapter details the technical realization of the TruthLens framework. It de
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.8\textwidth]{images/extractor_workflow.png}
-        \caption{The Claim Extraction Workflow implementing the Claimify methodology. Adapted from \cite{ClaimeAI_Repo}.}
+        \includegraphics[width=\textwidth]{images/extractor_workflow.png}
+        \caption{The Claim Extraction Workflow implementing the Claimify methodology. Reproduced from \cite{ClaimeAI_Repo}.}
         \label{fig:extractor_flow}
     \end{figure}
     
     \subsubsection{The Claim Verifier Agent}
-    While the extractor operates as a linear pipeline, the Claim Verifier implements an \textbf{iterative reasoning loop} designed to mimic human fact-checking behavior (Figure \ref{fig:verifier_flow}). Defined in \texttt{claim\_verifier/agent.py}, this agent utilizes a state graph that allows it to gather evidence dynamically until sufficient information is obtained.
-    
+    The verification pipeline is also adopted from ClaimeAI \cite{ClaimeAI_Repo}, which implements the SAFE methodology \cite{SAFE2024}. Unlike the extractor, \textbf{one modification was made}: we restored the \textit{Insufficient Information} verdict category, which had been disabled in the original codebase (see Section \ref{sec:experimental_framework}, Requirement 4).
+
+    The Claim Verifier implements an \textbf{iterative reasoning loop} designed to mimic human fact-checking behavior (Figure \ref{fig:verifier_flow}). Defined in \texttt{claim\_verifier/agent.py}, the agent utilizes a state graph that allows it to gather evidence dynamically until sufficient information is obtained.
+
     The workflow consists of four distinct nodes:
     \begin{itemize}
         \item \textbf{Generate Search Query:} Analyzes the atomic claim and formulates precise, neutral search queries (e.g., converting ``He won the election'' to ``winner of 2024 US presidential election'').
@@ -616,8 +620,8 @@ This chapter details the technical realization of the TruthLens framework. It de
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.8\textwidth]{images/verifier_workflow.png}
-        \caption{The Claim Verifier Workflow implementing the SAFE reasoning loop. Adapted from \cite{ClaimeAI_Repo}.}
+        \includegraphics[width=\textwidth]{images/verifier_workflow.png}
+        \caption{The Claim Verifier Workflow implementing the SAFE reasoning loop. Reproduced from \cite{ClaimeAI_Repo}.}
         \label{fig:verifier_flow}
     \end{figure}
 
@@ -674,24 +678,68 @@ class LLMProvider(ABC):
     \end{enumerate}
     
     To handle network instability, the search provider was wrapped with an exponential backoff retry mechanism to ensure transient failures do not crash the verification agent.
-    
-    % To handle the inherent instability of network requests during large-scale benchmarking (1,950 total API calls across both phases: 1,350 for extraction, 600 for verification), the provider was wrapped with an exponential backoff retry mechanism to ensure transient API failures do not invalidate experimental data.
 
     \section{Benchmark Automation}
     
     To conduct the comparative analysis, a robust benchmarking pipeline was developed to automate the execution of experiments across the dataset.
     
     \subsection{Phase 1: Extraction Automation}
-    The script \texttt{run\_extraction\_phase.py} manages the batch processing of the $N=150$ sentences. It iterates through the target models (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2), dynamically injecting the appropriate \texttt{LLMProvider} into the extraction graph.
-    
+    The script \texttt{run\_extraction\_phase.py} manages the batch processing of the $N=150$ sentences. It iterates through the target models (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2), dynamically injecting the appropriate \texttt{LLMProvider} into the extraction graph. Results are serialized row-by-row into a CSV file adhering to the schema in Table \ref{tab:extraction_schema}.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Field Name} & \textbf{Description} \\
+            \hline
+            \texttt{answer\_id} & Unique identifier from the BingCheck dataset. \\
+            \hline
+            \texttt{sentence} & The input text being analyzed for factual claims. \\
+            \hline
+            \texttt{contains\_factual\_claim} & Ground truth binary label (True/False). \\
+            \hline
+            \texttt{[model]\_binary\_result} & The model's prediction: whether the sentence contains a claim (True/False). Repeated for each provider (gpt4, gemini, deepseek). \\
+            \hline
+            \texttt{[model]\_extracted\_claims\_json} & JSON array containing the list of atomic claims extracted by the model. \\
+            \hline
+        \end{tabularx}
+        \caption{Extraction Dataset Schema. The \texttt{[model]} prefix is replaced with provider names (e.g., \texttt{gpt4\_binary\_result}).}
+        \label{tab:extraction_schema}
+    \end{table}
+
     To ensure the statistical reliability defined in the methodology ($k=3$ runs), the automation script includes a \texttt{generate\_unique\_filename} utility. This ensures that subsequent experimental runs do not overwrite previous data, automatically versioning output files (e.g., \texttt{dataset\_run2.csv}, \texttt{dataset\_run3.csv}) to preserve a complete audit trail of all iterations.
     
     \subsection{Phase 2: Verification Automation}
-    The verification phase is orchestrated by \texttt{run\_verification\_phase.py}. This script loads the standardized benchmark claims generated in Phase 1 and feeds them into the verification agent.
-    
+    The verification phase is orchestrated by \texttt{run\_verification\_phase.py}. This script loads the standardized benchmark claims generated in Phase 1 and feeds them into the verification agent. The output is stored using the schema defined in Table \ref{tab:verification_schema}.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Field Name} & \textbf{Description} \\
+            \hline
+            \texttt{claim\_id} & Unique identifier for the claim (e.g., B001\_C00). \\
+            \hline
+            \texttt{claim\_text} & The atomic proposition to be verified. \\
+            \hline
+            \texttt{original\_sentence} & The source sentence from which the claim was extracted. \\
+            \hline
+            \texttt{ground\_truth\_verdict} & Manual annotation (Supported / Refuted / Insufficient). \\
+            \hline
+            \texttt{[model]\_verdict} & The LLM's final verification decision. Repeated for each provider. \\
+            \hline
+            \texttt{[model]\_reasoning} & The model's chain-of-thought explanation for its verdict. \\
+            \hline
+            \texttt{[model]\_sources} & JSON array of URLs retrieved during the search-augmented verification. \\
+            \hline
+        \end{tabularx}
+        \caption{Verification Benchmark Schema. The \texttt{[model]} prefix is replaced with provider names (e.g., \texttt{gpt4\_verdict}, \texttt{gemini\_reasoning}).}
+        \label{tab:verification_schema}
+    \end{table}
+
     Key engineering features of the verification runner include:
     \begin{itemize}
-        \item \textbf{Per-Claim State Persistence:} Given that verifying a single claim may involve multiple search iterations (taking 30-60 seconds), the script saves results to the CSV after \textit{every} single transaction. This ``checkpointing'' strategy prevents data loss in the event of API timeouts or rate limit disconnects.
+        \item \textbf{Per-Claim State Persistence:} Given that verifying a single claim may involve multiple search iterations (taking 30-60 seconds), the script saves results to the CSV after \textit{every} single transaction, using the structure defined in Table \ref{tab:verification_schema}. This ``checkpointing'' strategy prevents data loss in the event of API timeouts or rate limit disconnects.
         \item \textbf{Dynamic Schema Updates:} The script dynamically creates distinct columns for each model (e.g., \texttt{gpt4\_verdict}, \texttt{gemini\_verdict}, \texttt{deepseek\_verdict}) within the same master dataset, facilitating direct row-by-row comparison during analysis.
         \item \textbf{Error Resilience:} Failed verifications (e.g., due to strict content filters on sensitive topics) are caught and logged as \texttt{None}, allowing the pipeline to continue processing remaining claims without crashing.
     \end{itemize}
