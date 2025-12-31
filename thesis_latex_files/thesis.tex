@@ -188,11 +188,15 @@ Qualitative analysis highlights three key failure modes: the tendency to reject 
 % --- German Abstract (Zusammenfassung) ---
 \begin{otherlanguage}{ngerman} 
     \begin{abstract}
-    Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache grundlegend verändert, doch ihre Tendenz, faktisch falsche Informationen zu generieren – bekannt als Halluzination – birgt erhebliche Risiken für Anwendungen, die faktische Genauigkeit erfordern. Diese Arbeit präsentiert eine vergleichende Analyse von drei hochmodernen LLMs (gpt-4o-mini, gemini-2.5-flash und deepseek-v3.2) innerhalb von TruthLens, einer eigens entwickelten Implementierung einer entkoppelten Zwei-Phasen-Architektur für Multi-Modell-Benchmarking.
+    Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache grundlegend verändert. Ihre Neigung zur Generierung faktisch falscher Informationen -- bekannt als \textit{Halluzination} -- stellt jedoch ein erhebliches Risiko für Anwendungen dar, die faktische Genauigkeit erfordern.
 
-    Bei der Evaluierung anhand eines aus dem BingCheck-Datensatz abgeleiteten Benchmarks wurden unterschiedliche Verhaltensmuster der Modelle identifiziert. Bei der Behauptungsextraktion erzielt gpt-4o-mini einen überlegenen F1-Score (80,4\%) durch eine ausgewogene Precision-Recall-Strategie, während gemini-2.5-flash und deepseek-v3.2 konservative Ansätze mit hoher Precision, aber deutlich reduziertem Recall verfolgen. Bei der Verifikation erreichen die Modelle 77--82\% Genauigkeit bei eindeutigen Behauptungen, zeigen jedoch einen deutlichen Leistungsabfall bei Minderheitsklassen (Widerlegt und Unzureichende Informationen). Diese Diskrepanz verdeutlicht die Herausforderung, in unbalancierten Datensätzen zwischen falschen Informationen und fehlenden Belegen zu unterscheiden.
-    
-    Die qualitative Analyse hebt drei wesentliche Fehlermodi hervor: die Tendenz, kontextabhängige Behauptungen abzulehnen, die Generierung ineffektiver Suchanfragen sowie die Schwierigkeiten der Modelle mit Minderheitsklassen in unbalancierten Datensätzen. Trotz dieser Herausforderungen erreichen die Modelle bei 69\% der Verifikationsaufgaben einstimmige Korrektheit, was zeigt, dass LLM-basierte Faktenprüfung für eindeutige faktische Behauptungen eine praktische Zuverlässigkeit erreicht hat. Diese Arbeit liefert ein wiederverwendbares Multi-Modell-Framework, empirische Leistungsbenchmarks sowie praxisorientierte Empfehlungen für den realen Einsatz.
+    Diese Arbeit präsentiert eine vergleichende Analyse dreier LLMs (\texttt{gpt-4o-mini}, \texttt{gemini-2.5-flash} und \texttt{deepseek-v3.2}) im Rahmen von TruthLens, einer eigens entwickelten Zwei-Phasen-Architektur für Multi-Modell-Benchmarking. Die Evaluierung erfolgte anhand eines aus dem BingCheck-Datensatz abgeleiteten Benchmarks.
+
+    Bei der Behauptungsextraktion erzielt \texttt{gpt-4o-mini} den höchsten F1-Score (80,4\%) durch eine ausgewogene Precision-Recall-Strategie. \texttt{gemini-2.5-flash} und \texttt{deepseek-v3.2} verfolgen dagegen konservative Ansätze mit hoher Precision bei deutlich reduziertem Recall. Bei der Verifikation erreichen alle Modelle 77--82\% Genauigkeit für eindeutige Behauptungen, zeigen jedoch Leistungseinbußen bei Minderheitsklassen.
+
+    Die qualitative Analyse identifiziert drei zentrale Fehlermodi: die Ablehnung kontextabhängiger Behauptungen, ineffektive Suchanfragen sowie Schwierigkeiten mit unterrepräsentierten Klassen. Trotz dieser Einschränkungen erreichen die Modelle bei 69\% der Verifikationsaufgaben einstimmige Korrektheit. Dies zeigt, dass LLM-basierte Faktenprüfung für eindeutige faktische Behauptungen praktische Zuverlässigkeit erreicht hat.
+
+    Die Arbeit liefert ein wiederverwendbares Multi-Modell-Framework, empirische Leistungsbenchmarks sowie praxisorientierte Empfehlungen für den Einsatz solcher Systeme.
     \end{abstract}
 \end{otherlanguage}
 \clearpage
@@ -433,7 +437,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
         \item \textbf{Evidence Retrieval:} Search results are parsed to find supporting or refuting evidence.
         \item \textbf{Reasoning:} The model compares the claim against the retrieved evidence to issue a verdict (Supported, Irrelevant, or Not Supported).
     \end{enumerate}
-    The authors of the SAFE framework \cite{SAFE2024} demonstrated that LLM agents using this method can achieve human-level performance in rating long-form factuality, significantly outperforming human crowdsourced annotators in terms of cost and scalability. This thesis adapts the SAFE logic into the verification agent of the TruthLens framework.
+    The authors of the SAFE framework \cite{SAFE2024} demonstrated that LLM agents using this method can outperform human crowdsourced annotators in rating long-form factuality, achieving superior performance in terms of both accuracy and cost-effectiveness. The TruthLens framework incorporates the SAFE-based verification agent from the ClaimeAI repository.
     
     \section{The TruthLens Framework}
     \label{sec:truthlens_framework}
@@ -979,7 +983,7 @@ Figure \ref{fig:per_class_heatmap} visualizes this class-dependent performance d
     \label{fig:per_class_heatmap}
 \end{figure}
 
-\textbf{Important Caveat:} The \textit{Refuted} class contains only 3 samples in the ground truth, making the F1-scores for this class statistically unreliable. This limitation is acknowledged as a threat to validity (see Section \ref{sec:limitations}).
+\textbf{Important Caveat:} Given the extreme class imbalance (n=3 for Refuted), the per-class F1-scores for minority classes should be interpreted as indicative patterns rather than statistically reliable measurements. A single classification error in the Refuted class changes its F1-score by approximately 33\%. This limitation is acknowledged as a threat to validity (see Section \ref{sec:limitations}).
 
 \subsection{Visual Comparison}
 
@@ -1085,7 +1089,7 @@ This conservative behavior has significant practical implications. In a fact-che
 
 \subsection{Best Performing LLM for Verification}
 
-The verification phase presents a more nuanced picture, with different models excelling on different metrics:
+The verification phase presents a more nuanced picture, with different models excelling on different metrics:\footnote{Conclusions about minority class performance (Refuted, Insufficient Information) are tentative due to small sample sizes (n=3 for Refuted, n=12 for Insufficient Information).}
 \begin{itemize}
     \item \textbf{gemini-2.5-flash} achieves the highest accuracy (82.0\%), making it the best choice when the primary concern is overall correctness on a representative dataset.
     \item \textbf{deepseek-v3.2} achieves the highest Macro-F1 (55.9\%), indicating superior performance on minority classes despite lower overall accuracy.
@@ -1191,6 +1195,12 @@ While the current dataset reflects real-world distributions where true claims ty
 
 \textbf{Construct Validity:} The metrics used (F1-Score, Accuracy, Macro-F1) are standard in NLP evaluation but may not fully capture the practical utility of a fact-checking system. Real-world deployment would require additional metrics such as user trust, explanation quality, and end-to-end latency.
 
+\section{Ethical Considerations}
+
+The development of automated fact-checking systems raises important ethical considerations. While this research aims to combat misinformation, the detailed analysis of LLM failure modes could theoretically inform adversarial actors seeking to craft claims that evade detection. We note that the failure patterns identified (context-dependent claims, specific date/quantity verification) represent known challenges in the field rather than novel vulnerabilities.
+
+Furthermore, automated fact-checking systems should complement, not replace, human judgment---particularly for nuanced claims involving interpretation or contested evidence. The 31\% of claims where models disagreed underscores that human oversight remains essential for high-stakes applications. We advocate for transparent deployment that clearly communicates system limitations to end users, preventing over-reliance on automated verdicts.
+
 \chapter{Conclusion and Future Work}
 \label{ch:conclusion}
 
@@ -1222,7 +1232,7 @@ For fact-checking pipelines where \textit{comprehensive coverage} is a high prio
     \item \textbf{gpt-4o-mini} demonstrates the highest determinism (0.0\% standard deviation), producing identical results across independent runs.
 \end{itemize}
 
-The substantial gap between accuracy (77--82\%) and Macro-F1 (50--56\%) across all models highlights the impact of dataset imbalance. While models demonstrate high reliability on the majority class (\textit{Supported}, F1 $\approx$ 87--91\%), the shortage of minority samples (n=3 for \textit{Refuted}) results in unpredictable metrics where single errors disproportionately penalize performance. This discrepancy suggests that while models show bias toward the majority class, their true capability in detecting misinformation requires further evaluation on more balanced datasets.
+The substantial gap between accuracy (77--82\%) and Macro-F1 (50--56\%) across all models highlights the impact of dataset imbalance. While models demonstrate high reliability on the majority class (\textit{Supported}, F1 $\approx$ 87--91\%), the shortage of minority samples (n=3 for \textit{Refuted}) means that minority class findings should be considered preliminary observations requiring validation on larger, balanced datasets. This discrepancy suggests that while models show bias toward the majority class, their true capability in detecting misinformation requires further evaluation on more balanced datasets.
 
 \subsection{Answering Research Question 3 (Qualitative)}
 
