@@ -1187,13 +1187,7 @@ While the current dataset reflects real-world distributions where true claims ty
 
 \textbf{4. Model Version Sensitivity:} LLM capabilities evolve rapidly. The specific model versions tested (gpt-4o-mini, Gemini-2.5-flash, deepseek-v3.2) represent a snapshot in time; newer versions may exhibit different performance characteristics.
 
-\subsection{Threats to Validity}
-
-\textbf{Internal Validity:} The use of multiple independent runs ($k=3$ for extraction, $k=2$ for verification) mitigates concerns about result variability, but the limited number of runs for verification (due to API costs) means that standard deviation estimates for that phase are less precise.
-
-\textbf{External Validity:} Results are specific to the English language, the BingCheck dataset's claim distribution, and the particular prompt templates used in the TruthLens agents. Generalization to other languages, domains, or prompt formulations requires further investigation.
-
-\textbf{Construct Validity:} The metrics used (F1-Score, Accuracy, Macro-F1) are standard in NLP evaluation but may not fully capture the practical utility of a fact-checking system. Real-world deployment would require additional metrics such as user trust, explanation quality, and end-to-end latency.
+These architectural constraints directly inform our ethical approach: since the system cannot reliably handle minority classes or specialized domains without human oversight, deployment must prioritize transparency about these limitations to prevent over-reliance on automated verdicts.
 
 \section{Ethical Considerations}
 
@@ -2011,6 +2005,35 @@ Table \ref{tab:verification_insufficient} demonstrates how claims with unresolve
 \end{table}
 
 This example highlights a failure mode in the extraction pipeline: when coreference resolution fails to disambiguate pronouns, the resulting claims cannot be verified against external sources. The \textit{Insufficient Information} verdict appropriately captures this limitation rather than forcing an incorrect \textit{Supported} or \textit{Refuted} classification.
+
+\section{Code and Data Availability}
+\label{sec:appendix_availability}
+
+The complete source code, experimental datasets, and reproduction scripts for this thesis are publicly available in a GitHub repository:
+
+\begin{center}
+\url{https://github.com/AasemElshahat/TruthLens}
+\end{center}
+
+A comprehensive reproduction guide (\texttt{REPRODUCTION\_GUIDE.md}) is included in the repository, providing step-by-step instructions for:
+\begin{itemize}
+    \item Environment setup and dependency installation (Python 3.11+, Poetry)
+    \item API key configuration for OpenAI, Google AI, DeepSeek, and Brave Search
+    \item Dataset preparation and stratified sampling from BingCheck
+    \item Execution of extraction and verification phases across all models
+    \item Metrics calculation and statistical aggregation
+    \item Figure generation for thesis visualizations
+\end{itemize}
+
+All experimental data files are preserved in the repository for independent verification:
+\begin{itemize}
+    \item \texttt{results/thesis\_datasets\_with\_LLM\_results/} --- Raw LLM outputs for all runs
+    \item \texttt{results/extraction/} --- Per-run and aggregated extraction metrics
+    \item \texttt{results/verification/} --- Per-run and aggregated verification metrics
+    \item \texttt{thesis\_latex\_files/sources/ground\_truth\_data-BingCheck/} --- Source dataset
+\end{itemize}
+
+The repository is archived at the time of thesis submission to ensure long-term availability and version consistency for reproducibility purposes.
 
 % --- Bibliography ---
 \clearpage

@@ -504,26 +504,34 @@ poetry run python scripts/aggregate_verification_metrics.py
 
 **Outputs:**
 
-- `results/verification/aggregated/verification_metrics_aggregated.csv`
-- `results/verification/aggregated/verification_summary_simple.csv`
+- `results/verification/aggregated/verification_summary_simple.csv` - Aggregated verification statistics
 
 ### 9.3 Expected Aggregated Results
 
 **Extraction (Phase 1):**
 
-| Model            | Precision | Recall | F1-Score        |
-| ---------------- | --------- | ------ | --------------- |
-| GPT-4o-mini      | 83.1%     | 77.8%  | **80.4%** |
-| Gemini-2.5-Flash | 89.5%     | 40.2%  | 55.4%           |
-| DeepSeek-V3.2    | 95.8%     | 49.6%  | 65.3%           |
+| Model            | Precision       | Recall          | F1-Score            |
+| ---------------- | --------------- | --------------- | ------------------- |
+| GPT-4o-mini      | 83.1% ± 2.5%    | 77.8% ± 0.7%    | **80.4%** ± 1.5%    |
+| Gemini-2.5-Flash | 89.5% ± 1.8%    | 40.2% ± 2.7%    | 55.4% ± 2.8%        |
+| DeepSeek-V3.2    | 95.8% ± 1.7%    | 49.6% ± 4.9%    | 65.3% ± 4.6%        |
+
+**Ground Truth Distribution (Phase 1):**
+- Sentences with factual claims: 78 (52%)
+- Sentences without factual claims: 72 (48%)
 
 **Verification (Phase 2):**
 
 | Model            | Accuracy        | Macro-F1        |
 | ---------------- | --------------- | --------------- |
-| GPT-4o-mini      | 77.0%           | 50.4%           |
-| Gemini-2.5-Flash | **82.0%** | 53.7%           |
-| DeepSeek-V3.2    | 79.0%           | **55.9%** |
+| GPT-4o-mini      | 79.0% ± 0.0%    | 51.2% ± 3.9%    |
+| Gemini-2.5-Flash | **82.0%** ± 1.4% | 52.7% ± 2.0%   |
+| DeepSeek-V3.2    | 77.5% ± 2.1%    | **55.9%** ± 0.4% |
+
+**Ground Truth Distribution (Phase 2):**
+- Supported: 85 claims (85%)
+- Refuted: 3 claims (3%)
+- Insufficient Information: 12 claims (12%)
 
 ---
 
@@ -554,7 +562,7 @@ poetry run python ../../visualization_scripts/generate_all_figures.py
 
 ### 10.3 Output Location
 
-Figures are saved to: `images/results/`
+Figures are saved to: `thesis_latex_files/images/`
 
 ---
 
@@ -707,12 +715,12 @@ poetry run python scripts/run_extraction_phase.py --provider deepseek
 If you use this framework or reproduce these experiments, please cite:
 
 ```bibtex
-@thesis{elshahat2025truthlens,
-  title={A Comparative Analysis of Large Language Models (GPT-4o-mini, 
-         Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction 
+@thesis{elshahat2026truthlens,
+  title={A Comparative Analysis of Large Language Models (GPT-4o-mini,
+         Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction
          and Verification},
   author={Elshahat, Aasem},
-  year={2025},
+  year={2026},
   school={Berliner Hochschule für Technik},
   type={Bachelor's Thesis}
 }
@@ -727,8 +735,9 @@ If you use this framework or reproduce these experiments, please cite:
 - **Thesis Supervisors:**
   - Prof. Dr. Siamak Haschemi
   - Dipl.-Inf. (FH) Markus Schubert
-- **Date:** December 2025
+- **Submission Date:** January 2, 2026
+- **Experiments Conducted:** December 2025
 
 ---
 
-*Last Updated: December 23, 2025*
+*Last Updated: January 2, 2026*
