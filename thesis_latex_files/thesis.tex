@@ -5,7 +5,56 @@
 \usepackage{float}
 \usepackage[ngerman, english]{babel}
 
-\usepackage[left=4cm, right=2cm, top=2.5cm, bottom=2cm]{geometry}
+\usepackage[left=4cm, right=2cm, top=3cm, bottom=2cm]{geometry}
+
+% --- HEADER & FOOTER CONFIGURATION (Updated) ---
+\usepackage{fancyhdr}
+% --- CHAPTER TITLE SPACING FIX ---
+\usepackage{titlesec}
+
+% 1. REDEFINE THE CHAPTER LOOK
+% We must explicitly define how the chapter looks so we can control the spacing.
+% This keeps the standard "Chapter N" [New Line] "Title" look.
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries} % Format of the text
+  {\chaptertitlename\ \thechapter} % "Chapter N"
+  {20pt} % Space between "Chapter N" and "Title"
+  {\Huge} % Font size of the title
+
+% 2. PULL THE TITLE UP
+% The second number {-80pt} is the important one.
+% - 0pt: Starts at the margin line (already removes the default 50pt drop).
+% - Negative values (e.g., -60pt): Pulls the title UP into the header area.
+\titlespacing*{\chapter}{0pt}{0pt}{40pt}
+
+% 1. Set header height to avoid LaTeX warnings
+\setlength{\headheight}{14.5pt} 
+
+% 2. Activate the 'fancy' style for normal pages
+\pagestyle{fancy}
+\fancyhf{} % Clear default header/footer settings
+
+% 3. Define the Header (Top of page)
+% Left: Chapter Name (without forcing UPPERCASE)
+\fancyhead[L]{\nouppercase{\leftmark}} 
+% Right: Page Number
+\fancyhead[R]{\thepage}
+% Line: Draw a horizontal line separating header from text
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 4. Define the Footer (Bottom of page)
+% Empty for normal pages (since number is now at the top)
+\fancyfoot{} 
+
+% 5. Handle Chapter Start Pages
+% LaTeX automatically uses 'plain' style on the first page of a chapter.
+% We redefine it here to keep the number at the bottom center for those pages only.
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt} % No line on chapter title pages
+}
+
 \usepackage[nopatch=footnote]{microtype}
 
 % --- ADD THESE TO YOUR PACKAGE LIST ---
@@ -101,7 +150,7 @@
             
             to obtain the academic degree\\
             \textbf{Bachelor of Science (B.Sc.)}\\
-            in \textbf{Medieninformatik}
+            in the course of studies \textbf{Medieninformatik}
     
             \vspace{1cm}
     
@@ -127,7 +176,6 @@
 \end{titlepage}
 
 % --- Abstract / Acknowledgements ---
-\pagenumbering{Roman}
 \begin{abstract}
 Large Language Models (LLMs) have transformed natural language processing, yet their tendency to generate factually incorrect information, known as hallucination, poses significant risks for applications requiring factual accuracy. This thesis presents a comparative analysis of three state-of-the-art LLMs (gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2) within TruthLens, a custom implementation of a decoupled two-phase architecture adapted for multi-model benchmarking.
 
@@ -137,7 +185,6 @@ Qualitative analysis highlights three key failure modes: the tendency to reject 
 \end{abstract}
 
 \clearpage
-
 % --- German Abstract (Zusammenfassung) ---
 \begin{otherlanguage}{ngerman} 
     \begin{abstract}
@@ -152,10 +199,21 @@ Qualitative analysis highlights three key failure modes: the tendency to reject 
 
 % --- Acknowledgements ---
 \chapter*{Acknowledgements}
+\thispagestyle{empty}
 
-\textit{This section will be completed in the final version of the thesis.}
+First and foremost, all praise and gratitude belong to Allah, the Most Gracious, the Most Merciful. Every success I have achieved is by His grace alone. \textit{Alhamdulillah.}
+
+I am deeply grateful to my supervisors, Prof.\ Dr.\ Siamak Haschemi and Dipl.-Inf.\ (FH) Markus Schubert, for their guidance and expertise throughout this research, and to Prof.\ Dr.\ Felix Gers for serving as examiner. Special thanks to BharathxD (ClaimeAI) and the authors of the BingCheck dataset and Claimify framework, whose open-source contributions made this work possible.
+
+To my family---my parents, my sisters, and my brother---thank you for believing in me, not only academically but in every aspect of life. Your support has been constant and unconditional from the very first day: from my years studying Civil Engineering at Pharos University in Alexandria, through the transition to Computer Science at Nile University, and now finally to this moment---completing my first degree at Berliner Hochschule f\"{u}r Technik. You never doubted me, even when I doubted myself. In particular, I owe a deep debt of gratitude to my sister Gia and my brother in law Dave, whose belief in me and generous support made it possible for me to move to Germany and pursue my studies in the first place. Without their encouragement and help during those early uncertain days, this thesis would not exist.
+
+To my friend Omar, thank you for helping me stay organized and pushing me forward when balancing work, university, and life felt overwhelming.
+
+Finally, to my fianc\'{e}e, Dima---your unwavering support carried me through the most challenging moments of this journey. By the grace of Allah, your belief in me has been the foundation of whatever I have achieved. This work is as much yours as it is mine.
 
 \clearpage
+
+\pagenumbering{Roman}
 
 % --- Table of Contents ---
 \tableofcontents
@@ -398,7 +456,6 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 \label{ch:methodology}
     This chapter details the experimental framework designed to answer the research questions. It defines the specific Large Language Models (LLMs) selected for comparison, the structure of the TruthLens agentic framework, and the rigorous metric definitions used to evaluate performance in both extraction and verification phases.
     
-
     \section{Experimental Framework}
     \label{sec:experimental_framework}
     To perform a fair and reproducible comparative analysis, this study utilizes \textbf{TruthLens}—an experimental adaptation of the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}.\footnote{Original repository available at: \url{https://github.com/BharathxD/ClaimeAI} (Accessed: 2025-12-22)}
@@ -462,8 +519,10 @@ As LLMs are increasingly integrated into search engines, the ability to automati
             \item \textbf{Insufficient Information:} No reliable evidence could be found to either support or refute the claim (e.g., unverifiable private information or ambiguous predictions), or the claim itself was too ambiguous or unclear to be verified (e.g., ambiguous subjects).
         \end{itemize}
         This alignment ensures that if a model correctly identifies a claim as unverifiable, it is penalized not as an error but rewarded as a correct assessment of uncertainty.
+
+        \textbf{Annotation Process:} Each of the 100 claims was annotated following a systematic workflow: (1) evidence gathering from authoritative sources (academic databases, government websites, established encyclopedias), (2) verdict determination based on the three-label schema, and (3) documentation of source URLs and reasoning for auditability. For \textit{Supported} and \textit{Refuted} claims, one or more authoritative URLs were recorded as evidence. For \textit{Insufficient Information} claims, the specific reason for unverifiability was documented---for example, ``Ambiguous Subject'' for claims containing unresolved pronouns (e.g., ``He advocated for animal rights'' where the referent was undefined), or ``Missing Context'' for claims referencing undefined entities. The complete annotated dataset, including all source URLs and verdict justifications, is preserved in the project repository for independent verification.
     \end{itemize}
-    
+
     \section{Decoupled Two-Phase Evaluation}
     The TruthLens framework executes the evaluation in two distinct, sequential phases.
     
@@ -1088,6 +1147,8 @@ While all three models \textit{agreed} on 71\% of claims (Figure \ref{fig:inter_
 
 Nevertheless, the 69\% unanimous correctness rate is a positive finding. It suggests that for straightforward factual claims with clear web evidence, current LLMs have achieved reliable verification capability. The remaining 31\% of claims represent genuinely difficult cases---either due to ambiguous evidence, context-dependent claims, or limitations in web search coverage.
 
+This finding has practical implications for deployment: claims where multiple LLMs unanimously agree could be processed automatically with high confidence, while the remaining 31\% could be flagged for human review. Such a workflow would enable scalable human-AI collaboration, where LLMs handle routine verification of straightforward claims and human fact-checkers focus their expertise on ambiguous or contested cases. This division of labor could substantially increase the throughput of fact-checking operations while maintaining accuracy standards for the most challenging claims.
+
 \section{Limitations of the Study}
 \label{sec:limitations}
 
@@ -1101,6 +1162,7 @@ While $N=150$ sentences for extraction and $N=100$ claims for verification provi
     \item Per-class F1-scores for \textit{Refuted} (based on $n=3$) are statistically unreliable and should be interpreted as indicative rather than definitive
     \item The models' true ability to detect misinformation cannot be conclusively assessed from this dataset
 \end{itemize}
+While the current dataset reflects real-world distributions where true claims typically outnumber false ones, future benchmark construction should prioritize balanced sampling across verdict categories. For production systems, techniques such as class-weighted loss functions or targeted collection of claims from underrepresented categories could mitigate this imbalance. The TruthLens architecture's modular design readily supports integration of such techniques without requiring changes to the core agent workflows.
 
 \textbf{2. Domain Generalization:} The BingCheck dataset represents general-knowledge claims from Bing Chat responses. Results may not generalize to specialized domains such as:
 \begin{itemize}
@@ -1887,6 +1949,58 @@ Table \ref{tab:verification_sample} presents a representative example from the v
     \item \textbf{A Short History Of Argentine Tango - Tango.ORG}: ``Argentine Tango as a dance and musical form developed in Buenos Aires at the end of the 19th Century, and arrived in Europe and then the US in the first decades of the 1900s. This is the mode of dance that evolved into Ballroom tango.''
     \item \textbf{Tango | Argentine, Latin American, Couple - Britannica}: ``The tango evolved about 1880 in dance halls and perhaps brothels in the lower-class districts of Buenos Aires, where the Spanish tango, a light-spirited variety of flamenco, merged with the milonga, a fast, sensual, and disreputable Argentine...''
 \end{enumerate}
+
+\subsubsection{Additional Verification Example: Refuted Claim}
+
+To demonstrate the system's handling of false claims, Table \ref{tab:verification_refuted} presents an example where the ground truth verdict is \textit{Refuted}.
+
+\begin{table}[ht]
+    \centering
+    \caption{Verification Example: Refuted Claim (Historical Date Error)}
+    \label{tab:verification_refuted}
+    \small
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Claim ID} & B011\_C00 \\
+        \hline
+        \textbf{Claim Text} & ``The Mayans invented the concept independently circa 4 A.D.'' \\
+        \hline
+        \textbf{Ground Truth Verdict} & Refuted \\
+        \hline
+        \textbf{Ground Truth Source} & \url{https://www.science.org/doi/10.1126/science.11539686} \\
+        \hline
+        \textbf{Correction Note} & The concept of zero appears in the Epi-Olmec culture as early as 36 B.C., predating the 4 A.D.\ Mayan claim. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+This example illustrates the challenge of verifying claims with specific historical dates. The claim contains a factual error regarding the timeline of mathematical concept development in Mesoamerican cultures.
+
+\subsubsection{Additional Verification Example: Insufficient Information}
+
+Table \ref{tab:verification_insufficient} demonstrates how claims with unresolved references are handled.
+
+\begin{table}[ht]
+    \centering
+    \caption{Verification Example: Insufficient Information (Ambiguous Subject)}
+    \label{tab:verification_insufficient}
+    \small
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Claim ID} & B009\_C00 \\
+        \hline
+        \textbf{Claim Text} & ``He advocated for animal rights'' \\
+        \hline
+        \textbf{Original Sentence} & ``He also advocated for animal rights and pacifism.'' \\
+        \hline
+        \textbf{Ground Truth Verdict} & Insufficient Information \\
+        \hline
+        \textbf{Reason} & Ambiguous Subject---the pronoun ``He'' was not resolved to a specific individual during the extraction process, making the claim unverifiable without additional context. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+This example highlights a failure mode in the extraction pipeline: when coreference resolution fails to disambiguate pronouns, the resulting claims cannot be verified against external sources. The \textit{Insufficient Information} verdict appropriately captures this limitation rather than forcing an incorrect \textit{Supported} or \textit{Refuted} classification.
 
 % --- Bibliography ---
 \clearpage
