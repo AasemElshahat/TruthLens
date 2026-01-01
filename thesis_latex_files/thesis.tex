@@ -3,14 +3,66 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage[english]{babel}
+\usepackage[ngerman, english]{babel}
 
-\usepackage[left=4cm, right=2cm, top=2.5cm, bottom=2cm]{geometry}
+\usepackage[left=4cm, right=2cm, top=3cm, bottom=2cm]{geometry}
+
+% --- HEADER & FOOTER CONFIGURATION (Updated) ---
+\usepackage{fancyhdr}
+% --- CHAPTER TITLE SPACING FIX ---
+\usepackage{titlesec}
+
+% 1. REDEFINE THE CHAPTER LOOK
+% We must explicitly define how the chapter looks so we can control the spacing.
+% This keeps the standard "Chapter N" [New Line] "Title" look.
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries} % Format of the text
+  {\chaptertitlename\ \thechapter} % "Chapter N"
+  {20pt} % Space between "Chapter N" and "Title"
+  {\Huge} % Font size of the title
+
+% 2. PULL THE TITLE UP
+% The second number {-80pt} is the important one.
+% - 0pt: Starts at the margin line (already removes the default 50pt drop).
+% - Negative values (e.g., -60pt): Pulls the title UP into the header area.
+\titlespacing*{\chapter}{0pt}{0pt}{40pt}
+
+% 1. Set header height to avoid LaTeX warnings
+\setlength{\headheight}{14.5pt} 
+
+% 2. Activate the 'fancy' style for normal pages
+\pagestyle{fancy}
+\fancyhf{} % Clear default header/footer settings
+
+% 3. Define the Header (Top of page)
+% Left: Chapter Name (without forcing UPPERCASE)
+\fancyhead[L]{\nouppercase{\leftmark}} 
+% Right: Page Number
+\fancyhead[R]{\thepage}
+% Line: Draw a horizontal line separating header from text
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 4. Define the Footer (Bottom of page)
+% Empty for normal pages (since number is now at the top)
+\fancyfoot{} 
+
+% 5. Handle Chapter Start Pages
+% LaTeX automatically uses 'plain' style on the first page of a chapter.
+% We redefine it here to keep the number at the bottom center for those pages only.
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt} % No line on chapter title pages
+}
+
 \usepackage[nopatch=footnote]{microtype}
 
-% --- Title Page Information ---
-\title{A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
-\author{Aasem Elshahat}
+% --- ADD THESE TO YOUR PACKAGE LIST ---
+\usepackage{tikz}        % Allows placing images anywhere on the page
+\usepackage{helvet}      % The standard BHT font (Helvetica/Arial)
+\usepackage{xcolor}      % Allows us to use the BHT Blue color
+\usepackage{underscore} % Allows underscores in \texttt{}
+\definecolor{bhtblue}{RGB}{0, 60, 115} % Define the specific blue color
 
 \usepackage[hidelinks, breaklinks=true]{hyperref} % Makes citations clickable without ugly red boxes
 \usepackage{array}      % Required for custom column formatting
@@ -22,6 +74,7 @@
 \tcbuselibrary{breakable,skins}
 \usepackage[onehalfspacing]{setspace}
 \usepackage{parskip}
+\usepackage{xurl}
 
 % Define prompt box style for appendix
 \newtcolorbox{promptbox}[1][]{
@@ -42,133 +95,184 @@
 
 % --- Begin Document ---
 \begin{document}
-
-% --- Title Page ---
-% \begin{titlepage}
-%     \begin{center}
-%         \vspace*{1cm}
-
-%         \includegraphics[width=0.6\textwidth]{bht_logo_horizontal.png}
-%         \vspace{1.5cm}
-
-%         \textbf{\Large Medieninformatik / Fachbereich VI} \\
-%         \vspace{0.5cm}
-        
-%         % \vspace{1.5cm}
-
-%         \textbf{\Huge A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
-
-%         \vspace{1.5cm}
-
-%         {\Large \textbf{Bachelor's Thesis}}
-
-%         \vspace{1.5cm}
-
-%         Submitted by: \\
-%         \vspace{0.3cm}
-%         \textbf{\Large Aasem Elshahat} \\
-%         \vspace{0.5cm}
-%         Matriculation Number: 954435 \\
-
-%         \vspace{1cm}
-
-%         \textbf{Supervisors:} \\
-%         Prof. Dr. Siamak Haschemi \\
-%         Dipl.-Inf. (FH) Markus Schubert
-
-%         \vspace{1cm}
-
-%         \Large
-%         January 2, 2026
-
-%     \end{center}
-% \end{titlepage}
 \begin{titlepage}
-    \begin{center}
-        \includegraphics[width=0.8\textwidth]{bht_logo_horizontal.png}
-        \vspace{.5cm}
+    % 1. TEMPORARILY CHANGE MARGINS FOR TITLE PAGE ONLY
+    % This makes room on the right for the sidebar images
+    \sffamily % Switch to Sans-Serif font for the title page
 
-        \textbf{\large Fachbereich VI - Informatik und Medien} \\
-        \textbf{\large Medieninformatik} \\
-        
-        \vspace{1cm}
+    % 2. PLACE THE IMAGES (The sidebar design)
+    \begin{tikzpicture}[remember picture, overlay]
+        % Top Right Logo
+        \node[anchor=north east, inner sep=0pt, xshift=-2cm, yshift=-2.4cm] 
+            at (current page.north east) {
+            \includegraphics[height=5.5cm]{BHT-Logo-vertikal.pdf}
+        };
+        % Right Sidebar Shapes
+        \node[anchor=east, inner sep=0pt, xshift=-2cm, yshift=-2cm] 
+            at (current page.east) {
+            \includegraphics[height=5cm]{BHT-Elements.pdf}
+        };
+        % Bottom Right Text
+        \node[anchor=south east, inner sep=0pt, xshift=-2.2cm, yshift=3cm] 
+            at (current page.south east) {
+            \includegraphics[height=4cm]{BHT-Studiere-vertikal.pdf}
+        };
+    \end{tikzpicture}
 
-        % Title with manual spacing for better readability
-        \textbf{\LARGE A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification}
+    % 3. YOUR TEXT CONTENT
+    % \vspace*{1.5cm} % Space from top
 
-        \vspace{1.2cm}
+    % Title in BHT Blue
+    \begin{minipage}[t][0.9\textheight]{0.8\textwidth}
+        \begin{flushleft}
+            \vspace{1.5cm}
+            {
+                \color{bhtblue} \bfseries \Large
+                A Comparative Analysis of Large Language Models for Factual Claim Extraction and Verification
+                % \par
+            }
+    
+            \vspace{3cm}
+    
+            % Author Info
+            submitted by\\
+            \vspace{0.2cm}
+            {\Large {Aasem Elshahat}}\\
+            \vspace{0.2cm}
+            Matriculation Number: 954435
+    
+            \vspace{.5cm}
+    
+            to Department VI - Media Informatics and Media\\
+            Berliner Hochschule für Technik\\
+            
+            \vspace{0.5cm}
+            
+            to obtain the academic degree\\
+            \textbf{Bachelor of Science (B.Sc.)}\\
+            in the course of studies \textbf{Medieninformatik}
+    
+            \vspace{1cm}
+    
+            Date of Submission: January 2, 2026
+    
+            \vfill
+            
+            % Supervisors Section
+            \textbf{Supervisors:} \\
+            Prof. Dr. Siamak Haschemi \\
+            Dipl.-Inf. (FH) Markus Schubert
+    
+            \vspace{0.4cm}
+    
+            \textbf{Examiner:} \\
+            Prof. Dr. Felix Gers
+    
+        \end{flushleft}
+    \end{minipage}
 
-        {\large \textbf{Bachelor's Thesis}}
-
-        \vspace{1.2cm}
-
-        Submitted by: \\
-        \vspace{0.3cm}
-        \textbf{\large Aasem Elshahat} \\
-        \vspace{0.5cm}
-        Matriculation Number: 954435 \\
-
-        \vspace{1.5cm}
-
-        % --- UPDATED SECTION BASED ON THEMENBLATT ---
-        
-        \textbf{Betreuer / Supervisors:} \\
-        Prof. Dr. Siamak Haschemi \\
-        Dipl.-Inf. (FH) Markus Schubert
-
-        \vspace{0.8cm}
-
-        \textbf{Gutachter / Examiner:} \\
-        Prof. Dr. Felix Gers
-
-        \vspace{2cm}
-
-        \Large
-        January 2, 2026
-
-    \end{center}
+    % 4. RESTORE MARGINS FOR THE REST OF THE THESIS
+    \restoregeometry
 \end{titlepage}
+
 % --- Abstract / Acknowledgements ---
-\pagenumbering{Roman}
 \begin{abstract}
-Large Language Models (LLMs) have transformed natural language processing, yet their tendency to generate factually incorrect information---known as hallucination---poses significant risks for applications requiring factual accuracy. This thesis presents a comparative analysis of three state-of-the-art LLMs (GPT-4o-mini, Gemini-2.5-Flash, and DeepSeek-V3.2) within the TruthLens framework, a decoupled two-phase architecture for automated fact-checking that separates claim extraction from search-augmented verification.
+Large Language Models (LLMs) have transformed natural language processing, yet their tendency to generate factually incorrect information, known as hallucination, poses significant risks for applications requiring factual accuracy. This thesis presents a comparative analysis of three modern LLMs (gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2) within TruthLens, a custom implementation of a decoupled two-phase architecture adapted for multi-model benchmarking.
 
-Using the BingCheck dataset, we evaluated model performance across 1,950 API calls: $N=150$ sentences for extraction ($k=3$ runs) and $N=100$ claims for verification ($k=2$ runs). The results reveal distinct behavioral patterns. For claim extraction, GPT-4o-mini achieves the highest F1-Score (80.4\%) through a balanced precision-recall strategy, while Gemini-2.5-Flash and DeepSeek-V3.2 adopt conservative approaches with high precision (89.5\% and 95.8\%) but significantly reduced recall (40.2\% and 49.6\%). For verification, Gemini-2.5-Flash achieves the highest accuracy (82.0\%), DeepSeek-V3.2 the highest Macro-F1 (55.9\%), and GPT-4o-mini the most deterministic outputs. All models struggle with minority class identification, with a 25--30 percentage point gap between accuracy and Macro-F1 scores.
+Evaluating performance on a benchmark derived from the BingCheck dataset, we identified distinct behavioral patterns across the models. For claim extraction, gpt-4o-mini achieves superior F1-Score (80.4\%) through a balanced precision-recall strategy, while gemini-2.5-flash and deepseek-v3.2 adopt conservative approaches with high precision but significantly reduced recall. For verification, models achieve 77--82\% accuracy on straightforward claims but show a marked performance drop on minority classes (Refuted and Insufficient Information). This discrepancy highlights the challenge of distinguishing between false information and missing evidence in imbalanced datasets.
 
-Qualitative analysis identifies three primary failure modes: over-filtering of context-dependent claims, search query quality limitations, and class imbalance sensitivity. Despite these challenges, the models achieve 69\% unanimous correctness on verification tasks, demonstrating that LLM-based fact-checking has reached practical reliability for straightforward factual claims. This work contributes a reusable multi-model framework, empirical performance benchmarks, and guidance for deploying LLM-based fact-checking systems in real-world applications.
+Qualitative analysis highlights three key failure modes: the tendency to reject context-dependent claims, the generation of ineffective search queries, and the models' struggles with minority classes in imbalanced datasets. Despite these challenges, models achieve 69\% unanimous correctness on verification tasks, suggesting that LLM-based fact-checking shows promise for straightforward factual claims. This work contributes a reusable multi-model framework, empirical performance benchmarks, and actionable guidance for real-world deployment.
 \end{abstract}
 
 \clearpage
+% --- German Abstract (Zusammenfassung) ---
+\begin{otherlanguage}{ngerman} 
+    \begin{abstract}
+    Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache grundlegend verändert. Ihre Neigung zur Generierung faktisch falscher Informationen -- bekannt als \textit{Halluzination} -- stellt jedoch ein erhebliches Risiko für Anwendungen dar, die faktische Genauigkeit erfordern.
+
+    Diese Arbeit präsentiert eine vergleichende Analyse dreier LLMs (\texttt{gpt-4o-mini}, \texttt{gemini-2.5-flash} und \texttt{deepseek-v3.2}) im Rahmen von TruthLens, einer eigens entwickelten Zwei-Phasen-Architektur für Multi-Modell-Benchmarking. Die Evaluierung erfolgte anhand eines aus dem BingCheck-Datensatz abgeleiteten Benchmarks.
+
+    Bei der Behauptungsextraktion erzielt \texttt{gpt-4o-mini} den höchsten F1-Score (80,4\%) durch eine ausgewogene Precision-Recall-Strategie. \texttt{gemini-2.5-flash} und \texttt{deepseek\-v3.2} verfolgen dagegen konservative Ansätze mit hoher Precision bei deutlich reduziertem Recall. Bei der Verifikation erreichen alle Modelle 77--82\% Genauigkeit für eindeutige Behauptungen, zeigen jedoch Leistungseinbußen bei Minderheitsklassen.
+
+    Die qualitative Analyse identifiziert drei zentrale Fehlermodi: die Ablehnung kontextabhängiger Behauptungen, ineffektive Suchanfragen sowie Schwierigkeiten mit unterrepräsentierten Klassen. Trotz dieser Einschränkungen erreichen die Modelle bei 69\% der Verifikationsaufgaben einstimmige Korrektheit. Dies deutet darauf hin, dass LLM-basierte Faktenprüfung für eindeutige faktische Behauptungen vielversprechend ist.
+
+    Die Arbeit liefert ein wiederverwendbares Multi-Modell-Framework, empirische Leistungsbenchmarks sowie praxisorientierte Empfehlungen für den Einsatz solcher Systeme.
+    \end{abstract}
+\end{otherlanguage}
+\clearpage
+
+% --- Acknowledgements ---
+\chapter*{Acknowledgements}
+\thispagestyle{empty}
+
+First and foremost, all praise and gratitude belong to Allah, the Most Gracious, the Most Merciful. Every success I have achieved is by His grace alone. \textit{Alhamdulillah.}
+
+I am deeply grateful to my supervisors, Prof.\ Dr.\ Siamak Haschemi and Dipl.-Inf.\ (FH) Markus Schubert, for their guidance and expertise throughout this research, and to Prof.\ Dr.\ Felix Gers for serving as examiner. Special thanks to BharathxD (ClaimeAI) and the authors of the BingCheck dataset and Claimify framework, whose open-source contributions made this work possible.
+
+To my family---my parents, my sisters, and my brother---thank you for believing in me, not only academically but in every aspect of life. Your support has been constant and unconditional from the very first day: from my years studying Civil Engineering at Pharos University in Alexandria, through the transition to Computer Science at Nile University, and now finally to this moment---completing my first degree at Berliner Hochschule f\"{u}r Technik. You never doubted me, even when I doubted myself. In particular, I owe a deep debt of gratitude to my sister Gia and my brother in law Dave, whose belief in me and generous support made it possible for me to move to Germany and pursue my studies in the first place. Without their encouragement and help during those early uncertain days, this thesis would not exist.
+
+To my friend Omar, thank you for helping me stay organized and pushing me forward when balancing work, university, and life felt overwhelming.
+
+Finally, to my fianc\'{e}e, Dima---your unwavering support carried me through the most challenging moments of this journey. By the grace of Allah, your belief in me has been the foundation of whatever I have achieved. This work is as much yours as it is mine.
+
+\clearpage
+
+\pagenumbering{Roman}
 
 % --- Table of Contents ---
-% This command generates the Gliederung
 \tableofcontents
 \clearpage
 
 % --- List of Figures and Tables ---
-% (Good academic practice)
 \listoffigures
 \clearpage
 \listoftables
+
+% --- List of Abbreviations ---
+\chapter*{List of Abbreviations}
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+    \textbf{AI} & Artificial Intelligence \\
+    \textbf{API} & Application Programming Interface \\
+    \textbf{CAG} & Credibility-aware Generation \\
+    \textbf{CoVe} & Chain-of-Verification \\
+    \textbf{CSV} & Comma-Separated Values \\
+    \textbf{FN} & False Negative \\
+    \textbf{FP} & False Positive \\
+    \textbf{JSON} & JavaScript Object Notation \\
+    \textbf{LLM} & Large Language Model \\
+    \textbf{NLG} & Natural Language Generation \\
+    \textbf{NLP} & Natural Language Processing \\
+    \textbf{NPV} & Negative Predictive Value \\
+    \textbf{RAG} & Retrieval-Augmented Generation \\
+    \textbf{RQ} & Research Question \\
+    \textbf{SAFE} & Search-Augmented Factuality Evaluation \\
+    \textbf{SD} & Standard Deviation \\
+    \textbf{TN} & True Negative \\
+    \textbf{TP} & True Positive \\
+    \textbf{URL} & Uniform Resource Locator \\
+    \textbf{UX} & User Experience \\
+\end{tabularx}
+
 \clearpage
 
 % --- Main Thesis Content ---
-
 
 \pagenumbering{arabic}
 \chapter{Introduction}
 \label{ch:introduction}
 
-The advent of Large Language Models (LLMs) has fundamentally transformed the landscape of Natural Language Processing (NLP) and information retrieval. Models such as OpenAI's GPT-4o-mini \cite{GPT4omini}, Google's Gemini-2.5-Flash \cite{Gemini25}, and DeepSeek-V3.2 \cite{DeepSeekV3.2} have demonstrated unprecedented capabilities in generating human-like text, summarizing complex documents, and answering open-domain questions. However, the widespread adoption of these systems in critical domains—such as journalism, legal research, and education—is severely hindered by their tendency to generate plausible but factually incorrect information, a phenomenon widely known as ``hallucination'' \cite{Ji2023Survey}.
+The advent of Large Language Models (LLMs) has changed the landscape of Natural Language Processing (NLP) and information retrieval. Models such as OpenAI's gpt-4o-mini \cite{GPT4omini}, Google's gemini-2.5-flash \cite{Gemini25}, and DeepSeek's deepseek-v3.2 \cite{DeepSeekV3.2} have demonstrated remarkable capabilities in generating human-like text, summarizing complex documents, and answering open-domain questions. However, the widespread adoption of these systems in critical domains—such as journalism, legal research, and education—is hindered by their tendency to generate plausible but factually incorrect information, a phenomenon widely known as ``hallucination'' \cite{Ji2023Survey}.
 
-As LLMs are increasingly integrated into search engines, the ability to automatically verify the factual veracity of their outputs has become a paramount research challenge. This thesis addresses this challenge by \textbf{adapting} an open-source decoupled two-phase framework for automated fact-checking and \textbf{benchmarking} the performance of state-of-the-art LLMs (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) within this architecture.
+As LLMs are increasingly integrated into search engines, the ability to automatically verify the factual veracity of their outputs has become a paramount research challenge. This thesis addresses this challenge by developing TruthLens, a custom implementation of a decoupled two-phase architecture adapted from the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}\footnote{Original repository available at: \url{https://github.com/BharathxD/ClaimeAI} (Accessed: 2025-12-22)}, for automated fact-checking and to benchmark the performance of three modern LLMs (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2) within this system.
 
 \section{Motivation}
     
     \subsection{The Problem of LLM Hallucinations}
-    While LLMs are fluent and coherent, they lack an inherent understanding of truth. They operate as probabilistic systems, predicting the next token based on statistical patterns learned during training rather than querying a structured knowledge base of verified facts. Consequently, these models often conflate correct information with outdated data, common misconceptions, or complete fabrications \cite{Ji2023Survey}.
+    While LLMs are fluent and coherent, they lack an inherent understanding of truth. They operate as probabilistic systems, predicting the next token (the fundamental unit of text processing \cite{JurafskyMartin2025}) based on statistical patterns learned during training rather than querying a structured knowledge base of verified facts. Consequently, these models often conflate correct information with outdated data, common misconceptions, or complete fabrications \cite{Ji2023Survey}.
     
-    The risk is not merely academic; in high-stakes applications, hallucinations can lead to the propagation of misinformation, legal liabilities, and the erosion of user trust. For instance, an LLM might generate a summary of a news article that accurately captures the tone but invents specific dates or statistics. This ``fluency-factuality gap''—where the text reads perfectly but is factually wrong—makes manual verification difficult and time-consuming for human users.
+    The risk is not merely academic; in high-stakes applications, hallucinations can lead to the propagation of misinformation, legal liabilities, and the erosion of user trust. For instance, an LLM might generate a summary of a news article that accurately captures the tone but invents specific dates or statistics. This phenomenon—where text reads fluently but is factually incorrect—makes manual verification difficult and time-consuming for human users.
 
     \subsection{The Need for Automated Fact-Checking}
     Manual fact-checking is unscalable given the volume of content generated by LLMs. Traditional fact-checking pipelines often rely on human annotators or static knowledge graphs, which cannot keep pace with the dynamic nature of information on the web \cite{FEVER}.
@@ -180,31 +284,31 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 \section{Objective and Research Questions}
     
     \subsection{Thesis Objective}
-    The primary objective of this thesis is to perform a comparative analysis of three leading Large Language Models—\textbf{GPT-4o-mini}, \textbf{Gemini-2.5-Flash}, and \textbf{DeepSeek-V3.2}—to determine their efficacy in an automated fact-checking pipeline.
+    The primary objective of this thesis is to perform a comparative analysis of three modern Large Language Models—\textbf{gpt-4o-mini}, \textbf{gemini-2.5-flash}, and \textbf{deepseek-v3.2}—to determine their efficacy in an automated fact-checking pipeline.
 
     \begin{table}[ht]
         \centering
-        \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|}
+            \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|}
             \hline
             \textbf{Provider} & \textbf{Model Name} & \textbf{Version / Endpoint} \\ 
             \hline
-            OpenAI & GPT-4o mini & \texttt{gpt-4o-mini-2024-07-18} \\ 
+            OpenAI & gpt-4o-mini & \texttt{openai:gpt-4o-mini} \\ 
             \hline
-            Google & Gemini 2.5 Flash & \texttt{gemini-2.5-flash-001} \\ 
+            Google & gemini-2.5-flash & \texttt{gemini-2.5-flash} \\ 
             \hline
-            DeepSeek & DeepSeek-V3.2.2 & \texttt{deepseek-chat} (V3.2 API) \\ 
+            DeepSeek & deepseek-v3.2 & \texttt{deepseek-chat} (V3.2 API) \\ 
             \hline
         \end{tabularx}
         \caption{Specifications of the Large Language Models evaluated in this study.}
         \label{tab:models_specs}
     \end{table}
     
-    Unlike previous studies that evaluate end-to-end performance, this research introduces and utilizes the \textbf{TruthLens Framework}, a novel agent-based architecture implementing a \textbf{Decoupled Two-Phase Evaluation Approach}. We leverage the \textit{BingCheck} dataset \cite{BingCheck} to assess each model's performance in:
+    Unlike previous studies that evaluate end-to-end performance, this research adapts and extends the open-source \textit{ClaimeAI} architecture into a system referred to as \textbf{TruthLens}. This custom benchmarking pipeline enables the comparative evaluation of the \textit{BingCheck} dataset \cite{BingCheck} to assess each model's performance in:
     \begin{enumerate}
         \item \textbf{Phase 1 (Extraction):} Identifying verifiable factual claims from unstructured sentences \cite{Metropolitansky2025}.
         \item \textbf{Phase 2 (Verification):} Determining the accuracy of the LLMs in assessing the veracity of those claims against a standardized ground truth, utilizing a search-augmented verification approach \cite{SAFE2024}.
     \end{enumerate}
-    This thesis aims to establish which model offers the optimal balance between precision (trustworthiness) and recall (coverage) for building reliable automated fact-checking agents.
+    This thesis aims to establish which of these three models offers the best balance between precision (trustworthiness) and recall (coverage) for building reliable automated fact-checking agents.
     
     \subsection{Research Questions}
     To achieve the stated objective, this thesis answers the following three research questions (RQs):
@@ -215,8 +319,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
         
         \item[RQ2: Claim Verification] Which LLM most accurately assesses the veracity of identified claims when provided with claims?
         
-        \item[RQ3: Qualitative Analysis] What are the common failure modes for each LLM in the fact-checking pipeline? \\
-        \textit{Do certain models tend to be overly conservative (silence) or overly confident (hallucination)?}
+        \item[RQ3: Qualitative Analysis] What are the common failure modes in LLM-based fact-checking?
     \end{description}
     
 \section{Structure of the Thesis}
@@ -224,11 +327,11 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
     \textbf{Chapter \ref{ch:background}} provides the theoretical background on Large Language Models, the phenomenon of hallucination, and the state-of-the-art in automated fact-checking, including a review of the SAFE framework \cite{SAFE2024} and the BingCheck dataset.
     
-    \textbf{Chapter \ref{ch:methodology}} details the experimental methodology. It defines the \texttt{truthlens} framework, the decoupled evaluation strategy, and the specific definitions of metrics such as F1-Score and atomic claims used throughout the study.
+    \textbf{Chapter \ref{ch:methodology}} details the experimental methodology. It defines the TruthLens framework, the decoupled evaluation strategy, and the specific definitions of metrics such as F1-Score and atomic claims used throughout the study.
     
     \textbf{Chapter \ref{ch:implementation}} describes the technical implementation of the evaluation pipeline, including the Python-based agent architecture, the integration of LLM APIs, and the automated benchmarking scripts.
     
-    \textbf{Chapter \ref{ch:results}} presents the quantitative results of the experiments. It offers a statistical comparison of GPT-4o-mini, Gemini-2.5-Flash, and DeepSeek-V3.2 across both extraction and verification phases, analyzing accuracy, reliability, and inter-model agreement across multiple experimental runs.
+    \textbf{Chapter \ref{ch:results}} presents the quantitative results of the experiments. It offers a statistical comparison of gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2 across both extraction and verification phases, analyzing accuracy, reliability, and inter-model agreement across multiple experimental runs.
     
     \textbf{Chapter \ref{ch:discussion}} interprets the findings, discussing the implications of the ``precision-recall trade-off'' observed in the models. It also provides a qualitative error analysis of specific failure cases.
     
@@ -237,20 +340,20 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 
 
 
-\chapter{Background and State of the Art}
+\chapter{Background}
 \label{ch:background}
 
-    This chapter establishes the theoretical foundations of the thesis. It reviews the phenomenon of hallucination in Large Language Models (LLMs), analyzes the state-of-the-art methodologies for factual claim extraction and verification, and introduces the theoretical basis for the \texttt{truthlens} framework.
+    This chapter establishes the theoretical foundations of the thesis. It reviews the phenomenon of hallucination in Large Language Models (LLMs), analyzes the state-of-the-art methodologies for factual claim extraction and verification, and introduces the theoretical basis for the TruthLens framework.
 
 
     \section{Large Language Models and Factuality}
-    The capabilities of Large Language Models (LLMs) have scaled dramatically in recent years, driven by advancements in transformer architectures and the expansion of pre-training datasets. However, these models remain prone to ``hallucination''—the generation of text that is fluent and coherent but factually incorrect \cite{Ji2023Survey}.
+    The capabilities of Large Language Models (LLMs) have improved in recent years, driven by advancements in transformer architectures \cite{Vaswani2017} and the expansion of pre-training datasets. However, these models remain prone to ``hallucination''—the generation of text that is fluent and coherent but factually incorrect \cite{Ji2023Survey}.
     
     Early research in Natural Language Generation (NLG) primarily categorized these errors relative to a source document (e.g., in summarization tasks). This produced the standard distinction between \textbf{Intrinsic} and \textbf{Extrinsic} hallucinations (Table \ref{tab:hallucination_types}).
     
     \begin{table}[ht]
         \centering
-        \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+            \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
             \hline
             \textbf{Type} & \textbf{Definition} & \textbf{Example Scenario} \\ 
             \hline
@@ -260,21 +363,21 @@ As LLMs are increasingly integrated into search engines, the ability to automati
             \hline
             \textbf{Extrinsic Hallucination} & 
             The generated output cannot be verified from the source (neither supported nor contradicted), effectively constituting a fabrication. & 
-            Input: ``The cat is black.'' \newline Output: ``The cat is named Felix.'' (Source never mentions a name). \\ 
+            Input: ``The cat is black.'' \newline Output: ``The cat is named Felix.'' (Source does not contain this information). \\ 
             \hline
         \end{tabularx}
         \caption{Classic classification of Hallucinations as defined by \cite{Ji2023Survey}.}
         \label{tab:hallucination_types}
     \end{table}
     
-    However, as LLMs have evolved into open-ended agents that rely on world knowledge rather than just a single input document, recent literature argues for a refined taxonomy. \cite{Huang2024Survey} distinguish between two dominant failure modes in modern Generative AI:
+    However, as LLMs have evolved into open-ended agents that rely on world knowledge rather than just a single input document, recent literature argues for a refined taxonomy. In this context, an \textit{agent} is defined as an autonomous system that utilizes an LLM as its central controller to perceive tasks, formulate execution plans, and interact with external tools (such as search engines) to achieve specific goals \cite{Wang2024Agents}. A recent survey \cite{Huang2024Survey} distinguishes between two dominant failure modes in modern Generative AI:
     
     \begin{enumerate}
         \item \textbf{Faithfulness Hallucination:} The model fails to follow user instructions or maintains internal inconsistency (e.g., self-contradiction).
         \item \textbf{Factuality Hallucination:} The model generates content that contradicts verifiable real-world facts. This manifests as \textit{Factual Fabrication} (inventing non-existent entities) or \textit{Factual Contradiction} (misstating established relations).
     \end{enumerate}
     
-    This thesis focuses specifically on detecting and mitigating \textbf{Factuality Hallucinations}. Unlike faithfulness errors, which can often be solved via prompt engineering, factuality errors require external verification pipelines—such as the \texttt{truthlens} framework proposed in this study—to audit the model's output against reliable ground truth.
+    This thesis focuses specifically on detecting and mitigating \textbf{Factuality Hallucinations}. Unlike faithfulness errors, which can be mitigated through prompt engineering, factuality errors require external verification pipelines—such as the TruthLens framework proposed in this study—to audit the model's output against reliable ground truth.
 
     
     \section{Phase 1: Factual Claim Extraction}
@@ -283,27 +386,50 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     \subsection{Literature Review: The Atomic Claim Approach}
     State-of-the-art research suggests that effective evaluation requires breaking down long-form text into "atomic claims." An atomic claim is defined as a specific, verifiable proposition that is fully self-contained \cite{Metropolitansky2025}.
     
-    Recent work by Metropolitansky and Larson (2025) introduced \textbf{Claimify}, a framework that formalized this process. They identified that naive sentence splitting is insufficient because it strips necessary context (e.g., resolving pronouns like "he" or "it"). Their research proposed a multi-stage pipeline consisting of:
+    Recent work by Metropolitansky and Larson \cite{Metropolitansky2025} introduced \textbf{Claimify}, a framework that formalized this process. They identified that naive sentence splitting is insufficient because it strips necessary context (e.g., resolving pronouns like "he" or "it"). Their research proposed a multi-stage pipeline consisting of:
     \begin{enumerate}
         \item \textbf{Selection:} Filtering out subjective or non-verifiable sentences.
-        \item \textbf{Disambiguation:} Resolving coreferences (e.g., changing "He released the album" to "Kendrick Lamar released the album") to make sentences self-contained.
+        \item \textbf{Disambiguation:} Resolving coreferences (e.g., changing "He published the theory" to "Albert Einstein published the theory") to make sentences self-contained.
         \item \textbf{Decomposition:} Breaking complex compound sentences into individual atomic facts.
     \end{enumerate}
     This thesis adopts the Claimify methodology for Phase 1, positing that higher-quality extraction leads to more accurate verification downstream.
-    
+
     \subsection{The BingCheck Dataset}
-    To evaluate extraction performance, a rigorous ground truth is required. This study leverages the \textbf{BingCheck} corpus \cite{BingCheck}, a high-quality dataset originally designed for evaluating Retrieval-Augmented Generation (RAG) systems across diverse domains such as finance, history, and science.
+    \label{sec:bingcheck_background}
     
-    However, the original BingCheck dataset focuses on document-level verification. For the specific task of atomic claim extraction (Phase 1), this thesis utilizes the sentence-level annotations derived from BingCheck and published by \cite{Metropolitansky2025} alongside the Claimify framework. This derived corpus provides expert-labeled binary classifications for sentences (contains claim / does not contain claim), serving as the standard ground truth for our precision and recall measurements.
+    To quantitatively evaluate the performance of automated systems, a rigorous \textbf{ground truth} is required. In the context of natural language processing, ground truth refers to a set of data labeled by human experts that serves as the reference standard of correctness against which model outputs are measured. Without this reference standard, it is impossible to calculate objective performance metrics such as Precision (how many predicted claims are valid) and Recall (how many valid claims were found).
+    
+    This study leverages the \textbf{BingCheck} corpus \cite{BingCheck}, a high-quality dataset originally designed for evaluating Retrieval-Augmented Generation (RAG) systems across diverse domains such as Science, History, and Finance. The dataset provides a granular breakdown of generated responses, mapping unique Answer IDs to specific questions and segmenting the response into individual sentences with binary factuality labels.
+    
+    Table \ref{tab:bingcheck_raw} illustrates the exact structure of the dataset using two sequential rows from the corpus. It demonstrates how non-factual conversational filler (Sentence 0) is distinguished from verifiable factual assertions (Sentence 1) within the same response context.
+    
+    \begin{table}[ht]
+        \centering
+        % \renewcommand{\arraystretch}{1.3} % More vertical padding
+        % Define columns: ID (fixed), Question (wrapped), SentID (small), Sentence (wrapped), Label (small)
+        \begin{tabularx}{\textwidth}{|p{1.8cm}|p{4cm}|c|X|c|}
+            \hline
+            \textbf{Answer ID} & \textbf{Question} & \textbf{Sentence ID} & \textbf{Sentence} & \textbf{Label} \\
+            \hline
+            ea262d2b... & \multirow{2}{=}{What is the history and cultural significance behind the traditional Argentine tango...?} & 0 & That's a great question. & False \\
+            \cline{1-1} \cline{3-5} 
+            ea262d2b... & & 1 & The Argentine tango is a dance and musical form that originated in Buenos Aires... & True \\
+            \hline
+        \end{tabularx}
+        \caption[Example entry from the BingCheck dataset showing sentence-level annotations]{Representative rows from the BingCheck dataset. The \textit{Label} column serves as the ground truth for Phase 1, where \textit{False} indicates no factual claim and \textit{True} indicates a verifiable claim. (Note: Answer IDs are truncated for display).}
+        \label{tab:bingcheck_raw}
+    \end{table}
+    
+    While the original BingCheck dataset focuses on document-level verification, this thesis utilizes these sentence-level annotations to derive the binary classification ground truth for Phase 1 (Extraction).
     
     \section{Phase 2: Factual Claim Verification}
-    Once atomic claims are extracted, they must be verified against external evidence. Relying on an LLM's internal parametric knowledge is insufficient due to the ``knowledge cutoff'' problem and the risk of reinforcing existing hallucinations.
+    Once atomic claims are extracted, they must be verified against external evidence. As surveyed by Guo et al.\ \cite{Guo2022Survey}, automated fact-checking has evolved from early rule-based systems to sophisticated neural approaches that integrate evidence retrieval with veracity prediction. Relying on an LLM's internal parametric knowledge (facts encoded in model weights during training) is insufficient due to the ``knowledge cutoff'' problem and the risk of reinforcing existing hallucinations.
     
     \subsection{The Knowledge Cutoff Problem}
-    Large Language Models are trained on static datasets with fixed temporal boundaries, meaning their parametric knowledge becomes progressively outdated after training completion. Cheng et al. \cite{Cheng2024} systematically analyzed this phenomenon, demonstrating that LLMs exhibit measurable degradation in factual accuracy for events occurring after their training cutoff dates. For the models evaluated in this thesis, these cutoffs range from late 2023 to mid-2024, rendering them unreliable for verifying claims about recent events, updated statistics, or evolving scientific consensus. This limitation fundamentally motivates the search-augmented approach adopted in the TruthLens framework.
+    Large Language Models are trained on static datasets with fixed temporal boundaries, meaning their parametric knowledge becomes progressively outdated after training completion. Cheng et al. \cite{Cheng2024} systematically analyzed this phenomenon, demonstrating that LLMs exhibit measurable degradation in factual accuracy for events occurring after their training cutoff dates. For the models evaluated in this thesis, these cutoffs range from late 2023 to mid-2025, rendering them unreliable for verifying claims about recent events, updated statistics, or evolving scientific consensus. This limitation fundamentally motivates the search-augmented approach adopted in the TruthLens framework.
     
     \subsection{Literature Review: Search-Augmented Verification}
-    The prevailing standard for automated verification is \textbf{Search-Augmented Factuality Evaluation (SAFE)}, proposed by researchers at Google DeepMind \cite{SAFE2024}. SAFE introduces the paradigm of using an LLM agent to interact with a search engine (e.g., Google Search) to verify claims.
+    A prominent approach for automated verification is \textbf{Search-Augmented Factuality Evaluation (SAFE)}, proposed by researchers at Google DeepMind, Stanford University, and University of Illinois at Urbana-Champaign \cite{SAFE2024}. SAFE introduces the paradigm of using an LLM agent to interact with a search engine (e.g., Google Search) to verify claims.
     
     The SAFE framework operates on a "reasoning loop":
     \begin{enumerate}
@@ -311,42 +437,50 @@ As LLMs are increasingly integrated into search engines, the ability to automati
         \item \textbf{Evidence Retrieval:} Search results are parsed to find supporting or refuting evidence.
         \item \textbf{Reasoning:} The model compares the claim against the retrieved evidence to issue a verdict (Supported, Irrelevant, or Not Supported).
     \end{enumerate}
-    Wei et al. (2024) demonstrated that LLM agents using this method can achieve human-level performance in rating long-form factuality, significantly outperforming human crowdsourced annotators in terms of cost and scalability. This thesis adapts the SAFE logic into the verification agent of the \texttt{truthlens} framework.
-
-    \section{The \texttt{truthlens} Framework}
-    To empirically evaluate the performance of GPT-4o-mini, Gemini-2.5-Flash, and DeepSeek-V3.2, this thesis employs the \textbf{TruthLens} framework. TruthLens is an adaptation of the open-source \textit{ClaimeAI} repository, which implements a decoupled fact-checking pipeline.
+    The authors of the SAFE framework \cite{SAFE2024} demonstrated that LLM agents using this method can match or exceed crowdsourced annotators in rating long-form factuality, while offering improved cost-effectiveness at scale. The TruthLens framework incorporates the SAFE-based verification agent from the ClaimeAI repository.
     
-    For this study, the original framework—which relied exclusively on GPT-4o-mini—was extended to support a multi-model architecture, allowing for the direct comparison of different Large Language Models as the underlying cognitive engine.
+    \section{The TruthLens Framework}
+    \label{sec:truthlens_framework}
 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=1.0\textwidth]{truthlens_architecture.png} 
-        \caption{The \texttt{truthlens} Decoupled Framework Architecture. Phase 1 extracts atomic claims, which are passed to Phase 2 for search-augmented verification.}
-        \label{fig:truthlens_architecture}
-    \end{figure}
-    
-    \subsection{Agent 1: The Claim Extractor}
-    The Claim Extractor agent implements the \textit{Claimify} methodology described in Section 2.2. It utilizes a graph-based workflow to process unstructured text through specific nodes for selection, disambiguation, and decomposition \cite{Metropolitansky2025}. By adhering to this rigorous extraction logic, the agent ensures that only atomic, context-independent claims are passed to the next phase.
-    
-    \subsection{Agent 2: The Claim Verifier}
-    The Claim Verifier agent implements the search-augmented reasoning loop described in Section 2.3 \cite{SAFE2024}. Designed as an autonomous agent, it iteratively generates search queries, evaluates the sufficiency of retrieved evidence, and issues a final verdict (Supported, Refuted, or Insufficient Information) based on the specific capabilities of the LLM being tested.
+    To empirically evaluate the performance of gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2, this thesis implements \textbf{TruthLens}. TruthLens is a specialized adaptation and extension of the open-source \textit{ClaimeAI} framework, with architectural extensions to support systematic comparative multi-model benchmarking.
 
+    \subsection{Foundation: The ClaimeAI Architecture}
+    The architectural foundation of this study is \textbf{ClaimeAI} \cite{ClaimeAI_Repo}, an open-source fact-checking tool designed by BharathxD. ClaimeAI utilizes \textbf{LangGraph} \cite{LangGraph}, a library specifically designed for building stateful, multi-actor applications with LLMs. LangGraph enables the creation of cyclical graphs, allowing agents to loop, persist state, and make iterative decisions—a critical capability for the complex reasoning required in fact-checking tasks. Within this framework, the process is split into two autonomous agents:
+    \begin{enumerate}
+        \item \textbf{Claim Extractor:} Uses a specific graph of prompt nodes (Selection $\rightarrow$ Disambiguation $\rightarrow$ Decomposition) to isolate atomic claims.
+        \item \textbf{Claim Verifier:} Uses a search-augmented loop (Search $\rightarrow$ Reason $\rightarrow$ Verdict) to verify those claims.
+    \end{enumerate}
 
+    However, the original ClaimeAI repository was configured to use a single LLM provider (OpenAI GPT-4) with the model identifier hardcoded in the configuration. While the underlying LangChain framework (via \texttt{init\_chat\_model}) theoretically supports multiple providers, the original implementation lacked the systematic infrastructure required for controlled comparative benchmarking across multiple LLM providers with different API capabilities.
+
+    \subsection{Scope of Adaptation}
+    The original ClaimeAI repository was configured for single-provider execution with OpenAI GPT-4 hardcoded in the configuration. To conduct the multi-model comparative analysis required by this thesis, systematic extensions were necessary. These extensions address four key requirements: (1) ensuring experimental consistency across providers with different API capabilities, (2) enabling large-scale batch processing for statistical validation, (3) providing cost-effective search infrastructure, and (4) restoring the three-label verification schema. Chapter \ref{ch:methodology} details the methodological rationale for these requirements, and Chapter \ref{ch:implementation} describes their technical implementation.
 
 \chapter{Methodology}
 \label{ch:methodology}
     This chapter details the experimental framework designed to answer the research questions. It defines the specific Large Language Models (LLMs) selected for comparison, the structure of the TruthLens agentic framework, and the rigorous metric definitions used to evaluate performance in both extraction and verification phases.
     
-
     \section{Experimental Framework}
+    \label{sec:experimental_framework}
     To perform a fair and reproducible comparative analysis, this study utilizes \textbf{TruthLens}—an experimental adaptation of the open-source \textit{ClaimeAI} repository \cite{ClaimeAI_Repo}.\footnote{Original repository available at: \url{https://github.com/BharathxD/ClaimeAI} (Accessed: 2025-12-22)}
     
-    While the original repository provided a baseline implementation for single-model execution (utilizing only GPT-4o-mini), this study introduces significant architectural extensions required for comparative analysis:
-    \begin{itemize}
-        \item \textbf{Multi-Provider Abstraction:} Refactoring the underlying LLM interface to support the execution of Gemini-2.5-Flash and DeepSeek-V3.2 models alongside OpenAI.
-        \item \textbf{Decoupled Benchmarking Pipeline:} Developing scripts to isolate Phase 1 (Extraction) and Phase 2 (Verification) metrics for independent evaluation.
-        \item \textbf{Dataset Adaptation:} Integrating the BingCheck ground-truth dataset to enable quantitative precision/recall measurement for the claim extraction phase.
-    \end{itemize}
+    While the original repository was configured for single-model execution (OpenAI GPT-4), this study required systematic infrastructure for controlled comparative benchmarking. Four methodological requirements drove the design of TruthLens:
+
+    \begin{enumerate}
+        \item \textbf{Experimental Consistency Across Providers:}
+        A fair comparison requires that all models receive identical treatment. However, the three target providers (OpenAI, Google, DeepSeek) have different API capabilities: OpenAI supports native structured output, Gemini requires explicit safety configuration to prevent false refusals on factual news content, and DeepSeek lacks native schema validation. Without a unified abstraction layer, these asymmetries would introduce confounding variables—observed differences might reflect implementation artifacts rather than model capabilities. The TruthLens design therefore mandates that all models pass through identical configuration logic, validation, and error handling.
+
+        \item \textbf{Large-Scale Batch Processing:}
+        The original ClaimeAI was designed for interactive, one-claim-at-a-time processing. However, rigorous benchmarking requires processing $N=150$ sentences across 3 models with $k=3$ runs each—a total of 1,350 extraction API calls, plus 600 verification calls. This scale necessitates automated batch processing with rate limiting (to respect API quotas), failure recovery (to handle transient network errors), and result serialization (to preserve data for analysis). Additionally, checkpointing mechanisms prevent data loss during long-running experiments.
+
+        \item \textbf{Cost-Effective Search Infrastructure:}
+        The original ClaimeAI relied on expensive neural search providers (Tavily, Exa) unsuitable for thesis-scale experimentation. To enable the required experimental runs within budget constraints, support for the Brave Search API \cite{BraveSearchAPI} was added as a cost-effective, keyword-based retrieval backend. The design abstracts different search backends behind a unified interface, ensuring that the choice of search provider does not affect agent logic.
+
+        \item \textbf{Three-Label Verification Schema:}
+        The original ClaimeAI had disabled support for \textit{Insufficient Information} verdicts, limiting verification to binary classification (\textit{Supported} vs. \textit{Refuted}). However, real-world fact-checking often encounters claims where evidence is genuinely inconclusive. Restoring the three-label schema (\textit{Supported}, \textit{Refuted}, \textit{Insufficient Information}) enables more realistic evaluation and aligns with standard fact-checking taxonomies used in datasets like BingCheck.
+    \end{enumerate}
+
+    The technical implementation of these requirements is detailed in Chapter \ref{ch:implementation}.
     
     \begin{figure}[ht]
         \centering
@@ -360,37 +494,43 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
     To ensure internal validity, the following controls were strictly enforced:
     \begin{itemize}
-        \item \textbf{Identical Prompts:} All three models received the exact same system instructions and few-shot examples for both extraction and verification tasks. No model-specific prompt engineering was applied.
-        \item \textbf{Deterministic Sampling:} To minimize variability in generation, the temperature settings were standardized (where applicable) to prioritize the deterministic outputs.
+        \item \textbf{Identical Prompts:} All three models received the exact same system instructions and few-shot examples (task demonstrations included in the prompt \cite{JurafskyMartin2025}) for both extraction and verification tasks. No model-specific prompt engineering was applied.
+        \item \textbf{Deterministic Sampling:} To minimize variability in generation, the temperature settings (a hyperparameter controlling output randomness \cite{JurafskyMartin2025}) were standardized (where applicable) to maximize output reproducibility.
     \end{itemize}
     
     \subsection{LLM Providers}
-    The study benchmarks three models representing different architectural philosophies (Proprietary vs. Open Weights) and cost profiles. The specific versions used for all experiments are listed in Table \ref{tab:models_specs} (see Chapter 1).
+    The study benchmarks three models representing different architectural philosophies (Proprietary vs. Open Weights \cite{OSI2024}) and cost profiles. Open Weights models publicly release their model parameters, enabling local deployment and fine-tuning, while proprietary models are accessible only through vendor APIs. The specific versions used for all experiments are listed in Table \ref{tab:models_specs} (see Chapter \ref{ch:introduction}).
     
     \section{Dataset Creation and Sampling}
-    \subsection{Source Dataset (BingCheck)}
-    The source text for this experiment is derived from the \textbf{BingCheck} dataset \cite{BingCheck}. BingCheck was selected because it contains high-quality, human-annotated fact-checking instances spanning diverse domains (Science, History, Finance).
+    
+    \subsection{Source Dataset}
+    \label{sec:source_dataset}
+    
+    The source text for this experiment is derived from the \textbf{BingCheck} dataset \cite{BingCheck}, the characteristics and structure of which are detailed in Section \ref{sec:bingcheck_background}. 
     
     \subsection{Sampling Strategy (Phase 1)}
-    Due to the computational intensity of agentic workflows, a stratified random sample was utilized. Using a fixed random seed (\texttt{random\_state=42}) for reproducibility, $N=150$ sentences were sampled from the source corpus. 
-    
+    Due to the computational intensity of agentic workflows, a stratified random sample was utilized rather than processing the entire corpus. Using a fixed random seed (\texttt{random\_state=42}) to ensure the sampling process is deterministic and reproducible, $N=150$ sentences were sampled from the source corpus.
     \subsection{Ground Truth Generation}
     A critical challenge in automated fact-checking is establishing a reliable "Gold Standard." This study adopts a hybrid approach:
     
     \begin{itemize}
         \item \textbf{Phase 1 (Extraction):} The ground truth for extraction was derived from the expert annotations published by the authors of the \textit{Claimify} framework \cite{Metropolitansky2025}. Each of the 150 sampled sentences possesses a binary label (\textit{True/False}) indicating whether it contains a factual claim.
         
-        \item \textbf{Phase 2 (Verification):} For the verification phase, a standardized benchmark of 100 atomic claims was required. To ensure all models were evaluated on identical inputs, the Phase 2 benchmark was derived from the extraction output of the best-performing extractor (GPT-4o-mini, with 80.4\% F1-Score), providing a standardized set of 100 atomic claims for verification. The ground truth was established via manual human annotation using a \textbf{three-label schema}:
+        \item \textbf{Phase 2 (Verification):} For the verification phase, a standardized benchmark of 100 atomic claims was required. The experimental procedure was as follows: (1) Phase 1 extraction was executed with all three models, (2) gpt-4o-mini was identified as the best-performing extractor (F1-Score = 80.4\%), and (3) the first 100 claims from gpt-4o-mini's extraction output were selected as the Phase 2 benchmark dataset. This methodological choice ensures that all verifiers are evaluated on identical, well-formed atomic claims, prioritizing benchmark quality and reproducibility. While this introduces a potential limitation regarding claim characteristic generalization (discussed in Section \ref{sec:threats_validity}), it reflects the practical scenario where production systems would deploy the optimal extractor. The ground truth was then established via manual human annotation by the author using a \textbf{three-label schema}:
         \begin{itemize}
             \item \textbf{Supported:} The claim is explicitly confirmed by authoritative sources.
             \item \textbf{Refuted:} The claim is explicitly contradicted by authoritative sources.
             \item \textbf{Insufficient Information:} No reliable evidence could be found to either support or refute the claim (e.g., unverifiable private information or ambiguous predictions), or the claim itself was too ambiguous or unclear to be verified (e.g., ambiguous subjects).
         \end{itemize}
         This alignment ensures that if a model correctly identifies a claim as unverifiable, it is penalized not as an error but rewarded as a correct assessment of uncertainty.
+
+        \textbf{Annotation Process:} Each of the 100 claims was annotated following a systematic workflow: (1) evidence gathering from authoritative sources (academic databases, government websites, established encyclopedias), (2) verdict determination based on the three-label schema, and (3) documentation of source URLs and reasoning for auditability. For \textit{Supported} and \textit{Refuted} claims, one or more authoritative URLs were recorded as evidence. For \textit{Insufficient Information} claims, the specific reason for unverifiability was documented---for example, ``Ambiguous Subject'' for claims containing unresolved pronouns (e.g., ``He advocated for animal rights'' where the referent was undefined), or ``Missing Context'' for claims referencing undefined entities. The complete annotated dataset, including all source URLs and verdict justifications, is preserved in the project repository for independent verification.
+
+        The resulting class distribution (85 Supported, 3 Refuted, 12 Insufficient Information) became known only after completing manual annotation, as the benchmark claims had no pre-existing veracity labels. This constraint is discussed in Section \ref{sec:limitations}.
     \end{itemize}
-    
+
     \section{Decoupled Two-Phase Evaluation}
-    The \texttt{truthlens} framework executes the evaluation in two distinct, sequential phases.
+    The TruthLens framework executes the evaluation in two distinct, sequential phases.
     
     \subsection{Phase 1: Claim Extraction (The "Recall" Task)}
     The objective of Phase 1 is to convert unstructured input text into a list of \textit{atomic claims}. An atomic claim must be verifiable and decontextualized.
@@ -405,7 +545,9 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     Reliable measurement requires distinct metrics for each phase.
     
     \subsection{Phase 1: Claim Extraction Metrics (Binary)}
-    In Phase 1, the task is treated as a binary classification problem where the \textbf{Positive Class} represents the presence of a verifiable claim, and the \textbf{Negative Class} represents its absence (e.g., subjective opinions or chitchat). To fully capture the Precision-Recall trade-off (RQ1), metrics are calculated for both classes.
+    In Phase 1, the task is treated as a binary classification problem where the \textbf{Positive Class} represents the presence of a verifiable claim, and the \textbf{Negative Class} represents its absence (e.g., subjective opinions or conversational filler). 
+    
+    While the Claimify study \cite{Metropolitansky2025} propose linguistic metrics such as Entailment and Decontextualization coverage, this study prioritizes Binary Recall as the primary success metric. In a high-throughput fact-checking pipeline, the critical failure mode is missing a claim entirely (False Negative). Therefore, we treat extraction as a detection task (Found/Not Found) rather than a generation quality task. To fully capture the Precision-Recall trade-off (RQ1), metrics are calculated for both classes.
     
     \subsubsection{Positive Class Metrics (Target: Factual Claims)}
     These metrics evaluate the model's ability to correctly identify factual content:
@@ -416,7 +558,8 @@ As LLMs are increasingly integrated into search engines, the ability to automati
         \item \textbf{Recall (+):} $\frac{TP}{TP + FN}$ \\
         \textit{Interpretation:} \textbf{Coverage.} Of the sentences that actually contained facts, how many did the LLM find?
         
-        \item \textbf{F1-Score (+):} The harmonic mean of Precision (+) and Recall (+). This is the primary ranking metric for extraction performance.
+        \item \textbf{F1-Score (+):} $2 \times \frac{Precision (+) \times Recall (+)}{Precision (+) + Recall (+)}$ \\ 
+        The harmonic mean of Precision (+) and Recall (+). This is the primary ranking metric for extraction performance.
     \end{itemize}
     
     \subsubsection{Negative Class Metrics (Target: Non-Factual Content)}
@@ -458,52 +601,55 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     This multi-run approach allows for the calculation of standard deviation to quantify the stability of each model's extraction and verification capabilities.
 
     \section{Threats to Validity}
+    \label{sec:threats_validity}
     This section acknowledges the limitations that may affect the generalizability and interpretation of results.
 
     \subsection{Internal Validity}
     \begin{itemize}
         \item \textbf{LLM Non-Determinism:} Large Language Models produce variable outputs even with identical inputs. This threat is mitigated by executing $k=3$ independent runs and reporting mean performance with standard deviation.
         
-        \item \textbf{API Version Drift:} Cloud-hosted models may be updated by providers during the experimental period. All experiments were conducted within a concentrated timeframe (December 2024) to minimize this effect.
+        \item \textbf{API Version Drift:} Cloud-hosted models may be updated by providers during the experimental period. All experiments were conducted within a concentrated timeframe (December 2025) to minimize this effect.
     \end{itemize}
 
     \subsection{External Validity}
     \begin{itemize}
-        \item \textbf{Dataset Scope:} The BingCheck dataset, while spanning diverse domains (Science, History, Finance), represents a specific distribution of factual claims. Results may not generalize to highly specialized domains (e.g., advanced medical or legal claims).
+        \item \textbf{Dataset Scope:} The BingCheck dataset, while spanning diverse domains such as Science, History, and Finance, represents a specific distribution of factual claims. Results may not generalize to highly specialized domains (e.g., advanced medical or legal claims).
         
         \item \textbf{Sample Size:} The evaluation uses $N=150$ sentences for extraction and $N=100$ claims for verification. While sufficient for comparative analysis, larger-scale studies may reveal different performance patterns.
     \end{itemize}
 
     \subsection{Construct Validity}
     \begin{itemize}
-        \item \textbf{Ground Truth Subjectivity:} The Phase 2 ground truth relies on manual annotation, which may introduce subjective bias. This threat was mitigated through two measures: (1) using a clearly defined three-label schema with explicit criteria for each verdict category, and (2) documenting the authoritative source URL for each annotation in the dataset, enabling full traceability and independent verification of the ground truth labels.
+        \item \textbf{Ground Truth Subjectivity:} The Phase 2 ground truth relies on manual annotation, which may introduce subjective bias. This threat was mitigated through two measures: (1) adhering to a standardized three-label schema with unambiguous definitions for each verdict category (Supported, Refuted, Insufficient), and (2) documenting the authoritative source URL for each annotation in the dataset, enabling full traceability and independent verification of the ground truth labels.
         
         \item \textbf{Search Engine Variability:} The Brave Search API may return different results over time as web content changes, potentially affecting verification reproducibility.
+
+        \item \textbf{Verification Benchmark Composition:} The Phase 2 verification dataset consists of claims extracted by the best-performing extraction model (gpt-4o-mini, F1=80.4\%). This methodological decision represents a fundamental trade-off between \textit{benchmark quality} and \textit{input diversity}. Using high-quality, well-formed claims ensures that the verification evaluation measures each model's core capability to assess factuality against evidence, rather than confounding the results by testing robustness to extraction errors (e.g., malformed or ambiguous claims). While the verifier receives intermediate extraction outputs (claim text, disambiguated sentence, original sentence), these fields contain no model-specific reasoning or confidence scores that could advantage any particular verification model—all three verifiers process identical inputs. This approach assumes that claim characteristics (e.g., complexity, specificity, domain coverage) are similar across extractors for claims they successfully identify. The design reflects realistic production scenarios where systems would deploy the optimal extractor, making the benchmark representative of practical usage. Alternative approaches (e.g., using claims from all extractors or human-annotated claims) would introduce different trade-offs: testing verifier robustness to poor extractions versus requiring significantly higher manual annotation costs. Due to budget constraints limiting the study to $N=100$ manually annotated claims, the chosen approach prioritizes fair comparison of verification capability under controlled conditions.
     \end{itemize}
     
 
 \chapter{Implementation}
 \label{ch:implementation}
 
-This chapter details the technical realization of the \texttt{truthlens} framework. It describes the system architecture, the engineering of the LLM abstraction layer required for multi-model support, and the development of the automated benchmarking pipeline used to execute the experiments.
+This chapter details the technical realization of the TruthLens framework. It describes the system architecture, the engineering of the provider management infrastructure for systematic multi-model benchmarking, and the development of the automated benchmarking pipeline used to execute the experiments.
 
     \section{System Architecture}
     
-    The \texttt{truthlens} framework is built upon a modular, multi-agent architecture designed to decouple the task of claim extraction from claim verification. The system is implemented in Python using \textbf{LangGraph} \cite{LangGraph}, a library for building stateful, multi-actor applications with Large Language Models (LLMs).
+    The TruthLens framework is built upon a modular, multi-agent architecture designed to decouple the task of claim extraction from claim verification. The system is implemented in Python using \textbf{LangGraph} \cite{LangGraph}, a library for building stateful, multi-actor applications with Large Language Models (LLMs).
     
-    While the initial prototype (based on the open-source \textit{ClaimeAI} repository) provided a baseline implementation for single-model execution, this thesis required a robust, model-agnostic framework capable of comparative benchmarking. Consequently, the architecture was significantly refactored to support dynamic model switching, batch processing, and automated metric collection.
-    
+    The initial prototype (based on the open-source \textit{ClaimeAI} repository) provided a baseline implementation configured for single-provider execution. To address the methodological requirements outlined in Section \ref{sec:experimental_framework}, the architecture was extended to support provider management, batch processing with statistical validation, and automated metric calculation.
+
     The high-level architecture consists of three primary components:
     \begin{enumerate}
-        \item \textbf{The Agent Core:} Two specialized autonomous agents (Extractor and Verifier) that execute the logic defined in the \textit{Claimify} and \textit{SAFE} methodologies.
-        \item \textbf{The Abstraction Layer:} A custom-built interface that standardizes communication between the agents and different LLM providers (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2).
-        \item \textbf{The Benchmarking Engine:} A suite of automation scripts designed to execute large-scale experiments, handle API failures, and serialize results for analysis.
+        \item \textbf{The Agent Core:} Two specialized autonomous agents (Extractor and Verifier) that execute the logic defined in the \textit{Claimify} and \textit{SAFE} methodologies—adapted from the original ClaimeAI framework.
+        \item \textbf{The Provider Management Layer:} A unified interface implementing the Strategy Pattern that standardizes interactions across providers with different API capabilities and configuration requirements, ensuring experimental consistency.
+        \item \textbf{The Benchmarking Engine:} Automated pipeline for large-scale execution ($N=150$ samples, $k=3$ runs per phase, 3 models) with rate limiting, failure recovery, multi-run statistical analysis, and result serialization.
     \end{enumerate}
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.9\textwidth]{images/system_architecture.png}
-        \caption{High-level architecture of the TruthLens Multi-Agent System. Adapted from \cite{ClaimeAI_Repo}.}
+        \includegraphics[width=\textwidth]{images/system_architecture.png}
+        \caption{High-level architecture of the TruthLens Multi-Agent System. Reproduced from \cite{ClaimeAI_Repo}.}
         \label{fig:system_arch}
     \end{figure}
     
@@ -511,25 +657,29 @@ This chapter details the technical realization of the \texttt{truthlens} framewo
     The system utilizes two distinct \textbf{stateful cyclic graphs} to manage the state of the fact-checking process.
     
     \subsubsection{The Claim Extractor Agent}
-    The extraction phase is implemented as a five-stage pipeline. As illustrated in Figure \ref{fig:extractor_flow}, the agent receives raw text and processes it through sequential nodes:
+    The extraction pipeline is adopted directly from the ClaimeAI repository \cite{ClaimeAI_Repo}, which implements the Claimify methodology \cite{Metropolitansky2025}. \textbf{No modifications were made to the core extraction logic}; our adaptations (detailed in Section \ref{sec:experimental_framework}) occur at the provider and infrastructure layers, not within the pipeline itself.
+    
+    As illustrated in Figure \ref{fig:extractor_flow}, the agent receives raw text and processes it through five sequential nodes:
     \begin{itemize}
         \item \textbf{Sentence Splitter:} Segments text while preserving context windows (5 preceding sentences).
         \item \textbf{Selection Node:} Filters out non-factual sentences using a consensus voting mechanism ($k=3$ completions) to reduce false positives.
-        \item \textbf{Disambiguation Node:} Resolves coreferences (e.g., replacing ``he'' with ``Kendrick Lamar'').
+        \item \textbf{Disambiguation Node:} Resolves coreferences (e.g., replacing ``he'' with ``Albert Einstein'').
         \item \textbf{Decomposition Node:} Breaks complex compound sentences into atomic claims.
         \item \textbf{Validation Node:} Performs a final syntax check on the extracted claims.
     \end{itemize}
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.8\textwidth]{images/extractor_workflow.png}
-        \caption{The Claim Extraction Workflow implementing the Claimify methodology. Adapted from \cite{ClaimeAI_Repo}.}
+        \includegraphics[width=\textwidth]{images/extractor_workflow.png}
+        \caption{The Claim Extraction Workflow implementing the Claimify methodology. Reproduced from \cite{ClaimeAI_Repo}.}
         \label{fig:extractor_flow}
     \end{figure}
     
     \subsubsection{The Claim Verifier Agent}
-    While the extractor operates as a linear pipeline, the Claim Verifier implements an \textbf{iterative reasoning loop} designed to mimic human fact-checking behavior (Figure \ref{fig:verifier_flow}). Defined in \texttt{claim\_verifier/agent.py}, this agent utilizes a state graph that allows it to gather evidence dynamically until sufficient information is obtained.
-    
+    The verification pipeline is also adopted from ClaimeAI \cite{ClaimeAI_Repo}, which implements the SAFE methodology \cite{SAFE2024}. Unlike the extractor, \textbf{one modification was made}: we restored the \textit{Insufficient Information} verdict category, which had been disabled in the original codebase (see Section \ref{sec:experimental_framework}, Requirement 4).
+
+    The Claim Verifier implements an \textbf{iterative reasoning loop} designed to mimic human fact-checking behavior (Figure \ref{fig:verifier_flow}). Defined in \texttt{claim\_verifier/agent.py}, the agent utilizes a state graph that allows it to gather evidence dynamically until sufficient information is obtained.
+
     The workflow consists of four distinct nodes:
     \begin{itemize}
         \item \textbf{Generate Search Query:} Analyzes the atomic claim and formulates precise, neutral search queries (e.g., converting ``He won the election'' to ``winner of 2024 US presidential election'').
@@ -539,41 +689,27 @@ This chapter details the technical realization of the \texttt{truthlens} framewo
             \item \textit{Needs More Evidence (True):} The agent generates a new, refined query and loops back to the retrieval step.
             \item \textit{Needs More Evidence (False):} The agent proceeds to the final evaluation.
         \end{itemize}
-        To prevent infinite loops, a hard limit (configurable via \texttt{max\_iterations}) forces the agent to conclude after $N=3$ attempts.
+        To prevent infinite loops, a hard limit (configurable via \texttt{max\_iterations}) forces the agent to conclude after $N=5$ attempts.
         \item \textbf{Evaluate Evidence:} The final node synthesizes all accumulated evidence to issue a verdict (\textit{Supported}, \textit{Refuted}, or \textit{Insufficient Information}) along with a reasoning trace.
     \end{itemize}
 
-    The critical logic for the \textit{Search Decision} node is enforced via a structured Pydantic model \cite{Pydantic}, which compels the LLM to justify its decision before stopping. As shown in Listing \ref{lst:search_decision}, the model must explicitly identify missing aspects before requesting more evidence.
-
-\begin{verbatim}
-class SearchDecisionOutput(BaseModel):
-    """Evidence sufficiency assessment for claim verification."""
-
-    needs_more_evidence: bool = Field(
-        description="Return True if: evidence is limited, contradictory, 
-        or lacks authoritative sources. Return False only when 
-        evidence is comprehensive."
-    )
-    missing_aspects: list[str] = Field(
-        default_factory=list,
-        description="Specific aspects that need more evidence coverage."
-    )
-\end{verbatim}
-\label{lst:search_decision}
+    The critical logic for the \textit{Search Decision} node is enforced via a structured Pydantic model \cite{Pydantic}, which compels the LLM to justify its decision before stopping. The model must explicitly identify missing aspects before requesting more evidence.
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.8\textwidth]{images/verifier_workflow.png}
-        \caption{The Claim Verifier Workflow implementing the SAFE reasoning loop. Adapted from \cite{ClaimeAI_Repo}.}
+        \includegraphics[width=\textwidth]{images/verifier_workflow.png}
+        \caption{The Claim Verifier Workflow implementing the SAFE reasoning loop. Reproduced from \cite{ClaimeAI_Repo}.}
         \label{fig:verifier_flow}
     \end{figure}
 
-    \section{LLM Abstraction Layer}
-    
-    A critical contribution of this thesis is the development of a unified \textbf{LLM Abstraction Layer}. The original codebase was tightly coupled to the OpenAI API, making comparative analysis impossible. To address this, the system was refactored to implement the \textbf{Strategy Pattern} \cite{Gamma1994}, allowing the underlying cognitive engine to be swapped at runtime without modifying the agent logic.
+    \section{Provider Management Infrastructure}
+
+    This section describes the technical implementation of the unified provider abstraction layer required for experimental consistency (see Section \ref{sec:experimental_framework} for the methodological rationale). The core challenge was reconciling the need for identical code paths across all models with the reality that each provider has different API capabilities: OpenAI supports native structured output, Gemini requires explicit safety configuration, and DeepSeek lacks schema validation.
+
+    The solution implements the Strategy Pattern \cite{Gamma1994}, encapsulating provider-specific initialization logic behind a uniform interface while ensuring all models receive identical treatment in the agent workflows.
     
     \subsection{Provider Interface}
-    We defined an abstract base class, \texttt{LLMProvider}, which enforces a common interface for all model interactions. This ensures that regardless of whether the model is proprietary (GPT-4o-mini) or open-weights (DeepSeek-V3.2), the agents interact with it using a standardized protocol.
+    We defined an abstract base class, \texttt{LLMProvider}, which enforces a uniform interface for all model interactions despite underlying differences in initialization methods and API requirements. This abstraction ensures that all three models—regardless of whether they use \texttt{init\_chat\_model}, \texttt{ChatGoogleGenerativeAI}, or \texttt{ChatOpenAI} with custom configuration—are accessed through identical code paths in the agent logic.
     
 \begin{verbatim}
 class LLMProvider(ABC):
@@ -595,20 +731,21 @@ class LLMProvider(ABC):
         \item \textbf{DeepSeekProvider:} Interfaces with \texttt{deepseek-chat} (V3.2).
     \end{itemize}
     
-    \subsection{DeepSeek-V3.2 Integration Strategy}
-    A significant technical challenge was DeepSeek-V3.2's lack of native support for complex structured output (JSON Schema enforcement) compared to OpenAI's function calling. To resolve this, a \textbf{custom wrapper class} (\texttt{DeepSeekChatWrapper}) was implemented that overrides the \texttt{with\_structured\_output()} method to handle JSON schema enforcement manually.
-    
-    This implementation:
+    \subsection{DeepSeek Structured Output Middleware}
+    A significant technical challenge in supporting DeepSeek models was their lack of native compatibility with LangChain's \texttt{with\_structured\_output()} method. While OpenAI and Gemini support strict JSON schema validation natively, DeepSeek V3.2 only provides basic JSON mode (\texttt{response\_format=\{"type": "json\_object"\}}) without schema enforcement.
+
+    To bridge this gap, we implemented a custom middleware class (\texttt{DeepSeekChatWrapper}) that provides Pydantic schema compatibility by:
     \begin{enumerate}
-        \item Intercepts the prompt and injects a strict JSON schema definition into the system message.
-        \item Appends a ``force-formatting'' instruction to the end of the user prompt.
-        \item Post-processes the raw text output to extract and validate the JSON object before passing it back to the agent.
+        \item Injecting JSON format instructions into the prompt with example schema structure
+        \item Parsing the raw text response to extract JSON from markdown code blocks
+        \item Normalizing enum field values (e.g., "SUPPORTED" $\rightarrow$ "Supported") to match expected casing
+        \item Validating against the target Pydantic model before returning to the agent
     \end{enumerate}
-    
-    This ``polyfill'' implementation was crucial for enabling the DeepSeek-V3.2 model to function within the strict type-checking requirements of the LangGraph framework.
+
+    This adapter enables DeepSeek models to function within LangGraph's type-safe agent framework while maintaining the same structured output guarantees as the other providers.
 
     \subsection{Search Provider Extension}
-    The original repository included a basic search interface supporting expensive neural search APIs like Exa (formerly Metaphor) and Tavily. To enable large-scale benchmarking within the budget constraints of this study, we extended this module to support the \textbf{Brave Search API} \cite{BraveSearchAPI}.
+    The original repository included a search interface supporting expensive neural search APIs like Exa (formerly Metaphor) and Tavily. To enable large-scale benchmarking within the budget constraints of this study, this module was extended to support the \textbf{Brave Search API}.
     
     The implementation in \texttt{search/provider.py} abstracts these distinct backends behind a unified asynchronous interface. This allows the agents to switch between providers without logic changes:
     
@@ -617,29 +754,75 @@ class LLMProvider(ABC):
         \item \textbf{Exa \& Tavily:} Retained from the original codebase for legacy support, though not used in the primary experiments due to cost.
     \end{enumerate}
     
-    To handle the inherent instability of network requests during large-scale benchmarking (1,950 total API calls across both phases: 1,350 for extraction, 600 for verification), the provider was wrapped with an exponential backoff retry mechanism to ensure transient API failures do not invalidate experimental data.
+    To handle network instability, the search provider was wrapped with an exponential backoff retry mechanism to ensure transient failures do not crash the verification agent.
 
     \section{Benchmark Automation}
     
     To conduct the comparative analysis, a robust benchmarking pipeline was developed to automate the execution of experiments across the dataset.
     
     \subsection{Phase 1: Extraction Automation}
-    The script \texttt{run\_extraction\_phase.py} manages the batch processing of the $N=150$ sentences. It iterates through the target models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2), dynamically injecting the appropriate \texttt{LLMProvider} into the extraction graph.
-    
+    The script \texttt{run\_extraction\_phase.py} manages the batch processing of the $N=150$ sentences. It iterates through the target models (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2), dynamically injecting the appropriate \texttt{LLMProvider} into the extraction graph. Results are serialized row-by-row into a CSV file adhering to the schema in Table \ref{tab:extraction_schema}.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Field Name} & \textbf{Description} \\
+            \hline
+            \texttt{answer\_id} & Unique identifier from the BingCheck dataset. \\
+            \hline
+            \texttt{sentence} & The input text being analyzed for factual claims. \\
+            \hline
+            \texttt{contains\_factual\_claim} & Ground truth binary label (True/False). \\
+            \hline
+            \texttt{[model]\_binary\_result} & The model's prediction: whether the sentence contains a claim (True/False). Repeated for each provider (gpt4, gemini, deepseek). \\
+            \hline
+            \texttt{[model]\_extracted\_claims\_json} & JSON array containing the list of atomic claims extracted by the model. \\
+            \hline
+        \end{tabularx}
+        \caption[Extraction Dataset Schema]{Extraction Dataset Schema. The \texttt{[model]} prefix is replaced with provider names (e.g., \texttt{gpt4\_binary\_result}).}
+        \label{tab:extraction_schema}
+    \end{table}
+
     To ensure the statistical reliability defined in the methodology ($k=3$ runs), the automation script includes a \texttt{generate\_unique\_filename} utility. This ensures that subsequent experimental runs do not overwrite previous data, automatically versioning output files (e.g., \texttt{dataset\_run2.csv}, \texttt{dataset\_run3.csv}) to preserve a complete audit trail of all iterations.
     
     \subsection{Phase 2: Verification Automation}
-    The verification phase is orchestrated by \texttt{run\_verification\_phase.py}. This script loads the standardized benchmark claims generated in Phase 1 and feeds them into the verification agent.
-    
+    The verification phase is orchestrated by \texttt{run\_verification\_phase.py}. This script loads the standardized benchmark claims generated in Phase 1 and feeds them into the verification agent. The output is stored using the schema defined in Table \ref{tab:verification_schema}.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Field Name} & \textbf{Description} \\
+            \hline
+            \texttt{claim\_id} & Unique identifier for the claim (e.g., B001\_C00). \\
+            \hline
+            \texttt{claim\_text} & The atomic proposition to be verified. \\
+            \hline
+            \texttt{original\_sentence} & The source sentence from which the claim was extracted. \\
+            \hline
+            \texttt{ground\_truth\_verdict} & Manual annotation (Supported / Refuted / Insufficient). \\
+            \hline
+            \texttt{[model]\_verdict} & The LLM's final verification decision. Repeated for each provider. \\
+            \hline
+            \texttt{[model]\_reasoning} & The model's chain-of-thought explanation for its verdict. \\
+            \hline
+            \texttt{[model]\_sources} & JSON array of URLs retrieved during the search-augmented verification. \\
+            \hline
+        \end{tabularx}
+        \caption[Verification Benchmark Schema]{Verification Benchmark Schema. The \texttt{[model]} prefix is replaced with provider names (e.g., \texttt{gpt4\_verdict}, \texttt{gemini\_reasoning}).}
+        \label{tab:verification_schema}
+    \end{table}
+
     Key engineering features of the verification runner include:
     \begin{itemize}
-        \item \textbf{Per-Claim State Persistence:} Given that verifying a single claim may involve multiple search iterations (taking 30-60 seconds), the script saves results to the CSV after \textit{every} single transaction. This ``checkpointing'' strategy prevents data loss in the event of API timeouts or rate limit disconnects.
-        \item \textbf{Dynamic Schema Updates:} The script dynamically creates distinct columns for each model (e.g., \texttt{gpt4\_verdict}, \texttt{gemini\_verdict}) within the same master dataset, facilitating direct row-by-row comparison during analysis.
+        \item \textbf{Per-Claim State Persistence:} Given that verifying a single claim may involve multiple search iterations (taking 30-60 seconds), the script saves results to the CSV after \textit{every} single transaction, using the structure defined in Table \ref{tab:verification_schema}. This ``checkpointing'' strategy prevents data loss in the event of API timeouts or rate limit disconnects.
+        \item \textbf{Dynamic Schema Updates:} The script dynamically creates distinct columns for each model (e.g., \texttt{gpt4\_verdict}, \texttt{gemini\_verdict}, \texttt{deepseek\_verdict}) within the same master dataset, facilitating direct row-by-row comparison during analysis.
         \item \textbf{Error Resilience:} Failed verifications (e.g., due to strict content filters on sensitive topics) are caught and logged as \texttt{None}, allowing the pipeline to continue processing remaining claims without crashing.
     \end{itemize}
     
     \subsection{Data Storage and Serialization}
-    The complex, nested output of the LangGraph agents (containing claim objects and metadata) is serialized and appended to the master dataset. The resulting CSV file utilizes a \textbf{wide-format structure}, where each input sentence is preserved as a row, and the extraction results for each model (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) are stored in distinct columns. This structure facilitates direct, side-by-side comparison of model performance on identical inputs.
+    The complex, nested output of the LangGraph agents (containing claim objects and metadata) is serialized and appended to the master dataset. The resulting CSV file utilizes a \textbf{wide-format structure}, where each input sentence is preserved as a row, and the extraction results for each model (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2) are stored in distinct columns. This structure facilitates direct, side-by-side comparison of model performance on identical inputs.
 
     \section{Analysis Pipeline}
     
@@ -666,7 +849,7 @@ class LLMProvider(ABC):
 \chapter{Results and Evaluation}
 \label{ch:results}
 
-This chapter presents the quantitative results of the comparative analysis. The experiments were conducted following the methodology defined in Chapter \ref{ch:methodology}, with $k=3$ independent runs for the extraction phase and $k=2$ runs for the verification phase. All metrics are reported as mean values with standard deviation to demonstrate reliability across runs.
+This chapter presents the quantitative results of the comparative analysis. The experiments were conducted following the methodology defined in Chapter \ref{ch:methodology}, executing 1,950 pipeline invocations (1,350 for extraction across k=3 runs, and 600 for verification across k=2 runs), with each invocation involving multiple LLM API calls due to the multi-node agent architecture (consensus voting in extraction, iterative search in verification). All metrics are reported as mean values with standard deviation to demonstrate reliability across runs.
 
 \section{Phase 1: Claim Extraction Performance}
 
@@ -682,20 +865,20 @@ Table \ref{tab:extraction_results} presents the aggregated performance metrics f
         \hline
         \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
         \hline
-        GPT-4o-mini & 80.2\% $\pm$ 1.7\% & 83.1\% $\pm$ 2.5\% & 77.8\% $\pm$ 0.7\% & 80.4\% $\pm$ 1.5\% \\
+        gpt-4o-mini & 80.2\% $\pm$ 1.7\% & 83.1\% $\pm$ 2.5\% & 77.8\% $\pm$ 0.7\% & 80.4\% $\pm$ 1.5\% \\
         \hline
-        Gemini-2.5-Flash & 66.4\% $\pm$ 1.5\% & 89.5\% $\pm$ 1.8\% & 40.2\% $\pm$ 2.7\% & 55.4\% $\pm$ 2.8\% \\
+        gemini-2.5-flash & 66.4\% $\pm$ 1.5\% & 89.5\% $\pm$ 1.8\% & 40.2\% $\pm$ 2.7\% & 55.4\% $\pm$ 2.8\% \\
         \hline
-        DeepSeek-V3.2 & 72.7\% $\pm$ 2.9\% & 95.8\% $\pm$ 1.7\% & 49.6\% $\pm$ 4.9\% & 65.3\% $\pm$ 4.6\% \\
+        deepseek-v3.2 & 72.7\% $\pm$ 2.9\% & 95.8\% $\pm$ 1.7\% & 49.6\% $\pm$ 4.9\% & 65.3\% $\pm$ 4.6\% \\
         \hline
     \end{tabularx}
-    \caption{Phase 1 Extraction Metrics (Positive Class). Mean $\pm$ standard deviation across $k=3$ runs. $N=150$ sentences (78 positive, 72 negative).}
+    \caption[Phase 1 Extraction Metrics (Positive Class)]{Phase 1 Extraction Metrics (Positive Class). Mean $\pm$ standard deviation across $k=3$ runs. $N=150$ sentences (78 positive, 72 negative).}
     \label{tab:extraction_results}
 \end{table}
 
-\textbf{Key Finding:} GPT-4o-mini achieves the highest F1-Score (80.4\%), demonstrating a balanced trade-off between precision and recall. In contrast, Gemini-2.5-Flash and DeepSeek-V3.2 exhibit a \textit{conservative extraction strategy}---achieving exceptionally high precision (89.5\% and 95.8\% respectively) at the cost of significantly reduced recall (40.2\% and 49.6\%).
+\textbf{Key Finding:} gpt-4o-mini achieves the highest F1-Score (80.4\%), demonstrating a balanced trade-off between precision and recall. In contrast, gemini-2.5-flash and deepseek-v3.2 exhibit a conservative extraction strategy, achieving high precision (89.5\% and 95.8\% respectively) at the cost of significantly low recall (40.2\% and 49.6\%).
 
-This pattern has important practical implications: while Gemini-2.5-Flash and DeepSeek-V3.2 rarely misclassify non-factual content as claims (high precision), they fail to identify approximately half of the actual factual claims present in the text (low recall). For a fact-checking pipeline where \textit{coverage} is critical, this represents a significant limitation.
+This pattern has important practical implications: while gemini-2.5-flash and deepseek-v3.2 rarely misclassify non-factual content as claims (high precision), they fail to identify approximately half of the actual factual claims present in the text (low recall). For a fact-checking pipeline where \textit{coverage} is critical, this represents a significant limitation.
 
 \subsection{Negative Class Performance}
 
@@ -707,18 +890,18 @@ To fully characterize the models' filtering capabilities, Table \ref{tab:extract
         \hline
         \textbf{Model} & \textbf{Specificity} & \textbf{NPV} & \textbf{F1-Score (--)} \\
         \hline
-        GPT-4o-mini & 82.9\% $\pm$ 2.9\% & 77.5\% $\pm$ 1.1\% & 80.1\% $\pm$ 1.9\% \\
+        gpt-4o-mini & 82.9\% $\pm$ 2.9\% & 77.5\% $\pm$ 1.1\% & 80.1\% $\pm$ 1.9\% \\
         \hline
-        Gemini-2.5-Flash & 94.9\% $\pm$ 0.8\% & 59.4\% $\pm$ 1.1\% & 73.1\% $\pm$ 1.0\% \\
+        gemini-2.5-flash & 94.9\% $\pm$ 0.8\% & 59.4\% $\pm$ 1.1\% & 73.1\% $\pm$ 1.0\% \\
         \hline
-        DeepSeek-V3.2 & 97.7\% $\pm$ 0.8\% & 64.2\% $\pm$ 2.4\% & 77.5\% $\pm$ 2.0\% \\
+        deepseek-v3.2 & 97.7\% $\pm$ 0.8\% & 64.2\% $\pm$ 2.4\% & 77.5\% $\pm$ 2.0\% \\
         \hline
     \end{tabularx}
-    \caption{Phase 1 Extraction Metrics (Negative Class). Specificity measures the ability to correctly identify non-factual content; NPV (Negative Predictive Value) indicates reliability when predicting ``no claim.''}
+    \caption[Phase 1 Extraction Metrics (Negative Class)]{Phase 1 Extraction Metrics (Negative Class). Specificity measures the ability to correctly identify non-factual content; NPV (Negative Predictive Value) indicates reliability when predicting ``no claim.''}
     \label{tab:extraction_negative}
 \end{table}
 
-The specificity scores confirm the conservative behavior of Gemini-2.5-Flash (94.9\%) and DeepSeek-V3.2 (97.7\%)---these models almost never incorrectly flag subjective content as factual. However, their lower NPV scores (59.4\% and 64.2\%) indicate that when they predict ``no claim,'' there is a substantial probability that they have missed an actual factual claim.
+The specificity scores confirm the conservative behavior of gemini-2.5-flash (94.9\%) and deepseek-v3.2 (97.7\%)---these models almost never incorrectly flag subjective content as factual. However, their lower NPV scores (59.4\% and 64.2\%) indicate that when they predict ``no claim,'' there is a substantial probability that they have missed an actual factual claim.
 
 \subsection{Visual Analysis: Precision-Recall Trade-off}
 
@@ -727,7 +910,7 @@ Figure \ref{fig:precision_recall} visualizes the precision-recall trade-off, wit
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{images/fig_precision_recall_tradeoff.png}
-    \caption{Precision-Recall trade-off for claim extraction. GPT-4o-mini occupies the balanced region near F1=0.8, while Gemini-2.5-Flash and DeepSeek-V3.2 cluster in the high-precision, low-recall quadrant.}
+    \caption[Precision-Recall trade-off for claim extraction]{Precision-Recall trade-off for claim extraction. gpt-4o-mini occupies the balanced region near F1=0.8, while gemini-2.5-flash and deepseek-v3.2 cluster in the high-precision, low-recall quadrant.}
     \label{fig:precision_recall}
 \end{figure}
 
@@ -738,33 +921,33 @@ Figure \ref{fig:confusion_matrices} presents the averaged confusion matrices acr
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/fig_extraction_confusion_matrices.png}
-    \caption{Confusion matrices for claim extraction (averaged across $k=3$ runs). GPT-4o-mini shows balanced errors, while Gemini-2.5-Flash and DeepSeek-V3.2 exhibit high false negative counts (39--47 missed claims).}
+    \caption[Confusion matrices for claim extraction (averaged across $k=3$ runs)]{Confusion matrices for claim extraction (averaged across $k=3$ runs). gpt-4o-mini shows balanced errors, while gemini-2.5-flash and deepseek-v3.2 exhibit high false negative counts (47--39 missed claims).}
     \label{fig:confusion_matrices}
 \end{figure}
 
 \textbf{Interpretation:}
 \begin{itemize}
-    \item \textbf{GPT-4o-mini:} Exhibits relatively balanced error distribution with 12 false positives and 17 false negatives on average.
-    \item \textbf{Gemini-2.5-Flash:} Shows extreme conservatism with only 4 false positives but 47 false negatives---missing over half of actual claims.
-    \item \textbf{DeepSeek-V3.2:} Similar conservative pattern with 2 false positives and 39 false negatives.
+    \item \textbf{gpt-4o-mini:} Exhibits relatively balanced error distribution with 12 false positives and 17 false negatives on average.
+    \item \textbf{gemini-2.5-flash:} Shows extreme conservatism with only 4 false positives but 47 false negatives, missing over half of actual claims.
+    \item \textbf{deepseek-v3.2:} Similar conservative pattern with 2 false positives and 39 false negatives.
 \end{itemize}
 
 \subsection{Reliability Analysis Across Multiple Runs}
 
-To assess the stability of each model's extraction performance, Figure \ref{fig:extraction_reliability} presents box plots showing the distribution of F1-scores across experimental runs.
+To assess the stability of each model's claim extraction performance, Figure \ref{fig:extraction_reliability} presents box plots showing the distribution of F1-scores across experimental runs.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/fig_extraction_reliability.png}
-    \caption{Run-to-run variability for extraction phase ($k=3$ runs). GPT-4o-mini demonstrates the most consistent performance with minimal variance.}
+    \caption[Run-to-run variability for extraction phase ($k=3$ runs)]{Run-to-run variability for extraction phase ($k=3$ runs). gpt-4o-mini demonstrates the most consistent performance with minimal variance.}
     \label{fig:extraction_reliability}
 \end{figure}
 
-GPT-4o-mini demonstrates the most stable performance with the smallest standard deviation ($\pm$1.5\% for F1-Score), while DeepSeek-V3.2 exhibits the highest variability ($\pm$4.6\%). This variability in DeepSeek-V3.2's performance may be attributed to its less deterministic response patterns when processing ambiguous sentences.
+gpt-4o-mini demonstrates the most stable performance with the smallest standard deviation ($\pm$1.5\% for F1-Score), while deepseek-v3.2 exhibits the highest variability ($\pm$4.6\%). This variability in deepseek-v3.2's performance may be attributed to its less deterministic response patterns when processing ambiguous sentences.
 
 \section{Phase 2: Claim Verification Performance}
 
-The verification phase evaluated each model's ability to assess the veracity of factual claims using search-augmented reasoning. A standardized benchmark of $N=100$ atomic claims was used, with ground truth labels distributed as: 85 \textit{Supported}, 3 \textit{Refuted}, and 12 \textit{Insufficient Information}.
+The verification phase evaluated each model's ability to assess the veracity of factual claims using search-augmented reasoning. A standardized benchmark of $N=100$ atomic claims was used, with ground truth labels distributed as: 85 \textit{Supported}, 3 \textit{Refuted}, and 12 \textit{Insufficient Information}. The severe underrepresentation of the Refuted class arose only after completing the manual annotation and is discussed in Section \ref{sec:limitations}.
 
 \subsection{Quantitative Metric Comparison}
 
@@ -772,22 +955,22 @@ Table \ref{tab:verification_results} presents the verification performance acros
 
 \begin{table}[ht]
     \centering
-    \begin{tabularx}{\textwidth}{|l|X|X|X|X|X|}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
         \hline
-        \textbf{Model} & \textbf{Accuracy} & \textbf{Macro-F1} & \textbf{Supported F1} & \textbf{Refuted F1} & \textbf{Insufficient F1} \\
+        \textbf{Model} & \textbf{Accuracy} & \textbf{Macro-F1} & \textbf{Supported F1} & \textbf{Refuted F1\textsuperscript{†}} & \textbf{Insufficient F1} \\
         \hline
-        GPT-4o-mini & 79.0\% $\pm$ 0.0\% & 51.2\% $\pm$ 3.9\% & 89.2\% & 36.7\% & 27.8\% \\
+        gpt-4o-mini & 79.0\% $\pm$ 0.0\% & 51.2\% $\pm$ 3.9\% & 89.2\% & 36.7\%\textsuperscript{†} & 27.8\% \\
         \hline
-        Gemini-2.5-Flash & 82.0\% $\pm$ 1.4\% & 52.7\% $\pm$ 2.0\% & 90.9\% & 34.8\% & 32.5\% \\
+        gemini-2.5-flash & 82.0\% $\pm$ 1.4\% & 52.7\% $\pm$ 2.0\% & 90.9\% & 34.8\%\textsuperscript{†} & 32.5\% \\
         \hline
-        DeepSeek-V3.2 & 77.5\% $\pm$ 2.1\% & 55.9\% $\pm$ 0.4\% & 87.3\% & 40.0\% & 40.5\% \\
+        deepseek-v3.2 & 77.5\% $\pm$ 2.1\% & 55.9\% $\pm$ 0.4\% & 87.3\% & 40.0\%\textsuperscript{†} & 40.5\% \\
         \hline
     \end{tabularx}
-    \caption{Phase 2 Verification Metrics. Mean $\pm$ standard deviation across $k=2$ runs. $N=100$ claims (85 Supported, 3 Refuted, 12 Insufficient).}
+    \caption[Phase 2 Verification Metrics]{Phase 2 Verification Metrics. Mean $\pm$ standard deviation across $k=2$ runs. $N=100$ claims (85 Supported, 3 Refuted, 12 Insufficient).\\ \textsuperscript{†}Refuted F1 scores based on $n=3$ samples; highly sensitive to individual errors. Interpret with caution.}
     \label{tab:verification_results}
 \end{table}
 
-\textbf{Key Finding:} Gemini-2.5-Flash achieves the highest accuracy (82.0\%), while DeepSeek-V3.2 achieves the highest Macro-F1 score (55.9\%). The divergence between these metrics is explained by the severe class imbalance in the benchmark dataset.
+\textbf{Key Finding:} gemini-2.5-flash achieves the highest accuracy (82.0\%), while deepseek-v3.2 achieves the highest Macro-F1 score (55.9\%). The divergence between these metrics is explained by the severe class imbalance in the benchmark dataset.
 
 \subsection{Impact of Class Imbalance}
 
@@ -798,11 +981,11 @@ Figure \ref{fig:per_class_heatmap} visualizes this class-dependent performance d
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/fig_per_class_f1_heatmap.png}
-    \caption{Per-class F1-scores for verification. The heatmap reveals consistently poor performance on minority classes (Refuted: $n=3$, Insufficient: $n=12$) compared to the majority class (Supported: $n=85$).}
+    \caption[Per-class F1-scores for verification]{Per-class F1-scores for verification. The heatmap reveals consistently poor performance on minority classes (Refuted: $n=3$, Insufficient: $n=12$) compared to the majority class (Supported: $n=85$).}
     \label{fig:per_class_heatmap}
 \end{figure}
 
-\textbf{Important Caveat:} The \textit{Refuted} class contains only 3 samples in the ground truth, making the F1-scores for this class statistically unreliable. This limitation is acknowledged as a threat to validity (see Section \ref{sec:limitations}).
+\textbf{Important Caveat:} Given the extreme class imbalance (n=3 for Refuted), the per-class F1-scores for minority classes should be interpreted as indicative patterns rather than statistically reliable measurements. A single classification error in the Refuted class changes its F1-score by approximately 33\%. This limitation is acknowledged as a threat to validity (see Section \ref{sec:limitations}).
 
 \subsection{Visual Comparison}
 
@@ -811,25 +994,25 @@ Figure \ref{fig:verification_accuracy} provides a comparative visualization of a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{images/fig_verification_accuracy.png}
-    \caption{Verification performance comparison. The gap between Accuracy and Macro-F1 indicates that high accuracy is driven primarily by majority class performance.}
+    \caption[Verification performance comparison]{Verification performance comparison. The gap between Accuracy and Macro-F1 indicates that high accuracy is driven primarily by majority class performance.}
     \label{fig:verification_accuracy}
 \end{figure}
 
 \subsection{Inter-Model Agreement Analysis}
 
-To assess whether models converge on similar verdicts (potentially indicating ``easy'' vs. ``hard'' claims), pairwise agreement rates were computed. Figure \ref{fig:inter_model} presents these results alongside Fleiss' Kappa for overall inter-rater reliability.
+To assess whether models converge on similar verdicts (potentially indicating ``easy'' vs. ``hard'' claims), pairwise agreement rates were computed. Figure \ref{fig:inter_model} presents these results alongside Fleiss' Kappa (a statistical measure of inter-rater agreement for categorical data) for overall inter-rater reliability \cite{LandisKoch1977}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/fig_inter_model_agreement.png}
-    \caption{Inter-model agreement rates for verification verdicts. Fleiss' $\kappa = 0.41$ indicates moderate agreement across all three models.}
+    \caption[Inter-model agreement rates for verification verdicts]{Inter-model agreement rates for verification verdicts. Fleiss' $\kappa = 0.41$ indicates moderate agreement across all three models.}
     \label{fig:inter_model}
 \end{figure}
 
 \textbf{Key Observations:}
 \begin{itemize}
-    \item GPT-4o-mini and DeepSeek-V3.2 show the highest pairwise agreement (86\%), suggesting similar reasoning patterns.
-    \item Gemini-2.5-Flash and DeepSeek-V3.2 show the lowest agreement (73\%), indicating divergent decision boundaries.
+    \item gpt-4o-mini and deepseek-v3.2 show the highest pairwise agreement (86\%), suggesting similar reasoning patterns.
+    \item gemini-2.5-flash and deepseek-v3.2 show the lowest agreement (73\%), indicating divergent decision boundaries.
     \item All three models agree on 71\% of claims, with Fleiss' $\kappa = 0.41$ (moderate agreement).
 \end{itemize}
 
@@ -842,11 +1025,11 @@ To assess the stability of each model's verification performance, Figure \ref{fi
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/fig_verification_reliability.png}
-    \caption{Run-to-run variability for verification phase ($k=2$ runs). GPT-4o-mini produces identical results across runs, while DeepSeek-V3.2 shows the highest variability.}
+    \caption[Run-to-run variability for verification phase ($k=2$ runs)]{Run-to-run variability for verification phase ($k=2$ runs). gpt-4o-mini produces identical results across runs, while deepseek-v3.2 shows the highest variability.}
     \label{fig:verification_reliability}
 \end{figure}
 
-GPT-4o-mini demonstrates perfect consistency with 0.0\% standard deviation in accuracy, producing identical verdicts across independent runs. Gemini-2.5-Flash shows moderate variability ($\pm$1.4\%), while DeepSeek-V3.2 exhibits the highest variability ($\pm$2.1\%). This pattern mirrors the extraction phase results, confirming that GPT-4o-mini is the most deterministic model across both tasks.
+gpt-4o-mini demonstrates perfect consistency with 0.0\% standard deviation in accuracy, producing identical verdicts across independent runs. gemini-2.5-flash shows moderate variability ($\pm$1.4\%), while deepseek-v3.2 exhibits the highest variability ($\pm$2.1\%). This pattern mirrors the extraction phase results, confirming that gpt-4o-mini is the most deterministic model across both tasks.
 
 \section{Summary of Key Findings}
 \label{sec:key_findings}
@@ -856,17 +1039,17 @@ Figure \ref{fig:radar} provides a holistic multi-dimensional comparison of all m
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{images/fig_radar_comparison.png}
-    \caption{Radar chart comparing model performance across all key metrics. GPT-4o-mini demonstrates the most balanced profile, while Gemini-2.5-Flash and DeepSeek-V3.2 show specialized strengths.}
+    \caption[Radar chart comparing model performance across all key metrics]{Radar chart comparing model performance across all key metrics. gpt-4o-mini demonstrates the most balanced profile, while gemini-2.5-flash and deepseek-v3.2 show specialized strengths.}
     \label{fig:radar}
 \end{figure}
 
 Table \ref{tab:summary} synthesizes the key findings from both experimental phases.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \begin{tabularx}{\textwidth}{|l|X|X|X|}
         \hline
-        \textbf{Criterion} & \textbf{GPT-4o-mini} & \textbf{Gemini-2.5-Flash} & \textbf{DeepSeek-V3.2} \\
+        \textbf{Criterion} & \textbf{gpt-4o-mini} & \textbf{gemini-2.5-flash} & \textbf{deepseek-v3.2} \\
         \hline
         \textbf{Best For} & Balanced extraction & High-precision extraction; Verification accuracy & Verification (minority classes) \\
         \hline
@@ -881,54 +1064,54 @@ Table \ref{tab:summary} synthesizes the key findings from both experimental phas
         \textbf{Stability ($\sigma$)} & \textbf{Most Stable} & Stable & Variable \\
         \hline
     \end{tabularx}
-    \caption{Summary of model performance across both experimental phases. Bold indicates best performance for each criterion.}
+    \caption[Summary of model performance across both experimental phases]{Summary of model performance across both experimental phases. Bold indicates best performance for each criterion.}
     \label{tab:summary}
 \end{table}
 
 \chapter{Discussion}
 \label{ch:discussion}
 
-This chapter interprets the empirical findings presented in Chapter \ref{ch:results}, contextualizes them within the broader literature, and provides a qualitative analysis of model failure modes. We adopt a useful analogy throughout: if these LLMs were members of a legal research team, \textbf{GPT-4o-mini} would be the balanced researcher who finds most evidence, while \textbf{Gemini-2.5-Flash} and \textbf{DeepSeek-V3.2} are the overly cautious lawyers who only cite a fact if they are highly confident---even if it means ignoring half of the relevant material.
+This chapter interprets the empirical findings presented in Chapter \ref{ch:results}, contextualizes them within the broader literature, and provides a qualitative analysis of model failure modes. To illustrate the behavioral differences: if these LLMs were members of a research team, \textbf{gpt-4o-mini} would be the balanced researcher who finds most evidence, while \textbf{gemini-2.5-flash} and \textbf{deepseek-v3.2} are the overly cautious analysts who only cite a fact if they are highly confident---even if it means ignoring half of the relevant material.
 
 \section{Comparative Analysis of LLMs}
 
 \subsection{Best Performing LLM for Extraction}
 
-The extraction phase results clearly establish \textbf{GPT-4o-mini} as the most effective model for claim extraction, achieving an F1-Score of 80.4\% compared to 55.4\% (Gemini-2.5-Flash) and 65.3\% (DeepSeek-V3.2). This superiority stems from GPT-4o-mini's balanced approach to the precision-recall trade-off.
+The extraction phase results identify \textbf{gpt-4o-mini} as the most effective model among those evaluated for claim extraction, achieving an F1-Score of 80.4\% compared to 55.4\% (gemini-2.5-flash) and 65.3\% (deepseek-v3.2). This superiority stems from gpt-4o-mini's balanced approach to the precision-recall trade-off.
 
 The critical distinction lies in \textit{extraction strategy}:
 \begin{itemize}
-    \item \textbf{GPT-4o-mini (Balanced):} Achieves 83.1\% precision and 77.8\% recall, correctly identifying approximately 8 out of 10 actual factual claims while maintaining high precision.
-    \item \textbf{Gemini-2.5-Flash \& DeepSeek-V3.2 (Conservative):} Achieve exceptionally high precision (89.5\% and 95.8\% respectively) but at severe cost to recall (40.2\% and 49.6\%). These models fail to identify approximately half of all factual claims present in the text.
+    \item \textbf{gpt-4o-mini (Balanced):} Achieves 83.1\% precision and 77.8\% recall, correctly identifying approximately 8 out of 10 actual factual claims while maintaining high precision.
+    \item \textbf{gemini-2.5-flash \& deepseek-v3.2 (Conservative):} Achieve high precision (89.5\% and 95.8\% respectively) but at severe cost to recall (40.2\% and 49.6\%). These models fail to identify approximately half of all factual claims present in the text.
 \end{itemize}
 
-This conservative behavior has significant practical implications. In a fact-checking pipeline, a missed claim (false negative) represents information that will never be verified---a silent failure that undermines the system's utility. The high specificity of Gemini-2.5-Flash (94.9\%) and DeepSeek-V3.2 (97.7\%) indicates excellent ability to filter out subjective content, but their low Negative Predictive Value (NPV: 59.4\% and 64.2\%) reveals that when these models classify a sentence as ``non-factual,'' there is approximately a 35--40\% chance it actually contained a verifiable claim.
+This conservative behavior has significant practical implications. In a fact-checking pipeline, a missed claim (false negative) represents information that will never be verified---a silent failure that undermines the system's utility. The high specificity of gemini-2.5-flash (94.9\%) and deepseek-v3.2 (97.7\%) indicates excellent ability to filter out subjective content, but their low Negative Predictive Value (NPV: 59.4\% and 64.2\%) reveals that when these models classify a sentence as ``non-factual,'' there is approximately a 35--40\% chance it actually contained a verifiable claim.
 
-\textbf{Recommendation:} For extraction tasks where comprehensive coverage is important, GPT-4o-mini is the clear choice. Gemini-2.5-Flash and DeepSeek-V3.2 may be appropriate only when precision is paramount and missing claims is acceptable.
+\textbf{Recommendation:} For extraction tasks where comprehensive coverage is important, gpt-4o-mini is the clear choice. gemini-2.5-flash and deepseek-v3.2 may be appropriate only when precision is paramount and missing claims is acceptable.
 
 \subsection{Best Performing LLM for Verification}
 
-The verification phase presents a more nuanced picture, with different models excelling on different metrics:
+The verification phase presents a more nuanced picture, with different models excelling on different metrics:\footnote{Conclusions about minority class performance (Refuted, Insufficient Information) are tentative due to small sample sizes (n=3 for Refuted, n=12 for Insufficient Information).}
 \begin{itemize}
-    \item \textbf{Gemini} achieves the highest accuracy (82.0\%), making it the best choice when the primary concern is overall correctness on a representative dataset.
-    \item \textbf{DeepSeek} achieves the highest Macro-F1 (55.9\%), indicating superior performance on minority classes despite lower overall accuracy.
-    \item \textbf{GPT-4} demonstrates the highest determinism (0.0\% standard deviation in accuracy), producing identical results across runs.
+    \item \textbf{gemini-2.5-flash} achieves the highest accuracy (82.0\%), making it the best choice when the primary concern is overall correctness on a representative dataset.
+    \item \textbf{deepseek-v3.2} achieves the highest Macro-F1 (55.9\%), indicating superior performance on minority classes despite lower overall accuracy.
+    \item \textbf{gpt-4o-mini} demonstrates the highest determinism (0.0\% standard deviation in accuracy), producing identical results across runs.
 \end{itemize}
 
-The 25--30 percentage point gap between accuracy and Macro-F1 across all models reveals a fundamental challenge: all LLMs struggle with minority class identification. This is not a model-specific failure but rather reflects the difficulty of the task itself---detecting misinformation (\textit{Refuted}) and recognizing evidential insufficiency (\textit{Insufficient Information}) requires more sophisticated reasoning than confirming supported claims.
+The 25--30 percentage point gap between accuracy and Macro-F1 scores across all models highlights the statistical impact of class imbalance. While models perform well on the majority class (\textit{Supported}), their performance metrics on minority classes (\textit{Refuted}, \textit{Insufficient Information}) are volatile due to the small sample size (n=3 for Refuted), making it difficult to conclusively determine whether the lower scores reflect a lack of reasoning capability or a statistical artifact.
 
-\textbf{Comparison with SAFE:} Wei et al. \cite{SAFE2024} reported that their SAFE method achieves 72\% agreement with human annotators while often surpassing humans in precision through more targeted search queries. Our results show comparable patterns: all three models achieve 77--82\% accuracy on claims where human annotators established ground truth, suggesting that LLM-based verification has reached a level of reliability suitable for practical deployment, at least for majority-class claims.
+\textbf{Comparison with SAFE:} Wei et al. \cite{SAFE2024} reported that their SAFE method achieves 72\% agreement with crowdsourced human annotators, and in disagreement cases, SAFE outperformed crowdsourced human annotators 76\% of the time. Our results show that all three models achieve 77--82\% accuracy on claims where human annotators established ground truth, suggesting that LLM-based verification shows promise for practical deployment on majority-class claims, though challenges remain for minority classes.
 
 \subsection{The Stability-Performance Trade-off}
 
 An unexpected finding was the relationship between model stability and performance variability:
 \begin{itemize}
-    \item \textbf{GPT-4:} Most stable ($\pm$0.0\% accuracy SD, $\pm$1.5\% extraction F1 SD)
-    \item \textbf{Gemini:} Moderately stable ($\pm$1.4\% accuracy SD, $\pm$2.8\% extraction F1 SD)
-    \item \textbf{DeepSeek:} Most variable ($\pm$2.1\% accuracy SD, $\pm$4.6\% extraction F1 SD)
+    \item \textbf{gpt-4o-mini:} Most stable ($\pm$0.0\% accuracy SD, $\pm$1.5\% extraction F1 SD)
+    \item \textbf{gemini-2.5-flash:} Moderately stable ($\pm$1.4\% accuracy SD, $\pm$2.8\% extraction F1 SD)
+    \item \textbf{deepseek-v3.2:} Most variable ($\pm$2.1\% accuracy SD, $\pm$4.6\% extraction F1 SD)
 \end{itemize}
 
-DeepSeek-V3.2's higher variability may be attributed to its sensitivity to prompt formatting. As noted in Chapter \ref{ch:implementation}, DeepSeek-V3.2 required custom middleware to enforce structured JSON output, suggesting that open-weights models may require additional engineering effort to achieve production-level consistency.
+deepseek-v3.2's higher variability may be attributed to its sensitivity to prompt formatting. As noted in Chapter \ref{ch:implementation}, deepseek-v3.2 required custom middleware to enforce structured JSON output, suggesting that Open Weights models may require additional engineering effort to achieve production-level consistency.
 
 \section{Qualitative Error Analysis}
 
@@ -938,9 +1121,9 @@ To understand \textit{why} models fail, we analyzed the 29\% of verification cas
 
 Analysis of extraction errors revealed three primary failure modes:
 
-\textbf{1. Over-Filtering of Context-Dependent Claims:} Gemini-2.5-Flash and DeepSeek-V3.2 frequently rejected claims that required contextual interpretation. For example, sentences containing demonstrative pronouns (``This process...'', ``These results...'') were often classified as non-factual despite containing verifiable information.
+\textbf{1. Over-Filtering of Context-Dependent Claims:} gemini-2.5-flash and deepseek-v3.2 frequently rejected claims that required contextual interpretation. For example, sentences containing demonstrative pronouns (``This process...'', ``These results...'') were often classified as non-factual despite containing verifiable information.
 
-\textbf{2. Ambiguous Factuality Boundaries:} All models struggled with claims at the boundary between factual and subjective content. Statements like ``Improving sleep quality is a common goal for many people'' were inconsistently classified---GPT-4o-mini tended to accept such claims as factual (high recall), while Gemini-2.5-Flash and DeepSeek-V3.2 rejected them (high precision).
+\textbf{2. Ambiguous Factuality Boundaries:} All models struggled with claims at the boundary between factual and subjective content. Statements like ``Improving sleep quality is a common goal for many people'' were inconsistently classified---gpt-4o-mini tended to accept such claims as factual (high recall), while gemini-2.5-flash and deepseek-v3.2 rejected them (high precision).
 
 \textbf{3. Markdown Formatting Artifacts:} The BingCheck dataset contains Markdown formatting (e.g., ``**bold text**'', bullet points). Some models were confused by these artifacts, occasionally treating formatting as content or failing to parse claims embedded in list structures.
 
@@ -951,24 +1134,26 @@ Analysis of the \texttt{reasoning} field in model outputs revealed distinct fail
 \textbf{1. Over-Cautious ``Insufficient Information'' Verdicts:}
 The most common error pattern was models returning \textit{Insufficient Information} for claims that were actually \textit{Supported}. This occurred in:
 \begin{itemize}
-    \item GPT-4o-mini: 10 cases (10\% of claims)
-    \item Gemini-2.5-Flash: 2 cases (2\% of claims)
-    \item DeepSeek-V3.2: 18 cases (18\% of claims)
+    \item gpt-4o-mini: 10 cases (10\% of claims)
+    \item gemini-2.5-flash: 2 cases (2\% of claims)
+    \item deepseek-v3.2: 18 cases (18\% of claims)
 \end{itemize}
 
-Interestingly, this pattern is \textit{inverse} to extraction behavior: DeepSeek-V3.2, which was the most conservative extractor (highest precision), is also the most cautious verifier. This suggests a consistent ``personality'' characterized by epistemic caution.
+Interestingly, this pattern is inverse to extraction behavior: deepseek-v3.2, which was the most conservative extractor (highest precision), is also the most cautious verifier. This suggests a consistent ``personality'' characterized by epistemic caution.
 
 \textbf{2. Search Query Quality:}
 Examination of the reasoning traces revealed that verification failures often originated in the search phase rather than the reasoning phase. When models generated overly specific or poorly-phrased search queries, they retrieved irrelevant evidence and subsequently issued incorrect verdicts. For example, for the claim ``The hot climate caused around 15 million gallons of water to condense from the structure,'' all models struggled to find relevant sources because the claim lacked sufficient context about \textit{which} structure was being referenced.
 
 \textbf{3. Temporal and Specificity Challenges:}
-Claims containing specific dates, quantities, or proper nouns proved difficult when web search results did not contain exact matches. The claim ``The Mayans invented the concept independently circa 4 A.D.'' (ground truth: \textit{Refuted}) produced three different verdicts: GPT-4o-mini returned \textit{Insufficient Information}, Gemini-2.5-Flash correctly identified it as \textit{Refuted}, and DeepSeek-V3.2 incorrectly classified it as \textit{Supported}.
+Claims containing specific dates, quantities, or proper nouns proved difficult when web search results did not contain exact matches. The claim ``The Mayans invented the concept independently circa 4 A.D.'' (ground truth: \textit{Refuted}) produced three different verdicts: gpt-4o-mini returned \textit{Insufficient Information}, gemini-2.5-flash correctly identified it as \textit{Refuted}, and deepseek-v3.2 incorrectly classified it as \textit{Supported}.
 
 \subsection{The 69\% Unanimous Correctness}
 
-While all three models \textit{agreed} on 71\% of claims (Figure \ref{fig:inter_model}), they were unanimously \textit{correct} on 69\%---meaning 2 claims saw all models confidently agree on an incorrect verdict. This distinction between agreement and correctness is important: high inter-model agreement does not guarantee accuracy.
+While all three models \textit{agreed} on 71\% of claims (Figure \ref{fig:inter_model}), they were unanimously \textit{correct} on 69\%---meaning in 2 cases, all models confidently agreed on an incorrect verdict. This distinction between agreement and correctness is important: high inter-model agreement does not guarantee accuracy.
 
-Nevertheless, the 69\% unanimous correctness rate is a positive finding. It suggests that for straightforward factual claims with clear web evidence, current LLMs have achieved reliable verification capability. The remaining 31\% of claims represent genuinely difficult cases---either due to ambiguous evidence, context-dependent claims, or limitations in web search coverage.
+Nevertheless, the 69\% unanimous correctness rate is a positive finding. It suggests that for straightforward factual claims with clear web evidence, current LLMs have achieved functional verification capability. The remaining 31\% of claims represent genuinely difficult cases---either due to ambiguous evidence, context-dependent claims, or limitations in web search coverage.
+
+This finding has practical implications for deployment: claims where multiple LLMs unanimously agree could be processed automatically with high confidence, while the remaining 31\% could be flagged for human review. Such a workflow would enable scalable human-AI collaboration, where LLMs handle routine verification of straightforward claims and human fact-checkers focus their expertise on ambiguous or contested cases. This division of labor could substantially increase the throughput of fact-checking operations while maintaining accuracy standards for the most challenging claims.
 
 \section{Limitations of the Study}
 \label{sec:limitations}
@@ -977,12 +1162,13 @@ Nevertheless, the 69\% unanimous correctness rate is a positive finding. It sugg
 
 While $N=150$ sentences for extraction and $N=100$ claims for verification provide sufficient statistical power for comparative analysis, several limitations must be acknowledged:
 
-\textbf{1. Class Imbalance:} The verification benchmark contains 85 \textit{Supported}, 12 \textit{Insufficient Information}, and only 3 \textit{Refuted} claims. This severe imbalance means that:
+\textbf{1. Class Imbalance:} The verification benchmark contains 85 \textit{Supported}, 12 \textit{Insufficient Information}, and only 3 \textit{Refuted} claims. This severe imbalance occurred because the benchmark claims were not pre-labeled with veracity verdicts; the class distribution became known only after completing manual annotation. This constraint means that:
 \begin{itemize}
     \item Accuracy metrics are dominated by majority-class performance
     \item Per-class F1-scores for \textit{Refuted} (based on $n=3$) are statistically unreliable and should be interpreted as indicative rather than definitive
     \item The models' true ability to detect misinformation cannot be conclusively assessed from this dataset
 \end{itemize}
+Future benchmark construction should prioritize balanced sampling across verdict categories, either through stratified selection from pre-labeled datasets or iterative annotation until desired class proportions are achieved.
 
 \textbf{2. Domain Generalization:} The BingCheck dataset represents general-knowledge claims from Bing Chat responses. Results may not generalize to specialized domains such as:
 \begin{itemize}
@@ -991,7 +1177,7 @@ While $N=150$ sentences for extraction and $N=100$ claims for verification provi
     \item Scientific claims (requiring peer-reviewed source evaluation)
 \end{itemize}
 
-\textbf{3. Temporal Validity:} Web search results change over time. A claim that was verifiable during our experiments (December 2024) may produce different search results in the future, potentially affecting reproducibility.
+\textbf{3. Temporal Validity:} Web search results change over time. A claim that was verifiable during our experiments (December 2025) may produce different search results in the future, potentially affecting reproducibility.
 
 \subsection{Constraints of the TruthLens Architecture}
 
@@ -1001,20 +1187,20 @@ While $N=150$ sentences for extraction and $N=100$ claims for verification provi
 
 \textbf{3. Binary Extraction Ground Truth:} The extraction phase uses binary labels (factual/non-factual) from BingCheck. This simplification does not capture the spectrum of factuality (e.g., partially factual claims, opinions presented as facts).
 
-\textbf{4. Model Version Sensitivity:} LLM capabilities evolve rapidly. The specific model versions tested (GPT-4o-mini, Gemini-2.5-flash, DeepSeek-V3.2) represent a snapshot in time; newer versions may exhibit different performance characteristics.
+\textbf{4. Model Version Sensitivity:} LLM capabilities evolve rapidly. The specific model versions tested (gpt-4o-mini, Gemini-2.5-flash, deepseek-v3.2) represent a snapshot in time; newer versions may exhibit different performance characteristics.
 
-\subsection{Threats to Validity}
+These architectural constraints directly inform our ethical approach: since the system cannot reliably handle minority classes or specialized domains without human oversight, deployment must prioritize transparency about these limitations to prevent over-reliance on automated verdicts.
 
-\textbf{Internal Validity:} The use of multiple independent runs ($k=3$ for extraction, $k=2$ for verification) mitigates concerns about result variability, but the limited number of runs for verification (due to API costs) means that standard deviation estimates for that phase are less precise.
+\section{Ethical Considerations}
 
-\textbf{External Validity:} Results are specific to the English language, the BingCheck dataset's claim distribution, and the particular prompt templates used in the TruthLens agents. Generalization to other languages, domains, or prompt formulations requires further investigation.
+The development of automated fact-checking systems raises important ethical considerations. While this research aims to combat misinformation, the detailed analysis of LLM failure modes could theoretically inform adversarial actors seeking to craft claims that evade detection. We note that the failure patterns identified (context-dependent claims, specific date/quantity verification) represent known challenges in the field rather than novel vulnerabilities.
 
-\textbf{Construct Validity:} The metrics used (F1-Score, Accuracy, Macro-F1) are standard in NLP evaluation but may not fully capture the practical utility of a fact-checking system. Real-world deployment would require additional metrics such as user trust, explanation quality, and end-to-end latency.
+Furthermore, automated fact-checking systems should complement, not replace, human judgment---particularly for nuanced claims involving interpretation or contested evidence. The 31\% of claims where models disagreed underscores that human oversight remains essential for high-stakes applications. We advocate for transparent deployment that clearly communicates system limitations to end users, preventing over-reliance on automated verdicts.
 
 \chapter{Conclusion and Future Work}
 \label{ch:conclusion}
 
-This thesis presented a comparative analysis of three Large Language Models---GPT-4o-mini, Gemini-2.5-Flash, and DeepSeek-V3.2---within the TruthLens framework for automated fact-checking. Through rigorous experimentation across 1,950 API calls, we evaluated model performance on both claim extraction and verification tasks. This chapter summarizes the key findings, articulates the contributions of this work, offers practical guidance for deployment, and outlines directions for future research.
+This thesis presented a comparative analysis of three Large Language Models---gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2---within the TruthLens framework for automated fact-checking. Through rigorous experimentation executing 1,950 pipeline invocations across both phases, we evaluated model performance on both claim extraction and verification tasks. This chapter summarizes the key findings, articulates the contributions of this work, offers practical guidance for deployment, and outlines directions for future research.
 
 \section{Summary of Findings}
 
@@ -1024,11 +1210,11 @@ The experimental results provide clear answers to the three research questions p
 
 \textbf{RQ1:} \textit{Which LLM most accurately identifies verifiable factual claims from text at the sentence level?}
 
-\textbf{Answer: GPT-4o-mini} emerges as the most effective model for claim extraction, achieving an F1-Score of \textbf{80.4\%} compared to 55.4\% (Gemini-2.5-Flash) and 65.3\% (DeepSeek-V3.2).
+\textbf{Answer: gpt-4o-mini} emerges as the most effective model for claim extraction, achieving an F1-Score of \textbf{80.4\%} compared to 55.4\% (gemini-2.5-flash) and 65.3\% (deepseek-v3.2).
 
-The critical distinction lies in extraction strategy. GPT-4o-mini adopts a \textit{balanced approach}, achieving 83.1\% precision and 77.8\% recall---correctly identifying approximately 8 out of 10 factual claims while maintaining high precision. In contrast, Gemini-2.5-Flash and DeepSeek-V3.2 employ a \textit{conservative strategy}, achieving exceptionally high precision (89.5\% and 95.8\% respectively) but at severe cost to recall (40.2\% and 49.6\%). These models fail to identify approximately half of all factual claims present in the input text.
+The critical distinction lies in extraction strategy. gpt-4o-mini adopts a \textit{balanced approach}, achieving 83.1\% precision and 77.8\% recall---correctly identifying approximately 8 out of 10 factual claims while maintaining high precision. In contrast, gemini-2.5-flash and deepseek-v3.2 employ a \textit{conservative strategy}, achieving high precision (89.5\% and 95.8\% respectively) but at severe cost to recall (40.2\% and 49.6\%). These models fail to identify approximately half of all factual claims present in the input text.
 
-For fact-checking pipelines where \textit{comprehensive coverage} is the priority, GPT-4o-mini is the clear choice. The conservative models may be appropriate only in specialized contexts where false positives carry higher costs than missed claims.
+For fact-checking pipelines where \textit{comprehensive coverage} is a high priority, gpt-4o-mini is the clear choice. The conservative models may be appropriate only in specialized contexts where false positives carry higher costs than missed claims.
 
 \subsection{Answering Research Question 2 (Verification)}
 
@@ -1037,12 +1223,12 @@ For fact-checking pipelines where \textit{comprehensive coverage} is the priorit
 \textbf{Answer:} The verification phase presents a nuanced picture depending on the evaluation metric:
 
 \begin{itemize}
-    \item \textbf{Gemini-2.5-Flash} achieves the highest accuracy (\textbf{82.0\%}), making it the optimal choice when overall correctness on representative datasets is the primary concern.
-    \item \textbf{DeepSeek-V3.2} achieves the highest Macro-F1 (\textbf{55.9\%}), indicating superior balanced performance across all verdict categories, including minority classes.
-    \item \textbf{GPT-4o-mini} demonstrates the highest determinism (0.0\% standard deviation), producing identical results across independent runs.
+    \item \textbf{gemini-2.5-flash} achieves the highest accuracy (\textbf{82.0\%}), making it the best choice among the evaluated models when overall correctness on representative datasets is the primary concern.
+    \item \textbf{deepseek-v3.2} achieves the highest Macro-F1 (\textbf{55.9\%}), indicating superior balanced performance across all verdict categories, including minority classes.
+    \item \textbf{gpt-4o-mini} demonstrates the highest determinism (0.0\% standard deviation), producing identical results across independent runs.
 \end{itemize}
 
-The substantial gap between accuracy (77--82\%) and Macro-F1 (50--56\%) across all models reveals a fundamental challenge: all LLMs struggle with minority class identification. Performance on the \textit{Supported} class (F1 $\approx$ 87--91\%) significantly exceeds performance on \textit{Refuted} (F1 $\approx$ 35--40\%) and \textit{Insufficient Information} (F1 $\approx$ 28--41\%). This reflects the inherent difficulty of detecting misinformation and recognizing evidential insufficiency compared to confirming supported claims.
+The substantial gap between accuracy (77--82\%) and Macro-F1 (50--56\%) across all models highlights the impact of dataset imbalance. While models perform well on the majority class (\textit{Supported}, F1 $\approx$ 87--91\%), the shortage of minority samples (n=3 for \textit{Refuted}) means that minority class findings should be considered preliminary observations requiring validation on larger, balanced datasets. This discrepancy suggests that while models show bias toward the majority class, their true capability in detecting misinformation requires further evaluation on more balanced datasets.
 
 \subsection{Answering Research Question 3 (Qualitative)}
 
@@ -1050,23 +1236,30 @@ The substantial gap between accuracy (77--82\%) and Macro-F1 (50--56\%) across a
 
 The qualitative error analysis identified three primary failure patterns:
 
-\textbf{1. Over-Filtering in Extraction:} Gemini-2.5-Flash and DeepSeek-V3.2 frequently rejected context-dependent claims containing demonstrative pronouns (``This process...'', ``These results...''), despite containing verifiable information. This conservative behavior contributed to their low recall scores.
+\textbf{1. Over-Filtering in Extraction:} gemini-2.5-flash and deepseek-v3.2 frequently rejected context-dependent claims containing demonstrative pronouns (``This process...'', ``These results...''), despite containing verifiable information. This conservative behavior contributed to their low recall scores.
 
 \textbf{2. Search Query Quality:} Verification failures often originated in the search phase rather than the reasoning phase. Poorly-phrased or overly-specific search queries led to irrelevant evidence retrieval, subsequently causing incorrect verdicts. Claims lacking sufficient context (e.g., references to ``the structure'' without specifying which structure) were particularly problematic.
 
-\textbf{3. Class Imbalance Sensitivity:} All models exhibited bias toward the majority class (\textit{Supported}), frequently returning over-cautious \textit{Insufficient Information} verdicts for claims that were actually supported. DeepSeek-V3.2 showed this pattern most prominently (18\% of claims), while Gemini-2.5-Flash was least affected (2\%).
+\textbf{3. Class Imbalance Sensitivity:} All models exhibited bias toward the majority class (\textit{Supported}), frequently returning over-cautious \textit{Insufficient Information} verdicts for claims that were actually supported. deepseek-v3.2 showed this pattern most prominently (18\% of claims), while gemini-2.5-flash was least affected (2\%).
 
-Despite these challenges, the models achieved 69\% unanimous correctness across all verification cases, demonstrating that for straightforward factual claims with clear web evidence, LLM-based verification has reached a level of reliability suitable for practical deployment.
+Despite these challenges, the models achieved 69\% unanimous correctness across all verification cases, demonstrating that for straightforward factual claims with clear web evidence, LLM-based verification can achieve reasonable reliability.
 
 \section{Contributions}
 
 This thesis makes three primary contributions to the field of automated fact-checking:
 
-\textbf{1. Framework Adaptation and Extension:} We adapted the open-source ClaimeAI repository into the TruthLens framework, extending it to support multi-model comparative analysis. The engineering contributions include a unified LLM abstraction layer implementing the Strategy Pattern, custom middleware for DeepSeek-V3.2's structured output requirements, and integration of the cost-effective Brave Search API for large-scale benchmarking.
+\textbf{1. Infrastructure for Systematic Multi-Model Benchmarking:} We extended the open-source ClaimeAI framework with systematic infrastructure for controlled comparative analysis. The engineering contributions include:
+\begin{itemize}
+    \item A unified provider management layer ensuring experimental consistency across models with different API capabilities
+    \item Custom structured output middleware for DeepSeek models, bridging the gap between basic JSON mode and Pydantic schema validation
+    \item Automated batch processing pipeline supporting large-scale execution ($N=150$ samples, $k=3$ runs, 3 models) with rate limiting and failure recovery
+    \item Integration of cost-effective Brave Search API for scalable evidence retrieval
+    \item Multi-run statistical validation framework for quantifying performance variability
+\end{itemize}
 
-\textbf{2. Empirical Comparative Analysis:} We conducted the first systematic comparison of GPT-4o-mini, Gemini-2.5-Flash, and DeepSeek-V3.2 within a decoupled two-phase fact-checking architecture. The experimental design---with $k=3$ runs for extraction and $k=2$ runs for verification across 1,950 total API calls---provides statistically reliable performance estimates with quantified variability. The results establish clear performance hierarchies: GPT-4o-mini for extraction (balanced precision-recall), Gemini-2.5-Flash for verification accuracy, and DeepSeek-V3.2 for balanced multi-class verification.
+\textbf{2. Empirical Comparative Analysis:} We conducted a systematic comparison of gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2 within a decoupled two-phase fact-checking architecture. The experimental design---with $k=3$ runs for extraction and $k=2$ runs for verification across 1,950 pipeline invocations---provides performance estimates with quantified variability. The results establish clear performance hierarchies: gpt-4o-mini for extraction (balanced precision-recall), gemini-2.5-flash for verification accuracy, and deepseek-v3.2 for balanced multi-class verification.
 
-\textbf{3. Methodological Contribution:} We demonstrated the value of decoupled evaluation in diagnosing LLM capabilities. By separating extraction from verification, we identified that the same model can exhibit different behavioral patterns across tasks (e.g., DeepSeek-V3.2's conservative extraction correlates with cautious verification). This granular analysis would be impossible with monolithic end-to-end evaluation approaches.
+\textbf{3. Methodological Contribution:} We demonstrated the value of decoupled evaluation in diagnosing LLM capabilities. By separating extraction from verification, we identified that the same model can exhibit different behavioral patterns across tasks (e.g., deepseek-v3.2's conservative extraction correlates with cautious verification). This granular analysis would be less feasible with monolithic end-to-end evaluation approaches.
 
 \section{Practical Implications}
 
@@ -1074,14 +1267,14 @@ Based on the empirical findings, we offer the following guidance for practitione
 
 \textbf{Model Selection by Use Case:}
 \begin{itemize}
-    \item \textbf{High-Coverage Fact-Checking:} Use GPT-4o-mini for extraction to maximize claim identification (77.8\% recall), accepting moderate false positives.
-    \item \textbf{High-Precision Applications:} Use Gemini-2.5-Flash or DeepSeek-V3.2 for extraction when false positives are costly, understanding that approximately half of factual claims will be missed.
-    \item \textbf{Verification Tasks:} Use Gemini-2.5-Flash for highest overall accuracy (82.0\%) on representative datasets, or DeepSeek-V3.2 when balanced performance across verdict categories is required.
+    \item \textbf{High-Coverage Fact-Checking:} Use gpt-4o-mini for extraction to maximize claim identification (77.8\% recall), accepting moderate false positives.
+    \item \textbf{High-Precision Applications:} Use gemini-2.5-flash or deepseek-v3.2 for extraction when false positives are costly, understanding that approximately half of factual claims will be missed.
+    \item \textbf{Verification Tasks:} Use gemini-2.5-flash for highest overall accuracy (82.0\%) on representative datasets, or deepseek-v3.2 when balanced performance across verdict categories is required.
 \end{itemize}
 
-\textbf{Stability Considerations:} GPT-4o-mini offers the most deterministic outputs ($\pm$0.0\% accuracy SD), making it suitable for applications requiring reproducible results. DeepSeek-V3.2's higher variability ($\pm$4.6\% extraction F1 SD) suggests it may require additional engineering effort (e.g., ensemble approaches or multiple inference passes) to achieve production-level consistency.
+\textbf{Stability Considerations:} gpt-4o-mini offers the most deterministic outputs ($\pm$0.0\% accuracy SD), making it suitable for applications requiring reproducible results. deepseek-v3.2's higher variability ($\pm$4.6\% extraction F1 SD) suggests it may require additional engineering effort (e.g., ensemble approaches or multiple inference passes) to achieve production-level consistency.
 
-\textbf{Cost-Accuracy Trade-offs:} Open-weights models like DeepSeek-V3.2 offer competitive performance at reduced API costs compared to proprietary alternatives. For budget-constrained deployments, DeepSeek-V3.2 provides a viable option, particularly for verification tasks where its Macro-F1 performance exceeds the other models.
+\textbf{Cost-Accuracy Trade-offs:} Open Weights models like deepseek-v3.2 offer competitive performance at reduced API costs compared to proprietary alternatives. For budget-constrained deployments, deepseek-v3.2 provides a viable option, particularly for verification tasks where its Macro-F1 performance exceeds the other models.
 
 \section{Future Work}
 
@@ -1117,7 +1310,38 @@ Potential implementations include:
     \item \textbf{Evidence Quality Assessment:} Training models to evaluate the reliability and relevance of retrieved sources before incorporating them into reasoning. Pan et al. \cite{Pan2024CAG} introduced Credibility-aware Generation (CAG), teaching LLMs to weight evidence based on source credibility.
 \end{itemize}
 
-Such mechanisms could particularly benefit minority class detection, where the current models show the weakest performance. By requiring explicit justification before finalizing verdicts on potentially \textit{Refuted} or \textit{Insufficient Information} claims, self-correction could reduce the over-cautious behavior observed in DeepSeek-V3.2 and improve the overall Macro-F1 scores.
+Such mechanisms could particularly benefit minority class detection, where the current models show the weakest performance. By requiring explicit justification before finalizing verdicts on potentially \textit{Refuted} or \textit{Insufficient Information} claims, self-correction could reduce the over-cautious behavior observed in deepseek-v3.2 and improve the overall Macro-F1 scores.
+
+\subsection{Adversarial Robustness}
+
+A critical dimension not explored in this thesis is the vulnerability of automated fact-checking systems to adversarial attacks. As Liu et al.\ \cite{Liu2025Adversarial} comprehensively survey, fact-checking pipelines face threats from adversaries who manipulate claims, evidence, or claim-evidence pairs to distort verification outcomes. Such attacks can exploit weaknesses in both the extraction and verification phases, potentially causing systems to misclassify false claims as supported or vice versa.
+
+Future research should investigate:
+\begin{itemize}
+    \item \textbf{Attack Surface Analysis:} Systematic evaluation of how TruthLens-style architectures respond to adversarially crafted inputs, including paraphrased claims designed to evade detection and poisoned evidence injected into search results.
+    \item \textbf{Robustness Testing:} Benchmarking model performance under adversarial conditions, measuring the degradation in accuracy when claims are subtly modified while preserving their semantic meaning.
+    \item \textbf{Defense Mechanisms:} Developing adversary-aware protection strategies, such as ensemble verification across multiple models or anomaly detection for suspicious claim patterns.
+\end{itemize}
+As automated fact-checking systems are deployed in high-stakes environments, understanding and mitigating adversarial vulnerabilities becomes essential for maintaining user trust and system reliability.
+
+\subsection{Domain-Specific and Multilingual Extensions}
+
+This study evaluated models on the BingCheck dataset, which represents general-knowledge claims across diverse but primarily English-language domains. A significant limitation is the lack of evaluation on specialized domain-specific and multilingual benchmarks. Recent research has produced several datasets that could extend the generalizability of findings:
+
+\textbf{Domain-Specific Datasets:}
+\begin{itemize}
+    \item \textbf{Scientific Claims:} The SciFact-Open dataset \cite{Wadden2022SciFact} provides a large-scale benchmark of scientific claims against 500,000 research abstracts, revealing that systems trained on smaller corpora experience performance drops of at least 15 F1 points when applied to realistic retrieval settings.
+    \item \textbf{Health Misinformation:} COVID-Fact \cite{Saakyan2021COVIDFact} offers 4,086 pandemic-related claims with evidence, addressing the critical domain of health misinformation where verification errors carry significant real-world consequences.
+    \item \textbf{Climate Claims:} CLIMATE-FEVER \cite{Diggelmann2020CLIMATE} adapts the FEVER methodology---the widely-adopted benchmark framework that pairs claims with Wikipedia evidence sentences and three-way veracity labels (Supported, Refuted, Not Enough Info) \cite{FEVER}---to 1,535 real-world climate statements, demonstrating the ``subtle complexity'' of modeling authentic climate discourse.
+\end{itemize}
+
+\textbf{Multilingual Benchmarks:}
+\begin{itemize}
+    \item \textbf{Cross-Lingual Evaluation:} X-Fact \cite{Gupta2021XFact} provides expert-labeled claims across 25 languages, enabling evaluation of zero-shot multilingual capabilities---where models are tested on languages not seen during training, assessing their ability to transfer fact-checking skills across linguistic boundaries.
+    \item \textbf{Non-English Languages:} CHEF \cite{Hu2022CHEF} offers 10,000 Chinese claims with annotated evidence, addressing the gap in non-English fact-checking resources and demonstrating that ``misinformation spans both geographic and linguistic boundaries.''
+\end{itemize}
+
+Future work should evaluate the TruthLens architecture on these specialized benchmarks to assess whether the performance patterns observed in this thesis---particularly the precision-recall trade-offs and minority class challenges---generalize across domains and languages.
 
 \subsection{Real-World Deployment and User Studies}
 
@@ -1131,11 +1355,11 @@ Such studies would inform the productization of LLM-based fact-checking tools an
 
 \section{Closing Remarks}
 
-The rise of Large Language Models has created both the problem and the potential solution for automated fact-checking. These models generate fluent but sometimes factually incorrect content at unprecedented scale, yet they also possess the reasoning capabilities to verify claims against external evidence.
+The rise of Large Language Models has amplified the challenge of misinformation while also providing new capabilities for automated fact-checking. These models generate fluent but sometimes factually incorrect content at scale, yet they also possess the reasoning capabilities to verify claims against external evidence.
 
-This thesis demonstrates that current LLMs, when deployed within a structured agentic framework, can achieve human-comparable performance on straightforward factual claims. GPT-4o-mini's 80.4\% extraction F1 and Gemini-2.5-Flash's 82.0\% verification accuracy represent meaningful progress toward reliable automated fact-checking.
+This thesis shows that the evaluated LLMs, when deployed within a structured agentic framework, can achieve practical performance on straightforward factual claims. gpt-4o-mini's 80.4\% extraction F1 and gemini-2.5-flash's 82.0\% verification accuracy show that current LLMs can perform fact-checking tasks with reasonable accuracy, though with notable limitations on minority classes.
 
-However, significant challenges remain. The struggle with minority classes, the sensitivity to search query quality, and the 31\% of claims where models disagree all indicate that LLM-based fact-checking is not yet ready to operate without human oversight. Crucially, while models achieved 69\% unanimous correctness, the remaining 31\% of ambiguous cases---where even state-of-the-art models produce conflicting verdicts---underscore that \textbf{human-in-the-loop validation remains essential} for high-stakes fact-checking applications. The path forward lies in hybrid systems that leverage LLM capabilities while acknowledging their limitations---using multi-agent architectures, diverse evidence sources, and human review for contested or high-consequence decisions.
+However, significant challenges remain. The struggle with minority classes, the sensitivity to search query quality, and the 31\% of claims where models disagree all indicate that LLM-based fact-checking is not yet ready to operate without human oversight. Crucially, while models achieved 69\% unanimous correctness, the remaining 31\% of ambiguous cases---where even these recent models produce conflicting verdicts---underscore that \textbf{human-in-the-loop validation remains essential} for high-stakes fact-checking applications. The path forward lies in hybrid systems that leverage LLM capabilities while acknowledging their limitations---using multi-agent architectures, diverse evidence sources, and human review for contested or high-consequence decisions.
 
 As misinformation continues to proliferate in the digital information ecosystem, the development of trustworthy, transparent, and accessible fact-checking tools becomes increasingly critical. This thesis contributes a step toward that goal, providing both empirical evidence of current capabilities and a foundation for future improvements.
 
@@ -1161,17 +1385,17 @@ Table \ref{tab:extraction_per_run} presents the detailed extraction metrics for 
         \hline
         \textbf{Model} & \textbf{Run} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{TP} & \textbf{FN} \\
         \hline
-        \multirow{3}{*}{GPT-4o-mini} 
+        \multirow{3}{*}{gpt-4o-mini} 
             & Run 1 & 78.7\% & 81.1\% & 76.9\% & 78.9\% & 60 & 18 \\
             & Run 2 & 82.0\% & 85.9\% & 78.2\% & 81.9\% & 61 & 17 \\
             & Run 3 & 80.0\% & 82.4\% & 78.2\% & 80.3\% & 61 & 17 \\
         \hline
-        \multirow{3}{*}{Gemini-2.5-Flash} 
+        \multirow{3}{*}{gemini-2.5-flash} 
             & Run 1 & 64.7\% & 87.9\% & 37.2\% & 52.3\% & 29 & 49 \\
             & Run 2 & 67.3\% & 89.2\% & 42.3\% & 57.4\% & 33 & 45 \\
             & Run 3 & 67.3\% & 91.4\% & 41.0\% & 56.6\% & 32 & 46 \\
         \hline
-        \multirow{3}{*}{DeepSeek-V3.2} 
+        \multirow{3}{*}{deepseek-v3.2} 
             & Run 1 & 76.0\% & 97.7\% & 55.1\% & 70.5\% & 43 & 35 \\
             & Run 2 & 70.7\% & 94.7\% & 46.2\% & 62.1\% & 36 & 42 \\
             & Run 3 & 71.3\% & 94.9\% & 47.4\% & 63.2\% & 37 & 41 \\
@@ -1192,15 +1416,15 @@ Table \ref{tab:verification_per_run} presents the detailed verification metrics 
         \hline
         \textbf{Model} & \textbf{Run} & \textbf{Accuracy} & \textbf{Macro-F1} & \textbf{Supported F1} & \textbf{Insufficient F1} \\
         \hline
-        \multirow{2}{*}{GPT-4o-mini} 
+        \multirow{2}{*}{gpt-4o-mini} 
             & Run 1 & 79.0\% & 48.5\% & 89.8\% & 22.2\% \\
             & Run 2 & 79.0\% & 53.9\% & 88.5\% & 33.3\% \\
         \hline
-        \multirow{2}{*}{Gemini-2.5-Flash} 
+        \multirow{2}{*}{gemini-2.5-flash} 
             & Run 1 & 83.0\% & 54.1\% & 90.7\% & 35.3\% \\
             & Run 2 & 81.0\% & 51.3\% & 91.0\% & 29.6\% \\
         \hline
-        \multirow{2}{*}{DeepSeek-V3.2} 
+        \multirow{2}{*}{deepseek-v3.2} 
             & Run 1 & 76.0\% & 55.6\% & 85.9\% & 41.0\% \\
             & Run 2 & 79.0\% & 56.3\% & 88.8\% & 40.0\% \\
         \hline
@@ -1218,7 +1442,7 @@ Table \ref{tab:confusion_matrices_extraction} presents the averaged confusion ma
     \small
     \begin{tabular}{l|cc|cc|cc}
         \hline
-        & \multicolumn{2}{c|}{\textbf{GPT-4o-mini}} & \multicolumn{2}{c|}{\textbf{Gemini-2.5-Flash}} & \multicolumn{2}{c}{\textbf{DeepSeek-V3.2}} \\
+        & \multicolumn{2}{c|}{\textbf{gpt-4o-mini}} & \multicolumn{2}{c|}{\textbf{gemini-2.5-flash}} & \multicolumn{2}{c}{\textbf{deepseek-v3.2}} \\
         & Pred + & Pred $-$ & Pred + & Pred $-$ & Pred + & Pred $-$ \\
         \hline
         Actual + & 60.7 & 17.3 & 31.3 & 46.7 & 38.7 & 39.3 \\
@@ -1240,17 +1464,17 @@ Table \ref{tab:inter_model_agreement} presents the pairwise agreement rates and 
         \hline
         \textbf{Metric} & \textbf{Value} \\
         \hline
-        GPT-4o-mini $\leftrightarrow$ Gemini-2.5-Flash Agreement & 82\% \\
-        GPT-4o-mini $\leftrightarrow$ DeepSeek-V3.2 Agreement & 86\% \\
-        Gemini-2.5-Flash $\leftrightarrow$ DeepSeek-V3.2 Agreement & 73\% \\
+        gpt-4o-mini $\leftrightarrow$ gemini-2.5-flash Agreement & 82\% \\
+        gpt-4o-mini $\leftrightarrow$ deepseek-v3.2 Agreement & 86\% \\
+        gemini-2.5-flash $\leftrightarrow$ deepseek-v3.2 Agreement & 73\% \\
         All Three Models Agree & 71\% \\
         Fleiss' Kappa ($\kappa$) & 0.41 \\
         \hline
         \multicolumn{2}{l}{\textbf{Error Patterns (Run 1)}} \\
         \hline
-        GPT-4o-mini Over-Cautious Errors & 10 \\
-        Gemini-2.5-Flash Over-Cautious Errors & 2 \\
-        DeepSeek-V3.2 Over-Cautious Errors & 18 \\
+        gpt-4o-mini Over-Cautious Errors & 10 \\
+        gemini-2.5-flash Over-Cautious Errors & 2 \\
+        deepseek-v3.2 Over-Cautious Errors & 18 \\
         \hline
     \end{tabular}
 \end{table}
@@ -1266,7 +1490,7 @@ This section documents excerpts from the system prompts used in the TruthLens fr
     \item \textbf{Verification Prompts:} Based on the \textit{Search-Augmented Factuality Evaluator (SAFE)} by Wei et al.\ \cite{SAFE2024}, which introduced the iterative search-reason-verify paradigm.
 \end{itemize}
 
-The complete prompts with all examples are available in the project repository (\texttt{apps/agent/claim\_extractor/prompts.py} and \texttt{apps/agent/claim\_verifier/prompts.py}). Below are condensed excerpts showing the core instructions.
+The complete prompts with all examples are available in the project repository (\texttt{apps/agent/claim\_extractor/prompts.py} and \\ \texttt{apps/agent/claim\_verifier/prompts.py}). Below are condensed excerpts showing the core instructions.
 
 \subsection{Claim Extraction Prompts}
 
@@ -1382,20 +1606,44 @@ Decision rule: Be conservative---when evidence is ambiguous, choose ``Insufficie
 \section{Model Configuration}
 \label{sec:appendix_config}
 
-Table \ref{tab:model_config} documents the exact model identifiers and API configurations used in all experiments.
+To ensure reproducibility, exact model versions and generation parameters were standardized across all experimental runs.
+
+\subsection{Provider Settings}
+
+Table \ref{tab:model_config} documents the exact model identifiers and API endpoints used.
 
 \begin{table}[ht]
     \centering
-    \caption{LLM API Configuration for Experiments}
+    \caption{LLM API Configuration (exact model identifiers used in code)}
     \label{tab:model_config}
     \small
-    \begin{tabular}{p{3cm}p{4cm}p{7.5cm}}
+    \begin{tabular}{p{3cm}p{4cm}p{7cm}}
         \hline
-        \textbf{Display Name} & \textbf{API Model ID} & \textbf{Provider Endpoint} \\
+        \textbf{Display Name} & \textbf{API Model ID (in code)} & \textbf{Provider Endpoint} \\
         \hline
-        GPT-4o-mini & \texttt{gpt-4o-mini} & OpenAI API (\texttt{api.openai.com}) \\
-        Gemini-2.5-Flash & \texttt{gemini-2.5-flash} & Google AI API (\texttt{generativelanguage.googleapis.com}) \\
-        DeepSeek-V3.2 & \texttt{deepseek-chat} & DeepSeek API (\texttt{api.deepseek.com}) \\
+        gpt-4o-mini & \texttt{openai:gpt-4o-mini} & OpenAI API (\texttt{api.openai.com}) \\
+        gemini-2.5-flash & \texttt{gemini-2.5-flash} & Google AI API (\texttt{generativelanguage.googleapis.com}) \\
+        deepseek-v3.2 & \texttt{deepseek-chat} & DeepSeek API (\texttt{https://api.deepseek.com}) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Generation Parameters}
+
+To minimize non-determinism, the generation parameters in Table \ref{tab:gen_params} were enforced at the code level (via the \texttt{LLMProvider} class).
+
+\begin{table}[ht]
+    \centering
+    \caption{LLM Generation and network parameters (as implemented in code)}
+    \label{tab:gen_params}
+    \begin{tabular}{p{8cm}p{5cm}}
+    \hline
+        \textbf{Parameter} & \textbf{Value (code)} \\
+        \hline
+        Temperature (default for deterministic runs) & 0.0 \\
+        Network retry attempts (search client) & 2 retries (up to 3 attempts total) \\
+        Request timeout (Brave search requests) & 30 seconds (per-request aiohttp timeout) \\
+        JSON / structured-output handling & Enabled for DeepSeek via \texttt{DeepSeekChatWrapper}; OpenAI/Gemini use provider-native mechanisms or client support \\
         \hline
     \end{tabular}
 \end{table}
@@ -1403,24 +1651,26 @@ Table \ref{tab:model_config} documents the exact model identifiers and API confi
 \subsection{Search Configuration}
 
 \begin{itemize}
-    \item \textbf{Search Provider:} Brave Search API
-    \item \textbf{Maximum Search Iterations:} 5 per claim
-    \item \textbf{Results per Query:} 10
-    \item \textbf{Freshness Filter:} None (all time)
+    \item \textbf{Search Provider:} Brave Search API (default). The implementation supports alternative providers (Exa, Tavily) via the \texttt{SEARCH_PROVIDER} environment variable.
+    \item \textbf{Maximum Search Iterations:} 5 per claim (default configured in \texttt{claim\_verifier/config/nodes.py})
+    \item \textbf{Results per Query:} 3 (default configured in \texttt{claim\_verifier/config/nodes.py}; configurable)
+    \item \textbf{Freshness Filter:} None (all time) by default
 \end{itemize}
 
 \subsection{Environment Variables}
 
-The following environment variables must be configured:
+The following environment variables must be configured to run the benchmark:
 
 \begin{verbatim}
 LLM_PROVIDER=openai|gemini|deepseek
 OPENAI_API_KEY=sk-proj-...
 GOOGLE_API_KEY=AIza...
 DEEPSEEK_API_KEY=sk-...
-BRAVE_API_KEY=BSA...
+BRAVE_API_KEY=your-brave-key-here
+EXA_API_KEY=<uuid4-or-EXA-key>
+TAVILY_API_KEY=tvly-...
+SEARCH_PROVIDER=brave|exa|tavily
 \end{verbatim}
-
 
 \section{Benchmark Runner Script}
 \label{sec:appendix_runner}
@@ -1447,7 +1697,7 @@ PROVIDERS = {
 }
 
 async def run_extraction_for_sentence(sentence: str, 
-                                       provider: str) -> dict:
+                                    provider: str) -> dict:
     """
     Run claim extraction for a single sentence using 
     the specified LLM provider.
@@ -1579,39 +1829,37 @@ Table \ref{tab:dataset_sample} presents representative examples from the experim
 \subsection{Phase 1: Claim Extraction Sample}
 \label{sec:appendix_extraction_sample}
 
-Table \ref{tab:extraction_sample} presents a representative example from the extraction phase dataset. This row shows how the three LLMs extract claims from a single factual sentence about the Argentine tango. The example demonstrates the different extraction strategies: GPT-4o-mini identifies 3 claims with balanced precision-recall, while Gemini and DeepSeek both extract multiple claims with higher selectivity.
+Table \ref{tab:extraction_sample} presents a representative example from the extraction phase dataset. This row shows how the three LLMs extract claims from a single factual sentence about the Argentine tango. The example demonstrates the different extraction strategies: gpt-4o-mini identifies 3 claims with balanced precision-recall, while Gemini and DeepSeek both extract multiple claims with higher selectivity.
 
 \begin{table}[ht]
     \centering
-    \caption{Extraction Phase Sample: Argentine Tango Sentence (From my\_thesis\_dataset\_run1.csv)}
+    \caption[Extraction Phase Sample: Argentine Tango]{Extraction Phase Sample: Argentine Tango Sentence (From my\_thesis\_dataset\_run1.csv)}
     \label{tab:extraction_sample}
     \small
-    \begin{tabular}{|l|l|}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
         \hline
         \textbf{Field} & \textbf{Value} \\
         \hline
-        \textbf{Original Sentence} & ``The Argentine tango is a dance and musical form that originated \\
-        & in Buenos Aires in the late 19th century, and has since become \\
-        & a revered art form worldwide.'' \\
+        \textbf{Original Sentence} & ``The Argentine tango is a dance and musical form that originated in Buenos Aires in the late 19th century, and has since become a revered art form worldwide.'' \\
         \hline
         \textbf{Ground Truth (Factual?)} & True \\
         \hline
-        \textbf{GPT-4o-mini \# Claims} & 3 \\
+        \textbf{gpt-4o-mini \# Claims} & 3 \\
         \hline
-        \textbf{GPT-4o-mini Binary} & True \\
+        \textbf{gpt-4o-mini Binary} & True \\
         \hline
-        \textbf{Gemini-2.5-Flash \# Claims} & 5 \\
+        \textbf{gemini-2.5-flash \# Claims} & 5 \\
         \hline
-        \textbf{Gemini-2.5-Flash Binary} & True \\
+        \textbf{gemini-2.5-flash Binary} & True \\
         \hline
-        \textbf{DeepSeek-V3.2 \# Claims} & 5 \\
+        \textbf{deepseek-v3.2 \# Claims} & 5 \\
         \hline
-        \textbf{DeepSeek-V3.2 Binary} & True \\
+        \textbf{deepseek-v3.2 Binary} & True \\
         \hline
     \end{tabular}
 \end{table}
 
-\subsubsection{Extracted Claims Detail (GPT-4o-mini)}
+\subsubsection{Extracted Claims Detail (gpt-4o-mini)}
 
 \begin{verbatim}
 1. The Argentine tango is a dance and musical form
@@ -1619,7 +1867,7 @@ Table \ref{tab:extraction_sample} presents a representative example from the ext
 3. The Argentine tango originated in the late 19th century
 \end{verbatim}
 
-\subsubsection{Extracted Claims Detail (Gemini-2.5-Flash)}
+\subsubsection{Extracted Claims Detail (gemini-2.5-flash)}
 
 \begin{verbatim}
 1. The Argentine tango is a dance
@@ -1629,7 +1877,7 @@ Table \ref{tab:extraction_sample} presents a representative example from the ext
 5. The Argentine tango has become an art form worldwide
 \end{verbatim}
 
-\subsubsection{Extracted Claims Detail (DeepSeek-V3.2)}
+\subsubsection{Extracted Claims Detail (deepseek-v3.2)}
 
 \begin{verbatim}
 1. The Argentine tango is a dance form
@@ -1646,10 +1894,10 @@ Table \ref{tab:verification_sample} presents a representative example from the v
 
 \begin{table}[ht]
     \centering
-    \caption{Verification Phase Sample: Argentine Tango Claim (From my\_thesis\_benchmark\_claims\_run1.csv)}
+    \caption[Verification Phase Sample: Argentine Tango]{Verification Phase Sample: Argentine Tango Claim (From my\_thesis\_benchmark\_claims\_run1.csv)}
     \label{tab:verification_sample}
     \small
-    \begin{tabular}{|p{3cm}|p{10cm}|}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
         \hline
         \textbf{Claim ID} & B001\_C00 \\
         \hline
@@ -1661,22 +1909,22 @@ Table \ref{tab:verification_sample} presents a representative example from the v
         \hline
         \textbf{Ground Truth Source} & https://ich.unesco.org/en/RL/tango-00258 \\
         \hline
-        \textbf{GPT-4o-mini Verdict} & Supported \\
+        \textbf{gpt-4o-mini Verdict} & Supported \\
         \hline
-        \textbf{Gemini-2.5-Flash Verdict} & Supported \\
+        \textbf{gemini-2.5-flash Verdict} & Supported \\
         \hline
-        \textbf{DeepSeek-V3.2 Verdict} & Supported \\
+        \textbf{deepseek-v3.2 Verdict} & Supported \\
         \hline
         \textbf{Inter-Model Agreement} & 100\% (unanimous) \\
         \hline
     \end{tabular}
 \end{table}
 
-\subsubsection{GPT-4o-mini Reasoning}
+\subsubsection{gpt-4o-mini Reasoning}
 
 ``The claim that the Argentine tango is a dance and musical form is directly confirmed by multiple reliable sources. Source 2 explicitly states that Argentine tango is both a musical genre and a social dance, and Source 1 indicates that tango is a dance with musical origins. No contradictory evidence is presented.''
 
-\subsubsection{GPT-4o-mini Retrieved Sources}
+\subsubsection{gpt-4o-mini Retrieved Sources}
 
 \begin{enumerate}
     \item \textbf{Tango - Wikipedia}: ``Tango is a dance that has influences ... dance originated in working-class districts of Buenos Aires and Montevideo. Tango music derived from the fusion of various forms of music from Europe...''
@@ -1684,11 +1932,11 @@ Table \ref{tab:verification_sample} presents a representative example from the v
     \item \textbf{Guide to Tango Music - MasterClass}: ``A tango orchestra, or orquesta ... well as vocalists and tango dancers. The history of tango dates back to the nineteenth century...''
 \end{enumerate}
 
-\subsubsection{Gemini-2.5-Flash Reasoning}
+\subsubsection{gemini-2.5-flash Reasoning}
 
 ``Multiple reliable sources explicitly state that Argentine tango is both a dance and a musical form or musical genre.''
 
-\subsubsection{Gemini-2.5-Flash Retrieved Sources}
+\subsubsection{gemini-2.5-flash Retrieved Sources}
 
 \begin{enumerate}
     \item \textbf{Tango - Wikipedia}: ``Tango is a dance that has influences ... dance originated in working-class districts of Buenos Aires and Montevideo. Tango music derived from the fusion of various forms of music from Europe...''
@@ -1696,17 +1944,98 @@ Table \ref{tab:verification_sample} presents a representative example from the v
     \item \textbf{Argentine tango - Wikipedia}: ``Argentine tango is a musical genre and accompanying social dance originating at the end of the 19th century in the suburbs of Buenos Aires. It typically has a 2/4 or 4/4 rhythmic time signature...''
 \end{enumerate}
 
-\subsubsection{DeepSeek-V3.2 Reasoning}
+\subsubsection{deepseek-v3.2 Reasoning}
 
 ``All three sources directly confirm the claim that Argentine tango is a dance and musical form. Source 1 describes it as a partner dance and social Latin dance, Source 2 explicitly states it as a dance and musical form, and Source 3 discusses its evolution as a dance, collectively providing authoritative and consistent evidence.''
 
-\subsubsection{DeepSeek-V3.2 Retrieved Sources}
+\subsubsection{deepseek-v3.2 Retrieved Sources}
 
 \begin{enumerate}
     \item \textbf{Tango - Wikipedia}: ``Tango is a partner dance and social Latin dance that originated in the 1880s along the Río de la Plata, the natural border between Argentina and Uruguay. The tango was born in the impoverished port areas of these countries from a combination of Argentine Milonga, Spanish-Cuban Habanera, and...''
     \item \textbf{A Short History Of Argentine Tango - Tango.ORG}: ``Argentine Tango as a dance and musical form developed in Buenos Aires at the end of the 19th Century, and arrived in Europe and then the US in the first decades of the 1900s. This is the mode of dance that evolved into Ballroom tango.''
     \item \textbf{Tango | Argentine, Latin American, Couple - Britannica}: ``The tango evolved about 1880 in dance halls and perhaps brothels in the lower-class districts of Buenos Aires, where the Spanish tango, a light-spirited variety of flamenco, merged with the milonga, a fast, sensual, and disreputable Argentine...''
 \end{enumerate}
+
+\subsubsection{Additional Verification Example: Refuted Claim}
+
+To demonstrate the system's handling of false claims, Table \ref{tab:verification_refuted} presents an example where the ground truth verdict is \textit{Refuted}.
+
+\begin{table}[ht]
+    \centering
+    \caption{Verification Example: Refuted Claim (Historical Date Error)}
+    \label{tab:verification_refuted}
+    \small
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Claim ID} & B011\_C00 \\
+        \hline
+        \textbf{Claim Text} & ``The Mayans invented the concept independently circa 4 A.D.'' \\
+        \hline
+        \textbf{Ground Truth Verdict} & Refuted \\
+        \hline
+        \textbf{Ground Truth Source} & \url{https://www.science.org/doi/10.1126/science.11539686} \\
+        \hline
+        \textbf{Correction Note} & The concept of zero appears in the Epi-Olmec culture as early as 36 B.C., predating the 4 A.D.\ Mayan claim. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+This example illustrates the challenge of verifying claims with specific historical dates. The claim contains a factual error regarding the timeline of mathematical concept development in Mesoamerican cultures.
+
+\subsubsection{Additional Verification Example: Insufficient Information}
+
+Table \ref{tab:verification_insufficient} demonstrates how claims with unresolved references are handled.
+
+\begin{table}[ht]
+    \centering
+    \caption{Verification Example: Insufficient Information (Ambiguous Subject)}
+    \label{tab:verification_insufficient}
+    \small
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Claim ID} & B009\_C00 \\
+        \hline
+        \textbf{Claim Text} & ``He advocated for animal rights'' \\
+        \hline
+        \textbf{Original Sentence} & ``He also advocated for animal rights and pacifism.'' \\
+        \hline
+        \textbf{Ground Truth Verdict} & Insufficient Information \\
+        \hline
+        \textbf{Reason} & Ambiguous Subject---the pronoun ``He'' was not resolved to a specific individual during the extraction process, making the claim unverifiable without additional context. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+This example highlights a failure mode in the extraction pipeline: when coreference resolution fails to disambiguate pronouns, the resulting claims cannot be verified against external sources. The \textit{Insufficient Information} verdict appropriately captures this limitation rather than forcing an incorrect \textit{Supported} or \textit{Refuted} classification.
+
+\section{Code and Data Availability}
+\label{sec:appendix_availability}
+
+The complete source code, experimental datasets, and reproduction scripts for this thesis are publicly available in a GitHub repository:
+
+\begin{center}
+\url{https://github.com/AasemElshahat/TruthLens}
+\end{center}
+
+A comprehensive reproduction guide (\texttt{REPRODUCTION\_GUIDE.md}) is included in the repository, providing step-by-step instructions for:
+\begin{itemize}
+    \item Environment setup and dependency installation (Python 3.11+, Poetry)
+    \item API key configuration for OpenAI, Google AI, DeepSeek, and Brave Search
+    \item Dataset preparation and stratified sampling from BingCheck
+    \item Execution of extraction and verification phases across all models
+    \item Metrics calculation and statistical aggregation
+    \item Figure generation for thesis visualizations
+\end{itemize}
+
+All experimental data files are preserved in the repository for independent verification:
+\begin{itemize}
+    \item \texttt{results/thesis\_datasets\_with\_LLM\_results/} --- Raw LLM outputs for all runs
+    \item \texttt{results/extraction/} --- Per-run and aggregated extraction metrics
+    \item \texttt{results/verification/} --- Per-run and aggregated verification metrics
+    \item \texttt{thesis\_latex\_files/sources/ground\_truth\_data-BingCheck/} --- Source dataset
+\end{itemize}
+
+The repository is archived at the time of thesis submission to ensure long-term availability and version consistency for reproducibility purposes.
 
 % --- Bibliography ---
 \clearpage

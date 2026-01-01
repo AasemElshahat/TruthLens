@@ -1,3 +1,6 @@
+\bibliographystyle{apalike}
+\bibliography{references} % This points to the file named references.bib
+
 % --- METHODOLOGY & FRAMEWORKS ---
 
 @article{SAFE2024,
@@ -46,6 +49,19 @@
   year={2024},
   publisher={ACM New York, NY},
   note={Defines Factuality vs. Faithfulness Hallucinations}
+}
+
+@article{Wang2024Agents,
+  title={A Survey on Large Language Model based Autonomous Agents},
+  author={Wang, Lei and Ma, Chen and Feng, Xueyang and Zhang, Zeyu and Yang, Hao and others},
+  journal={Frontiers of Computer Science},
+  volume={18},
+  number={6},
+  pages={186345},
+  year={2024},
+  publisher={Springer},
+  doi={10.1007/s11704-024-40231-1},
+  note={Defines the unified framework for LLM-based agents}
 }
 
 @inproceedings{LLMJudge,
@@ -140,9 +156,9 @@
 @misc{BraveSearchAPI,
   title = {Brave Search {API}},
   author = {{Brave Software}},
-  year = {2024},
-  howpublished = {\url{https://brave.com/search/api/}},
-  note = {(Accessed: 2025-11-20)}
+  year = {2025},
+  howpublished = {\url{https://api-dashboard.search.brave.com/app/documentation/}},
+  note = {(Accessed: 2025-12-26)}
 }
 
 % --- MODEL TECHNICAL REPORTS ---
@@ -169,4 +185,137 @@
   year={2024},
   howpublished={\url{https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/}},
   note={(Accessed: 2025-12-09)}
+}
+
+% --- FOUNDATIONAL REFERENCES ---
+
+@article{Vaswani2017,
+  title={Attention is All You Need},
+  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  journal={Advances in Neural Information Processing Systems},
+  volume={30},
+  year={2017}
+}
+
+@article{LandisKoch1977,
+  title={The measurement of observer agreement for categorical data},
+  author={Landis, J Richard and Koch, Gary G},
+  journal={Biometrics},
+  pages={159--174},
+  year={1977},
+  publisher={JSTOR}
+}
+
+@misc{OSI2024,
+  title = {The Open Source AI Definition 1.0},
+  author = {{Open Source Initiative}},
+  year = {2024},
+  month = {October},
+  howpublished = {\url{https://opensource.org/ai/open-source-ai-definition}},
+  note = {(Accessed: 2025-12-26)}
+}
+
+@Book{JurafskyMartin2025,
+  author = {Daniel Jurafsky and James H. Martin},
+  title = {Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition, with Language Models},
+  year = {2025},
+  url = {https://web.stanford.edu/~jurafsky/slp3/},
+  note = {Online manuscript released August 24, 2025 (Accessed: 2025-12-26)},
+  edition = {3rd}
+}
+
+% --- ADDITIONAL SURVEYS & FUTURE WORK REFERENCES ---
+
+@article{Guo2022Survey,
+  title = {A Survey on Automated Fact-Checking},
+  author = {Guo, Zhijiang and Schlichtkrull, Michael and Vlachos, Andreas},
+  journal = {Transactions of the Association for Computational Linguistics},
+  volume = {10},
+  year = {2022},
+  pages = {178--206},
+  publisher = {MIT Press},
+  doi = {10.1162/tacl_a_00454},
+  url = {https://aclanthology.org/2022.tacl-1.11},
+  note = {Comprehensive survey unifying definitions and cataloging datasets for automated fact-checking (Accessed: 2025-12-27)}
+}
+
+@misc{Liu2025Adversarial,
+  title = {Adversarial Attacks Against Automated Fact-Checking: A Survey},
+  author = {Liu, Fanzhen and Abuadbba, Alsharif and Moore, Kristen and Nepal, Surya and Paris, Cecile and Wu, Jia and Yang, Jian and Sheng, Quan Z.},
+  year = {2025},
+  eprint = {2509.08463},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CL},
+  doi = {10.48550/arXiv.2509.08463},
+  url = {https://arxiv.org/abs/2509.08463},
+  note = {Survey on adversarial vulnerabilities in fact-checking systems, accepted to EMNLP 2025 (Accessed: 2025-12-27)}
+}
+
+% --- DOMAIN-SPECIFIC DATASETS ---
+
+@inproceedings{Saakyan2021COVIDFact,
+  title = {{COVID}-Fact: Fact Extraction and Verification of Real-World Claims on {COVID}-19 Pandemic},
+  author = {Saakyan, Arkadiy and Chakrabarty, Tuhin and Muresan, Smaranda},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)},
+  month = aug,
+  year = {2021},
+  address = {Online},
+  publisher = {Association for Computational Linguistics},
+  url = {https://aclanthology.org/2021.acl-long.165},
+  doi = {10.18653/v1/2021.acl-long.165},
+  pages = {2116--2129},
+  note = {Dataset of 4,086 COVID-19 claims for health misinformation detection (Accessed: 2025-12-27)}
+}
+
+@inproceedings{Wadden2022SciFact,
+  title = {{SciFact-Open}: Towards open-domain scientific claim verification},
+  author = {Wadden, David and Lo, Kyle and Kuehl, Bailey and Cohan, Arman and Beltagy, Iz and Wang, Lucy Lu and Hajishirzi, Hannaneh},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2022},
+  year = {2022},
+  address = {Abu Dhabi, United Arab Emirates},
+  publisher = {Association for Computational Linguistics},
+  pages = {4719--4734},
+  url = {https://aclanthology.org/2022.findings-emnlp.347},
+  note = {Large-scale scientific claim verification over 500K research abstracts (Accessed: 2025-12-27)}
+}
+
+@misc{Diggelmann2020CLIMATE,
+  title = {{CLIMATE-FEVER}: A Dataset for Verification of Real-World Climate Claims},
+  author = {Diggelmann, Thomas and Boyd-Graber, Jordan and Bulian, Jannis and Ciaramita, Massimiliano and Leippold, Markus},
+  year = {2020},
+  eprint = {2012.00614},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CL},
+  url = {https://arxiv.org/abs/2012.00614},
+  note = {1,535 real-world climate claims adapted from FEVER methodology (Accessed: 2025-12-28)}
+}
+
+% --- MULTILINGUAL DATASETS ---
+
+@inproceedings{Gupta2021XFact,
+  title = {{X}-Fact: A New Benchmark Dataset for Multilingual Fact Checking},
+  author = {Gupta, Ashim and Srikumar, Vivek},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 2: Short Papers)},
+  month = aug,
+  year = {2021},
+  address = {Online},
+  publisher = {Association for Computational Linguistics},
+  url = {https://aclanthology.org/2021.acl-short.86},
+  doi = {10.18653/v1/2021.acl-short.86},
+  pages = {675--682},
+  note = {Largest multilingual fact-checking dataset with 25 languages (Accessed: 2025-12-28)}
+}
+
+@inproceedings{Hu2022CHEF,
+  title = {{CHEF}: A Pilot {C}hinese Dataset for Evidence-Based Fact-Checking},
+  author = {Hu, Xuming and Guo, Zhijiang and Wu, GuanYu and Liu, Aiwei and Wen, Lijie and Yu, Philip},
+  booktitle = {Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  month = jul,
+  year = {2022},
+  address = {Seattle, United States},
+  publisher = {Association for Computational Linguistics},
+  url = {https://aclanthology.org/2022.naacl-main.246},
+  doi = {10.18653/v1/2022.naacl-main.246},
+  pages = {3362--3376},
+  note = {First Chinese evidence-based fact-checking dataset with 10K claims (Accessed: 2025-12-28)}
 }
