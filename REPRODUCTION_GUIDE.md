@@ -76,8 +76,13 @@ TruthLens/
 │   │   │   ├── create_benchmark_claims.py
 │   │   │   ├── run_extraction_phase.py
 │   │   │   ├── run_verification_phase.py
+│   │   │   ├── analyze_extraction.py
+│   │   │   ├── analyze_verification.py
+│   │   │   ├── analyze_verification_extended.py
 │   │   │   ├── aggregate_extraction_metrics.py
-│   │   │   └── aggregate_verification_metrics.py
+│   │   │   ├── aggregate_verification_metrics.py
+│   │   │   ├── test_agent_outputs.py
+│   │   │   └── test_sentence_classification.py
 │   │   ├── pyproject.toml          # Poetry dependencies
 │   │   └── .env.example            # Environment template
 │   ├── data/                       # Additional data files
@@ -105,17 +110,15 @@ TruthLens/
 │   ├── thesis.tex                  # Main thesis document
 │   ├── references.bib              # Bibliography
 │   ├── diagrams-thesis.md          # Diagram descriptions
+│   ├── images/                     # Generated figures for thesis
 │   └── sources/                    # Source materials
 │       ├── ground_truth_data-BingCheck/  # Original BingCheck dataset
 │       │   ├── bingcheck.csv       # 6,490 annotated sentences
 │       │   └── README.md           # Dataset documentation
-│       └── *.pdf                   # Research paper PDFs (13 papers)
+│       └── *.pdf                   # Research paper PDFs (15 papers)
 │
 ├── visualization_scripts/          # Figure generation
 │   └── generate_all_figures.py
-│
-├── images/                         # Generated figures for thesis
-│   └── results/                    # Result visualization PNGs
 │
 └── REPRODUCTION_GUIDE.md           # This file
 ```
