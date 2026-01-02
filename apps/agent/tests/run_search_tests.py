@@ -32,7 +32,7 @@ class SearchTestRunner:
     
     async def run_search_tests(self) -> Dict:
         """Run search provider integration tests and collect results."""
-        print("🚀 Starting Search Provider Integration Test Runner")
+        print("Starting Search Provider Integration Test Runner")
         print(f"Test run started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("=" * 80)
         
@@ -82,10 +82,10 @@ class SearchTestRunner:
         successful = sum(1 for r in results['results'] if r['success'])
         total = len(results['results'])
         
-        report += f"\n📊 SUMMARY\n"
+        report += f"\nSUMMARY\n"
         report += "-"*40 + "\n"
         report += f"Search Queries: {successful}/{total} successful\n"
-        report += f"Overall Status: {'🎉 ALL TESTS PASSED' if results['overall_success'] else '⚠️ SOME TESTS FAILED'}\n"
+        report += f"Overall Status: {'ALL TESTS PASSED' if results['overall_success'] else 'SOME TESTS FAILED'}\n"
         
         return report
     
@@ -135,15 +135,15 @@ async def main():
     
     if save_report:
         filename = runner.save_report()
-        print(f"\n📋 Report saved to: {filename}")
+        print(f"\nReport saved to: {filename}")
     
     # Exit with appropriate code
     overall_success = results["overall_success"]
     if overall_success:
-        print("\n✅ All search integration tests passed!")
+        print("\n[DONE] All search integration tests passed!")
         sys.exit(0)
     else:
-        print("\n❌ Some search integration tests failed!")
+        print("\n[FAIL] Some search integration tests failed!")
         sys.exit(1)
 
 

@@ -38,7 +38,7 @@ class SearchProviderIntegrationTester:
         if query is None:
             query = self.test_queries[0]
             
-        print(f"\n🔍 Testing {provider.upper()} search provider with query: '{query[:50]}{'...' if len(query) > 50 else ''}'")
+        print(f"\nTesting {provider.upper()} search provider with query: '{query[:50]}{'...' if len(query) > 50 else ''}'")
         
         # Temporarily set the provider
         original_provider = os.getenv("SEARCH_PROVIDER", "brave")
@@ -74,7 +74,7 @@ class SearchProviderIntegrationTester:
                 "success": success,
                 "result_count": len(results),
                 "validation_errors": validation_errors,
-                "summary": f"{'✅' if success else '❌'} {provider.upper()} search {'succeeded' if success else 'failed'}",
+                "summary": f"{'[OK]' if success else '[FAIL]'} {provider.upper()} search {'succeeded' if success else 'failed'}",
             }
             
             print(f"   {result_obj['summary']}")
@@ -88,7 +88,7 @@ class SearchProviderIntegrationTester:
             return result_obj
             
         except Exception as e:
-            print(f"   ❌ Error during search: {str(e)}")
+            print(f"   [ERROR] Error during search: {str(e)}")
             return {
                 "provider": provider,
                 "query": query,
@@ -97,7 +97,7 @@ class SearchProviderIntegrationTester:
                 "error": str(e),
                 "result_count": 0,
                 "validation_errors": [f"Exception: {str(e)}"],
-                "summary": f"❌ {provider.upper()} search failed with error: {str(e)}"
+                "summary": f"[FAIL] {provider.upper()} search failed with error: {str(e)}"
             }
         finally:
             # Restore original provider
@@ -105,7 +105,7 @@ class SearchProviderIntegrationTester:
     
     async def test_all_providers(self) -> List[Dict]:
         """Test all configured search providers."""
-        print("🚀 Starting Search Provider Integration Tests...")
+        print("Starting Search Provider Integration Tests...")
         
         # Determine which providers to test based on available API keys
         providers_to_test = []
@@ -118,7 +118,7 @@ class SearchProviderIntegrationTester:
             providers_to_test.append("tavily")
         
         if not providers_to_test:
-            print("⚠️  No API keys found for search providers. Testing with default provider only.")
+            print("[WARNING] No API keys found for search providers. Testing with default provider only.")
             providers_to_test.append(os.getenv("SEARCH_PROVIDER", "brave"))
         
         print(f"Providers to test: {providers_to_test}")
@@ -158,19 +158,19 @@ class SearchProviderIntegrationTester:
         # Summary
         successful = sum(1 for r in results if r['success'])
         total = len(results)
-        report += f"\n📊 SUMMARY: {successful}/{total} search queries successful\n"
+        report += f"\nSUMMARY: {successful}/{total} search queries successful\n"
         
         if successful == total:
-            report += "🎉 All search providers working correctly!\n"
+            report += "All search providers working correctly!\n"
         else:
-            report += "⚠️  Some search providers failed - please check API keys and configuration\n"
+            report += "[WARNING] Some search providers failed - please check API keys and configuration\n"
         
         return report
 
 
 async def main():
     """Run the search provider integration tests."""
-    print(f"🔍 Search Provider Integration Test Suite")
+    print(f"Search Provider Integration Test Suite")
     print(f"Default search provider configured: {os.getenv('SEARCH_PROVIDER', 'brave')}")
     
     tester = SearchProviderIntegrationTester()
@@ -184,10 +184,10 @@ async def main():
     total = len(results)
     
     if successful == total:
-        print("✅ All search integration tests passed!")
+        print("[DONE] All search integration tests passed!")
         sys.exit(0)
     else:
-        print("❌ Some search integration tests failed!")
+        print("[FAIL] Some search integration tests failed!")
         sys.exit(1)
 
 

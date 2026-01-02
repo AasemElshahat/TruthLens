@@ -56,14 +56,14 @@ class AgentIntegrationTester:
     
     async def test_provider_with_agents(self, provider: str) -> Dict:
         """Test agent functionality with a specific LLM provider."""
-        print(f"\n🧪 Testing {provider.upper()} provider with agents...")
+        print(f"\nTesting {provider.upper()} provider with agents...")
         
         # Verify that the LLM provider can be initialized with this provider
         try:
             llm = get_llm(provider=provider)
-            print(f"   ✅ LLM instance created for {provider}")
+            print(f"   [OK] LLM instance created for {provider}")
         except Exception as e:
-            print(f"   ❌ Failed to create LLM for {provider}: {str(e)}")
+            print(f"   [ERROR] Failed to create LLM for {provider}: {str(e)}")
             return {
                 "provider": provider,
                 "overall_success": False,
@@ -83,13 +83,13 @@ class AgentIntegrationTester:
                 "success": bool(response_text and len(response_text) > 0),
                 "message": f"Response: {response_text[:50]}..."
             }
-            print(f"   ✅ Basic LLM functionality works: {response_text[:50]}...")
+            print(f"   [OK] Basic LLM functionality works: {response_text[:50]}...")
         except Exception as e:
             test_results["llm_basic"] = {
                 "success": False,
                 "error": str(e)
             }
-            print(f"   ❌ Basic LLM functionality failed: {str(e)}")
+            print(f"   [ERROR] Basic LLM functionality failed: {str(e)}")
         
         # Test with prompts that might be similar to what agents would use
         try:
@@ -105,13 +105,13 @@ class AgentIntegrationTester:
                 "success": bool(response_text and len(response_text) > 10),
                 "message": f"Response: {response_text[:50]}..."
             }
-            print(f"   ✅ Claim extraction simulation works")
+            print(f"   [OK] Claim extraction simulation works")
         except Exception as e:
             test_results["claim_extraction_sim"] = {
                 "success": False,
                 "error": str(e)
             }
-            print(f"   ❌ Claim extraction simulation failed: {str(e)}")
+            print(f"   [ERROR] Claim extraction simulation failed: {str(e)}")
         
         # Simulate claim verification prompt
         try:
@@ -126,13 +126,13 @@ class AgentIntegrationTester:
                 "success": bool(response_text and len(response_text) > 10),
                 "message": f"Response: {response_text[:50]}..."
             }
-            print(f"   ✅ Claim verification simulation works")
+            print(f"   [OK] Claim verification simulation works")
         except Exception as e:
             test_results["claim_verification_sim"] = {
                 "success": False,
                 "error": str(e)
             }
-            print(f"   ❌ Claim verification simulation failed: {str(e)}")
+            print(f"   [ERROR] Claim verification simulation failed: {str(e)}")
         
         return {
             "provider": provider,
@@ -142,7 +142,7 @@ class AgentIntegrationTester:
     
     async def test_all_providers(self) -> List[Dict]:
         """Test all configured LLM providers with agents."""
-        print("🚀 Starting Agent Integration Tests...")
+        print("Starting Agent Integration Tests...")
         
         # Determine which providers to test based on available API keys
         providers_to_test = []
@@ -157,7 +157,7 @@ class AgentIntegrationTester:
             providers_to_test.append("deepseek")
         
         if not providers_to_test:
-            print("⚠️  No specific API keys found. Testing current default provider only.")
+            print("[WARNING] No specific API keys found. Testing current default provider only.")
             providers_to_test.append(settings.llm_provider)
         
         print(f"Providers to test: {providers_to_test}")
@@ -177,10 +177,10 @@ class AgentIntegrationTester:
         
         for result in results:
             report += f"\nProvider: {result['provider']}\n"
-            report += f"Status: {'✅ Working' if result['overall_success'] else '❌ Failed'}\n"
+            report += f"Status: {'[OK] Working' if result['overall_success'] else '[FAIL] Failed'}\n"
             
             for test_name, test_result in result['agent_tests'].items():
-                status = "✅" if test_result.get('success', True) else "❌"
+                status = "[OK]" if test_result.get('success', True) else "[FAIL]"
                 report += f"  {test_name}: {status}\n"
                 if test_result.get('error'):
                     report += f"    Error: {test_result['error']}\n"
@@ -190,19 +190,19 @@ class AgentIntegrationTester:
         # Summary
         successful = sum(1 for r in results if r['overall_success'])
         total = len(results)
-        report += f"\n📊 SUMMARY: {successful}/{total} providers working with agents\n"
+        report += f"\nSUMMARY: {successful}/{total} providers working with agents\n"
         
         if successful == total:
-            report += "🎉 All providers work correctly with agents!\n"
+            report += "All providers work correctly with agents!\n"
         else:
-            report += "⚠️  Some providers failed with agent integration - please check configuration\n"
+            report += "[WARNING] Some providers failed with agent integration - please check configuration\n"
         
         return report
 
 
 async def main():
     """Run the agent integration tests."""
-    print("🚀 Agent Integration Test Suite")
+    print("Agent Integration Test Suite")
     print(f"Default provider configured: {settings.llm_provider}")
     
     tester = AgentIntegrationTester()
@@ -216,10 +216,10 @@ async def main():
     total = len(results)
     
     if successful == total:
-        print("✅ All agent integration tests passed!")
+        print("[DONE] All agent integration tests passed!")
         sys.exit(0)
     else:
-        print("❌ Some agent integration tests failed!")
+        print("[FAIL] Some agent integration tests failed!")
         sys.exit(1)
 
 

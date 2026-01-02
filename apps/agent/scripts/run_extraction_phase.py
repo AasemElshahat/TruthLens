@@ -204,7 +204,7 @@ async def run_extraction_phase(
     fresh_run: bool = False
 ):
     """Run extraction phase for all providers with per-sentence updates."""
-    print("🚀 Starting extraction phase with all LLMs...")
+    print("Starting extraction phase with all LLMs...")
     print(f"Dataset: {dataset_path}")
     print(f"Output: {output_path}")
     print(f"Providers: {providers}")
