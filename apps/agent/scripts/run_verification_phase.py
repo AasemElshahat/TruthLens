@@ -67,7 +67,7 @@ def serialize_sources(sources: Optional[List[Evidence]]) -> str:
                 'is_influential': source.is_influential
             })
         except Exception as exc:  # Defensive: ensure serialization never blocks the run
-            print(f"⚠️  Failed to serialize source for URL {getattr(source, 'url', 'unknown')} - {exc}")
+            print(f"[WARNING] Failed to serialize source for URL {getattr(source, 'url', 'unknown')} - {exc}")
 
     return json.dumps(serialized_sources)
 
@@ -136,7 +136,7 @@ async def run_verification_for_claim(claim_data: Dict, provider: str) -> Dict[st
 
 def clear_verification_results_for_fresh_run(df: pd.DataFrame) -> pd.DataFrame:
     """Clear all existing verification results for a fresh run."""
-    print("🔄 Clearing existing verification results for fresh run...")
+    print("Clearing existing verification results for fresh run...")
 
     verification_columns = [
         'gpt4_verdict', 'gpt4_reasoning', 'gpt4_sources',
@@ -149,7 +149,7 @@ def clear_verification_results_for_fresh_run(df: pd.DataFrame) -> pd.DataFrame:
             df[col] = None  # Reset to None
             print(f"   Cleared {col}")
 
-    print("✅ All verification results cleared")
+    print("[OK] All verification results cleared")
     return df
 
 
@@ -190,7 +190,7 @@ async def run_verification_for_provider(
     output_path: str
 ) -> pd.DataFrame:
     """Run verification for a single provider across all claims with per-claim updates."""
-    print(f"🧪 Starting verification for {provider.upper()} provider...")
+    print(f"Starting verification for {provider.upper()} provider...")
     
     # Get provider-specific columns
     verdict_col = f"{provider_prefix}_verdict"
@@ -203,7 +203,7 @@ async def run_verification_for_provider(
     for idx, row in df.iterrows():
         # Skip if this claim already has verification results for this provider
         if has_verification_result_for_claim(df, idx, provider_prefix):
-            print(f"⏭️  Skipping claim {idx + 1}/{total_claims} (already processed for {provider})")
+            print(f"Skipping claim {idx + 1}/{total_claims} (already processed for {provider})")
             continue
         
         print(f"Processing claim {idx + 1}/{total_claims} with {provider.upper()}...")
@@ -211,13 +211,13 @@ async def run_verification_for_provider(
         # Get claim data from the JSON column
         claim_data_str = row['validated_claim_object']
         if pd.isna(claim_data_str) or claim_data_str == '':
-            print(f"⚠️  Skipping claim {idx + 1} - no claim data")
+            print(f"[WARNING] Skipping claim {idx + 1} - no claim data")
             continue
             
         try:
             claim_data = json.loads(claim_data_str)
         except json.JSONDecodeError:
-            print(f"⚠️  Skipping claim {idx + 1} - invalid JSON")
+            print(f"[WARNING] Skipping claim {idx + 1} - invalid JSON")
             continue
         
         # Run verification for this claim
@@ -233,16 +233,16 @@ async def run_verification_for_provider(
             processed_count += 1
         else:
             # Keep the cell as None to allow for retries
-            print(f"⚠️  Error processing claim {idx + 1}, keeping as None for retry")
+            print(f"[WARNING] Error processing claim {idx + 1}, keeping as None for retry")
         
         # Save immediately to protect against cost loss
         df.to_csv(output_path, index=False)
-        print(f"💾 Saved results for claim {idx + 1} to CSV")
+        print(f"Saved results for claim {idx + 1} to CSV")
         
         # Add a small async delay between API calls to respect rate limits
         await asyncio.sleep(0.1)
     
-    print(f"✅ Completed verification for {provider.upper()}: {processed_count} claims processed")
+    print(f"[DONE] Completed verification for {provider.upper()}: {processed_count} claims processed")
     return df
 
 
@@ -253,7 +253,7 @@ async def run_verification_phase(
     providers: List[str] = ['openai', 'gemini', 'deepseek']
 ):
     """Run verification phase for all providers with per-claim updates."""
-    print("🚀 Starting verification phase with all LLMs...")
+    print("Starting verification phase with all LLMs...")
     print(f"Benchmark: {benchmark_path}")
     print(f"Output: {output_path}")
     print(f"Providers: {providers}")
@@ -274,14 +274,14 @@ async def run_verification_phase(
     for provider in providers:
         provider_prefix = provider_mapping[provider]
         
-        print(f"\n🔄 Processing provider: {provider.upper()}")
+        print(f"\nProcessing provider: {provider.upper()}")
         
         # Run verification for this provider
         df = await run_verification_for_provider(df, provider, provider_prefix, output_path)
     
     # Final save
     df.to_csv(output_path, index=False)
-    print(f"\n🎉 Verification phase complete! Results saved to {output_path}")
+    print(f"\n[DONE] Verification phase complete! Results saved to {output_path}")
     print(f"Final benchmark has {len(df)} claims with verification results from all providers")
 
 
@@ -307,13 +307,13 @@ async def main():
 
     args = parser.parse_args()
 
-    print(f"📄 Benchmark: {args.benchmark}")
-    print(f"💾 Output: {args.output}")
-    print(f"🔄 Fresh run: {args.fresh_run}")
+    print(f"Benchmark: {args.benchmark}")
+    print(f"Output: {args.output}")
+    print(f"Fresh run: {args.fresh_run}")
 
     # Verify the benchmark exists
     if not Path(args.benchmark).exists():
-        print(f"❌ Benchmark file not found: {args.benchmark}")
+        print(f"[ERROR] Benchmark file not found: {args.benchmark}")
         sys.exit(1)
 
     # Load the benchmark claims
@@ -324,12 +324,12 @@ async def main():
         df = clear_verification_results_for_fresh_run(df)
         # Update output path to use a unique name to prevent overwriting previous runs
         args.output = generate_unique_filename(args.output)
-        print(f"🆕 Using unique output path for fresh run: {args.output}")
+        print(f"Using unique output path for fresh run: {args.output}")
 
     # Run verification phase
     await run_verification_phase(df, args.benchmark, args.output)
 
-    print("✅ Verification phase completed successfully!")
+    print("[DONE] Verification phase completed successfully!")
 
 
 if __name__ == "__main__":

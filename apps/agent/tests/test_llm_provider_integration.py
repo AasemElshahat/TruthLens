@@ -34,7 +34,7 @@ class LLMProviderIntegrationTester:
     
     async def test_provider(self, provider: str, model_name: str = None) -> Dict:
         """Test a specific LLM provider."""
-        print(f"\n🧪 Testing {provider.upper()} provider...")
+        print(f"\nTesting {provider.upper()} provider...")
         
         try:
             # Get LLM instance for this provider
@@ -53,9 +53,9 @@ class LLMProviderIntegrationTester:
                         "success": True,
                         "error": None
                     })
-                    print(f"   ✅ Response received: {response_text[:60]}...")
+                    print(f"   [OK] Response received: {response_text[:60]}...")
                 except Exception as e:
-                    print(f"   ❌ Error on prompt {i+1}: {str(e)}")
+                    print(f"   [ERROR] Error on prompt {i+1}: {str(e)}")
                     responses.append({
                         "prompt": prompt,
                         "response": None,
@@ -71,26 +71,26 @@ class LLMProviderIntegrationTester:
                 "model_name": model_name,
                 "responses": responses,
                 "overall_success": overall_success,
-                "summary": f"✅ {provider.upper()} provider working" if overall_success else f"❌ {provider.upper()} provider failed"
+                "summary": f"[OK] {provider.upper()} provider working" if overall_success else f"[FAIL] {provider.upper()} provider failed"
             }
             
             print(f"   {result['summary']}")
             return result
             
         except Exception as e:
-            print(f"   ❌ Failed to initialize {provider} provider: {str(e)}")
+            print(f"   [ERROR] Failed to initialize {provider} provider: {str(e)}")
             return {
                 "provider": provider,
                 "model_name": model_name,
                 "responses": [],
                 "overall_success": False,
                 "error": str(e),
-                "summary": f"❌ {provider.upper()} provider initialization failed"
+                "summary": f"[FAIL] {provider.upper()} provider initialization failed"
             }
     
     async def test_all_providers(self) -> List[Dict]:
         """Test all configured LLM providers."""
-        print("🚀 Starting LLM Provider Integration Tests...")
+        print("Starting LLM Provider Integration Tests...")
         
         # Determine which providers to test based on available API keys
         providers_to_test = []
@@ -105,7 +105,7 @@ class LLMProviderIntegrationTester:
             providers_to_test.append(("deepseek", "deepseek-chat"))
         
         if not providers_to_test:
-            print("⚠️  No API keys found. Testing will use default provider only.")
+            print("[WARNING] No API keys found. Testing will use default provider only.")
             providers_to_test.append((settings.llm_provider, None))
         
         results = []
@@ -114,7 +114,7 @@ class LLMProviderIntegrationTester:
             results.append(result)
         
         # Test the default provider regardless
-        print(f"\n🧪 Testing default provider: {settings.llm_provider}")
+        print(f"\nTesting default provider: {settings.llm_provider}")
         default_result = await self.test_provider(settings.llm_provider)
         results.append({
             **default_result,
@@ -136,7 +136,7 @@ class LLMProviderIntegrationTester:
             
             if 'responses' in result and result['responses']:
                 for i, response in enumerate(result['responses']):
-                    status = "✅" if response['success'] else "❌"
+                    status = "[OK]" if response['success'] else "[FAIL]"
                     report += f"  Prompt {i+1}: {status}\n"
                     if response.get('error'):
                         report += f"    Error: {response['error']}\n"
@@ -144,19 +144,19 @@ class LLMProviderIntegrationTester:
         # Summary
         successful = sum(1 for r in results if r['overall_success'])
         total = len(results)
-        report += f"\n📊 SUMMARY: {successful}/{total} providers working\n"
+        report += f"\nSUMMARY: {successful}/{total} providers working\n"
         
         if successful == total:
-            report += "🎉 All providers working correctly!\n"
+            report += "All providers working correctly!\n"
         else:
-            report += "⚠️  Some providers failed - please check configuration\n"
+            report += "[WARNING] Some providers failed - please check configuration\n"
         
         return report
 
 
 async def main():
     """Run the integration tests."""
-    print("🚀 LLM Provider Integration Test Suite")
+    print("LLM Provider Integration Test Suite")
     print(f"Default provider configured: {settings.llm_provider}")
     
     tester = LLMProviderIntegrationTester()
@@ -170,10 +170,10 @@ async def main():
     total = len(results)
     
     if successful == total:
-        print("✅ All tests passed!")
+        print("[DONE] All tests passed!")
         sys.exit(0)
     else:
-        print("❌ Some tests failed!")
+        print("[FAIL] Some tests failed!")
         sys.exit(1)
 
 

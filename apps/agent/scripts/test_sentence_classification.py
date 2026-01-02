@@ -17,7 +17,7 @@ from claim_extractor import graph as claim_extractor_graph
 async def test_factual_sentence():
     """Test with a sentence that contains factual claims."""
     
-    print("🧪 Testing Sentence with Factual Claims...")
+    print("Testing Sentence with Factual Claims...")
     
     # Use a factual sentence from the BingCheck dataset
     factual_sentence = "The invention of the first artificial heart was inspired by the need to save lives of people with heart failure and to overcome the shortage of donor hearts for transplantation."
@@ -56,7 +56,7 @@ async def test_factual_sentence():
 async def test_non_factual_sentence():
     """Test with a sentence that does NOT contain factual claims."""
     
-    print("\n🧪 Testing Sentence WITHOUT Factual Claims...")
+    print("\nTesting Sentence WITHOUT Factual Claims...")
     
     # Use a non-factual sentence (opinion, recommendation, speculative)
     non_factual_sentence = "By prioritizing ethical considerations, companies can ensure that their innovations are not only groundbreaking but also socially responsible."

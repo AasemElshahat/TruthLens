@@ -35,7 +35,7 @@ class UnifiedIntegrationTestRunner:
     
     async def run_all_tests(self, include_search=True) -> Dict:
         """Run all integration tests and collect results."""
-        print("🚀 Starting TruthLens Unified Integration Test Suite")
+        print("Starting TruthLens Unified Integration Test Suite")
         print(f"Default provider configured: {settings.llm_provider}")
         print(f"Test run started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("=" * 80)
@@ -43,7 +43,7 @@ class UnifiedIntegrationTestRunner:
         results = {}
         
         # Run LLM provider tests
-        print("\n🔬 Running LLM Provider Integration Tests...")
+        print("\nRunning LLM Provider Integration Tests...")
         llm_tester = LLMProviderIntegrationTester()
         provider_results = await llm_tester.test_all_providers()
         results["llm_providers"] = {
@@ -54,7 +54,7 @@ class UnifiedIntegrationTestRunner:
         print("\n" + "-" * 80)
         
         # Run agent integration tests
-        print("\n🤖 Running Agent Integration Tests...")
+        print("\nRunning Agent Integration Tests...")
         agent_tester = AgentIntegrationTester()
         agent_results = await agent_tester.test_all_providers()
         results["agents"] = {
@@ -65,7 +65,7 @@ class UnifiedIntegrationTestRunner:
         # Run search provider tests if requested
         if include_search:
             print("\n" + "-" * 80)
-            print("\n🔍 Running Search Provider Integration Tests...")
+            print("\nRunning Search Provider Integration Tests...")
             search_tester = SearchProviderIntegrationTester()
             search_results = await search_tester.test_all_providers()
             results["search"] = {
@@ -73,7 +73,7 @@ class UnifiedIntegrationTestRunner:
                 "overall_success": all(r["success"] for r in search_results)
             }
         else:
-            print("\n⚠️  Skipping search provider tests per request")
+            print("\n[WARNING] Skipping search provider tests per request")
             results["search"] = {
                 "results": [],
                 "overall_success": True  # Considered successful if not run
@@ -136,7 +136,7 @@ class UnifiedIntegrationTestRunner:
         
         # LLM Provider Results (if present)
         if results.get("llm_providers"):
-            report += "🔬 LLM PROVIDER INTEGRATION TESTS\n"
+            report += "LLM PROVIDER INTEGRATION TESTS\n"
             report += "-"*40 + "\n"
             for result in results["llm_providers"]["results"]:
                 report += f"\nProvider: {result['provider']}\n"
@@ -145,7 +145,7 @@ class UnifiedIntegrationTestRunner:
                 
                 if 'responses' in result and result['responses']:
                     for i, response in enumerate(result['responses']):
-                        status = "✅" if response['success'] else "❌"
+                        status = "[OK]" if response['success'] else "[FAIL]"
                         report += f"  Prompt {i+1}: {status}\n"
                         if response.get('error'):
                             report += f"    Error: {response['error']}\n"
@@ -154,14 +154,14 @@ class UnifiedIntegrationTestRunner:
         if results.get("agents"):
             if results.get("llm_providers"):  # Add separator if LLM tests were shown
                 report += "\n\n"
-            report += "🤖 AGENT INTEGRATION TESTS\n"
+            report += "AGENT INTEGRATION TESTS\n"
             report += "-"*40 + "\n"
             for result in results["agents"]["results"]:
                 report += f"\nProvider: {result['provider']}\n"
-                report += f"Status: {'✅ Working' if result['overall_success'] else '❌ Failed'}\n"
+                report += f"Status: {'[OK] Working' if result['overall_success'] else '[FAIL] Failed'}\n"
                 
                 for test_name, test_result in result['agent_tests'].items():
-                    status = "✅" if test_result.get('success', True) else "❌"
+                    status = "[OK]" if test_result.get('success', True) else "[FAIL]"
                     report += f"  {test_name}: {status}\n"
                     if test_result.get('error'):
                         report += f"    Error: {test_result['error']}\n"
@@ -172,7 +172,7 @@ class UnifiedIntegrationTestRunner:
         if results.get("search"):
             if results.get("llm_providers") or results.get("agents"):  # Add separator if other tests were shown
                 report += "\n\n"
-            report += "🔍 SEARCH PROVIDER INTEGRATION TESTS\n"
+            report += "SEARCH PROVIDER INTEGRATION TESTS\n"
             report += "-"*40 + "\n"
             current_provider = None
             for result in results["search"]["results"]:
@@ -198,15 +198,15 @@ class UnifiedIntegrationTestRunner:
         search_success = results["search"]["overall_success"] if results.get("search") else True
         overall_success = results["overall"]["success"]
         
-        report += f"\n\n📊 SUMMARY\n"
+        report += f"\n\nSUMMARY\n"
         report += "-"*40 + "\n"
         if results.get("llm_providers"):
-            report += f"LLM Provider Tests: {'✅ PASS' if llm_success else '❌ FAIL'}\n"
+            report += f"LLM Provider Tests: {'[PASS]' if llm_success else '[FAIL]'}\n"
         if results.get("agents"):
-            report += f"Agent Integration Tests: {'✅ PASS' if agent_success else '❌ FAIL'}\n"
+            report += f"Agent Integration Tests: {'[PASS]' if agent_success else '[FAIL]'}\n"
         if results.get("search"):
-            report += f"Search Provider Tests: {'✅ PASS' if search_success else '❌ FAIL'}\n"
-        report += f"Overall Status: {'🎉 ALL TESTS PASSED' if overall_success else '⚠️ SOME TESTS FAILED'}\n"
+            report += f"Search Provider Tests: {'[PASS]' if search_success else '[FAIL]'}\n"
+        report += f"Overall Status: {'ALL TESTS PASSED' if overall_success else 'SOME TESTS FAILED'}\n"
         
         return report
     
@@ -250,7 +250,7 @@ async def main():
             include_search = False
         elif arg == "--search-only":
             # For search-only, we'll run a separate search-only flow
-            print("🔍 Running Search Provider Integration Tests...")
+            print("Running Search Provider Integration Tests...")
             from tests.test_search_integration import SearchProviderIntegrationTester
             search_tester = SearchProviderIntegrationTester()
             search_results = await search_tester.test_all_providers()
@@ -281,15 +281,15 @@ async def main():
             
             if save_report:
                 filename = runner.save_report()
-                print(f"\n📋 Report saved to: {filename}")
+                print(f"\nReport saved to: {filename}")
             
             # Exit with appropriate code
             overall_success = results["overall"]["success"]
             if overall_success:
-                print("\n✅ All search integration tests passed!")
+                print("\n[DONE] All search integration tests passed!")
                 sys.exit(0)
             else:
-                print("\n❌ Some search integration tests failed!")
+                print("\n[FAIL] Some search integration tests failed!")
                 sys.exit(1)
         elif arg == "--no-search":
             include_search = False
@@ -317,15 +317,15 @@ async def main():
     
     if save_report:
         filename = runner.save_report()
-        print(f"\n📋 Report saved to: {filename}")
+        print(f"\nReport saved to: {filename}")
     
     # Exit with appropriate code
     overall_success = results["overall"]["success"]
     if overall_success:
-        print("\n✅ All integration tests passed!")
+        print("\n[DONE] All integration tests passed!")
         sys.exit(0)
     else:
-        print("\n❌ Some integration tests failed!")
+        print("\n[FAIL] Some integration tests failed!")
         sys.exit(1)
 
 

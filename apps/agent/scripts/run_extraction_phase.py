@@ -151,7 +151,7 @@ async def run_extraction_for_provider(
     output_path: str
 ) -> pd.DataFrame:
     """Run extraction for a single provider across all sentences with per-sentence updates."""
-    print(f"🧪 Starting extraction for {provider.upper()} provider...")
+    print(f"Starting extraction for {provider.upper()} provider...")
     
     # Get provider-specific columns
     json_col = f"{provider_prefix}_extracted_claims_json"
@@ -164,7 +164,7 @@ async def run_extraction_for_provider(
     for idx, row in df.iterrows():
         # Skip if this sentence already has extraction results for this provider
         if has_extraction_result_for_sentence(df, idx, provider_prefix):
-            print(f"⏭️  Skipping sentence {idx + 1}/{total_sentences} (already processed for {provider})")
+            print(f"Skipping sentence {idx + 1}/{total_sentences} (already processed for {provider})")
             continue
         
         print(f"Processing sentence {idx + 1}/{total_sentences} with {provider.upper()}...")
@@ -184,16 +184,16 @@ async def run_extraction_for_provider(
             processed_count += 1
         else:
             # Keep the cell as None to allow for retries
-            print(f"⚠️  Error processing sentence {idx + 1}, keeping as None for retry")
+            print(f"[WARNING] Error processing sentence {idx + 1}, keeping as None for retry")
         
         # Save immediately to protect against cost loss
         df.to_csv(output_path, index=False)
-        print(f"💾 Saved results for sentence {idx + 1} to CSV")
+        print(f"Saved results for sentence {idx + 1} to CSV")
         
         # Add a small async delay between API calls to respect rate limits
         await asyncio.sleep(0.1)
     
-    print(f"✅ Completed extraction for {provider.upper()}: {processed_count} sentences processed")
+    print(f"[DONE] Completed extraction for {provider.upper()}: {processed_count} sentences processed")
     return df
 
 
@@ -204,7 +204,7 @@ async def run_extraction_phase(
     fresh_run: bool = False
 ):
     """Run extraction phase for all providers with per-sentence updates."""
-    print("🚀 Starting extraction phase with all LLMs...")
+    print("Starting extraction phase with all LLMs...")
     print(f"Dataset: {dataset_path}")
     print(f"Output: {output_path}")
     print(f"Providers: {providers}")
@@ -219,7 +219,7 @@ async def run_extraction_phase(
 
     # If fresh run is requested, clear all existing extraction results
     if fresh_run:
-        print("🔄 Preparing for fresh run - clearing existing results...")
+        print("Preparing for fresh run - clearing existing results...")
         required_columns = [
             'gpt4_extracted_claims_json', 'gpt4_binary_result', 'gpt4_num_claims',
             'gemini_extracted_claims_json', 'gemini_binary_result', 'gemini_num_claims',
@@ -229,12 +229,12 @@ async def run_extraction_phase(
         for col in required_columns:
             if col in df.columns:
                 df[col] = None  # Reset to None to force re-processing
-        print("✅ Existing extraction results cleared")
+        print("[OK] Existing extraction results cleared")
 
     # Generate a unique output path if the target file already exists
     unique_output_path = generate_unique_filename(output_path)
     if unique_output_path != output_path:
-        print(f"⚠️  Output file already exists. Using unique filename: {unique_output_path}")
+        print(f"[WARNING] Output file already exists. Using unique filename: {unique_output_path}")
 
     # Provider mappings
     provider_mapping = {
@@ -247,14 +247,14 @@ async def run_extraction_phase(
     for provider in providers:
         provider_prefix = provider_mapping[provider]
 
-        print(f"\n🔄 Processing provider: {provider.upper()}")
+        print(f"\nProcessing provider: {provider.upper()}")
 
         # Run extraction for this provider
         df = await run_extraction_for_provider(df, provider, provider_prefix, unique_output_path)
 
     # Final save
     df.to_csv(unique_output_path, index=False)
-    print(f"\n🎉 Extraction phase complete! Results saved to {unique_output_path}")
+    print(f"\n[DONE] Extraction phase complete! Results saved to {unique_output_path}")
     print(f"Final dataset has {len(df)} sentences with extraction results from all providers")
 
     return unique_output_path
@@ -282,13 +282,13 @@ async def main():
 
     args = parser.parse_args()
 
-    print(f"📄 Dataset: {args.dataset}")
-    print(f"💾 Output: {args.output}")
-    print(f"🔄 Fresh Run Mode: {args.fresh_run}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Output: {args.output}")
+    print(f"Fresh Run Mode: {args.fresh_run}")
 
     # Verify the dataset exists
     if not Path(args.dataset).exists():
-        print(f"❌ Dataset file not found: {args.dataset}")
+        print(f"[ERROR] Dataset file not found: {args.dataset}")
         sys.exit(1)
 
     # Run extraction phase and get the actual output path used
@@ -298,8 +298,8 @@ async def main():
         fresh_run=args.fresh_run
     )
 
-    print("✅ Extraction phase completed successfully!")
-    print(f"📊 Results saved to: {actual_output_path}")
+    print("[DONE] Extraction phase completed successfully!")
+    print(f"Results saved to: {actual_output_path}")
 
 
 if __name__ == "__main__":

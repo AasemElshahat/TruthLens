@@ -1,6 +1,6 @@
 # TruthLens Framework - Complete Reproduction Guide
 
-> **A Comparative Analysis of Large Language Models (GPT-4o-mini, Gemini-2.5-Flash, DeepSeek-V3.2) for Factual Claim Extraction and Verification**
+> **A Comparative Analysis of Large Language Models for Factual Claim Extraction and Verification**
 
 This documentation provides a complete step-by-step guide to reproduce all experiments, results, and figures from the thesis.
 
@@ -76,8 +76,13 @@ TruthLens/
 │   │   │   ├── create_benchmark_claims.py
 │   │   │   ├── run_extraction_phase.py
 │   │   │   ├── run_verification_phase.py
+│   │   │   ├── analyze_extraction.py
+│   │   │   ├── analyze_verification.py
+│   │   │   ├── analyze_verification_extended.py
 │   │   │   ├── aggregate_extraction_metrics.py
-│   │   │   └── aggregate_verification_metrics.py
+│   │   │   ├── aggregate_verification_metrics.py
+│   │   │   ├── test_agent_outputs.py
+│   │   │   └── test_sentence_classification.py
 │   │   ├── pyproject.toml          # Poetry dependencies
 │   │   └── .env.example            # Environment template
 │   ├── data/                       # Additional data files
@@ -105,19 +110,17 @@ TruthLens/
 │   ├── thesis.tex                  # Main thesis document
 │   ├── references.bib              # Bibliography
 │   ├── diagrams-thesis.md          # Diagram descriptions
+│   ├── images/                     # Generated figures for thesis
 │   └── sources/                    # Source materials
 │       ├── ground_truth_data-BingCheck/  # Original BingCheck dataset
 │       │   ├── bingcheck.csv       # 6,490 annotated sentences
 │       │   └── README.md           # Dataset documentation
-│       └── *.pdf                   # Research paper PDFs (13 papers)
+│       └── *.pdf                   # Research paper PDFs (15 papers)
 │
 ├── visualization_scripts/          # Figure generation
 │   └── generate_all_figures.py
 │
-├── images/                         # Generated figures for thesis
-│   └── results/                    # Result visualization PNGs
-│
-└── DOCUMENTATION.md                # This file
+└── REPRODUCTION_GUIDE.md           # This file
 ```
 
 ---
@@ -510,25 +513,27 @@ poetry run python scripts/aggregate_verification_metrics.py
 
 **Extraction (Phase 1):**
 
-| Model            | Precision       | Recall          | F1-Score            |
-| ---------------- | --------------- | --------------- | ------------------- |
-| GPT-4o-mini      | 83.1% ± 2.5%    | 77.8% ± 0.7%    | **80.4%** ± 1.5%    |
-| Gemini-2.5-Flash | 89.5% ± 1.8%    | 40.2% ± 2.7%    | 55.4% ± 2.8%        |
-| DeepSeek-V3.2    | 95.8% ± 1.7%    | 49.6% ± 4.9%    | 65.3% ± 4.6%        |
+| Model            | Precision     | Recall        | F1-Score                |
+| ---------------- | ------------- | ------------- | ----------------------- |
+| GPT-4o-mini      | 83.1% ± 2.5% | 77.8% ± 0.7% | **80.4%** ± 1.5% |
+| Gemini-2.5-Flash | 89.5% ± 1.8% | 40.2% ± 2.7% | 55.4% ± 2.8%           |
+| DeepSeek-V3.2    | 95.8% ± 1.7% | 49.6% ± 4.9% | 65.3% ± 4.6%           |
 
 **Ground Truth Distribution (Phase 1):**
+
 - Sentences with factual claims: 78 (52%)
 - Sentences without factual claims: 72 (48%)
 
 **Verification (Phase 2):**
 
-| Model            | Accuracy        | Macro-F1        |
-| ---------------- | --------------- | --------------- |
-| GPT-4o-mini      | 79.0% ± 0.0%    | 51.2% ± 3.9%    |
-| Gemini-2.5-Flash | **82.0%** ± 1.4% | 52.7% ± 2.0%   |
-| DeepSeek-V3.2    | 77.5% ± 2.1%    | **55.9%** ± 0.4% |
+| Model            | Accuracy                | Macro-F1                |
+| ---------------- | ----------------------- | ----------------------- |
+| GPT-4o-mini      | 79.0% ± 0.0%           | 51.2% ± 3.9%           |
+| Gemini-2.5-Flash | **82.0%** ± 1.4% | 52.7% ± 2.0%           |
+| DeepSeek-V3.2    | 77.5% ± 2.1%           | **55.9%** ± 0.4% |
 
 **Ground Truth Distribution (Phase 2):**
+
 - Supported: 85 claims (85%)
 - Refuted: 3 claims (3%)
 - Insufficient Information: 12 claims (12%)

@@ -59,13 +59,13 @@ def get_winning_extractor_provider(extraction_metrics_path: str) -> str:
         
         return provider_mapping.get(winner_provider, winner_provider)
     except Exception as e:
-        print(f"⚠️ Could not read extraction metrics, defaulting to gpt4: {e}")
+        print(f"[WARNING] Could not read extraction metrics, defaulting to gpt4: {e}")
         return 'gpt4'
 
 
 def create_benchmark_claims(dataset_path: str, extraction_metrics_path: str, output_path: str):
     """Create benchmark claims from the winning extractor."""
-    print("🎯 Creating benchmark claims from winning extractor...")
+    print("Creating benchmark claims from winning extractor...")
     print(f"Dataset: {dataset_path}")
     print(f"Extraction Metrics: {extraction_metrics_path}")
     print(f"Output: {output_path}")
@@ -142,7 +142,7 @@ def create_benchmark_claims(dataset_path: str, extraction_metrics_path: str, out
     
     # Save benchmark claims
     benchmark_df.to_csv(output_path, index=False)
-    print(f"\n✅ Benchmark claims saved to {output_path}")
+    print(f"\n[DONE] Benchmark claims saved to {output_path}")
     
     return benchmark_df
 
@@ -170,23 +170,23 @@ def main():
     
     args = parser.parse_args()
 
-    print(f"📄 Dataset: {args.dataset}")
-    print(f"📊 Extraction Metrics: {args.extraction_metrics}")
-    print(f"💾 Output: {args.output}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Extraction Metrics: {args.extraction_metrics}")
+    print(f"Output: {args.output}")
     
     # Verify files exist
     if not Path(args.dataset).exists():
-        print(f"❌ Dataset file not found: {args.dataset}")
+        print(f"[ERROR] Dataset file not found: {args.dataset}")
         sys.exit(1)
         
     if not Path(args.extraction_metrics).exists():
-        print(f"⚠️ Extraction metrics file not found: {args.extraction_metrics}")
+        print(f"[WARNING] Extraction metrics file not found: {args.extraction_metrics}")
         print("   Will attempt to determine winning extractor without metrics...")
     
     # Create benchmark claims
     benchmark_df = create_benchmark_claims(args.dataset, args.extraction_metrics, args.output)
     
-    print("\n🎯 Benchmark creation completed successfully!")
+    print("\n[DONE] Benchmark creation completed successfully!")
     print("Next step: Manually annotate ground_truth_verdict column in the benchmark file")
 
 
