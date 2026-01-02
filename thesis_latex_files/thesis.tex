@@ -286,7 +286,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     \subsection{Thesis Objective}
     The primary objective of this thesis is to perform a comparative analysis of three modern Large Language Models—\textbf{gpt-4o-mini}, \textbf{gemini-2.5-flash}, and \textbf{deepseek-v3.2}—to determine their effectiveness in an automated fact-checking pipeline.
 
-    \begin{table}[ht]
+    \begin{table}[H]
         \centering
             \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|}
             \hline
@@ -351,7 +351,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
     Early research in Natural Language Generation (NLG) primarily categorized these errors relative to a source document (e.g., in summarization tasks). This produced the standard distinction between \textbf{Intrinsic} and \textbf{Extrinsic} hallucinations (Table \ref{tab:hallucination_types}).
     
-    \begin{table}[ht]
+    \begin{table}[H]
         \centering
             \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
             \hline
@@ -403,7 +403,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     
     Table \ref{tab:bingcheck_raw} illustrates the exact structure of the dataset using two sequential rows from the corpus. It demonstrates how non-factual conversational filler (Sentence 0) is distinguished from verifiable factual assertions (Sentence 1) within the same response context.
     
-    \begin{table}[ht]
+    \begin{table}[H]
         \centering
         \small
         \begin{tabularx}{\textwidth}{|X|X|X|X|X|}
@@ -441,7 +441,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
     \section{The TruthLens Framework}
     \label{sec:truthlens_framework}
 
-    To empirically evaluate the performance of gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2, this thesis implements \textbf{TruthLens}. TruthLens is a specialized adaptation and extension of the open-source \textit{ClaimeAI} framework, with architectural extensions to support systematic comparative multi-model benchmarking.
+    To empirically evaluate the performance of gpt-4o-mini, gemini-2.5-flash, and deepseek-v3.2, this thesis implements \textbf{TruthLens}. TruthLens is a specialized adaptation and extension of the open-source \textit{ClaimeAI} framework, with extensions to support systematic comparative multi-model benchmarking.
 
     \subsection{Foundation: The ClaimeAI Architecture}
     The architectural foundation of this study is \textbf{ClaimeAI} \cite{ClaimeAI_Repo}, an open-source fact-checking tool designed by BharathxD. ClaimeAI utilizes \textbf{LangGraph} \cite{LangGraph}, a library specifically designed for building stateful, multi-actor applications with LLMs. LangGraph enables the creation of cyclical graphs, allowing agents to loop, persist state, and make iterative decisions—a critical capability for the complex reasoning required in fact-checking tasks. Within this framework, the process is split into two autonomous agents:
@@ -481,7 +481,7 @@ As LLMs are increasingly integrated into search engines, the ability to automati
 
     The technical implementation of these requirements is detailed in Chapter \ref{ch:implementation}.
     
-    \begin{figure}[ht]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=1.0\textwidth]{images/experimental_pipeline.png}
         \caption{Experimental Pipeline: Data flow from sampling through evaluation phases to final metrics analysis.}
@@ -649,7 +649,7 @@ This chapter details the technical realization of the TruthLens framework. It de
         \item \textbf{The Benchmarking Engine:} Pipeline for batch execution ($N=150$ samples, $k=3$ runs per phase, 3 models) with rate limiting, failure recovery, multi-run statistical analysis, and result serialization.
     \end{enumerate}
     
-    \begin{figure}[ht]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=\textwidth]{images/system_architecture.png}
         \caption{High-level architecture of the TruthLens Multi-Agent System. Reproduced from \cite{ClaimeAI_Repo}.}
@@ -671,7 +671,7 @@ This chapter details the technical realization of the TruthLens framework. It de
         \item \textbf{Validation Node:} Performs a final syntax check on the extracted claims.
     \end{itemize}
     
-    \begin{figure}[ht]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=\textwidth]{images/extractor_workflow.png}
         \caption{The Claim Extraction Workflow implementing the Claimify methodology. Reproduced from \cite{ClaimeAI_Repo}.}
@@ -698,7 +698,7 @@ This chapter details the technical realization of the TruthLens framework. It de
 
     The critical logic for the \textit{Search Decision} node is enforced via a structured Pydantic model \cite{Pydantic}, which compels the LLM to justify its decision before stopping. The model must explicitly identify missing aspects before requesting more evidence.
 
-    \begin{figure}[ht]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=\textwidth]{images/verifier_workflow.png}
         \caption{The Claim Verifier Workflow implementing the SAFE reasoning loop. Reproduced from \cite{ClaimeAI_Repo}.}
@@ -713,19 +713,6 @@ This chapter details the technical realization of the TruthLens framework. It de
     
     \subsection{Provider Interface}
     We defined an abstract base class, \texttt{LLMProvider}, which enforces a uniform interface for all model interactions despite underlying differences in initialization methods and API requirements. This abstraction ensures that all three models—regardless of whether they use \texttt{init\_chat\_model}, \texttt{ChatGoogleGenerativeAI}, or \texttt{ChatOpenAI} with custom configuration—are accessed through identical code paths in the agent logic.
-    
-\begin{verbatim}
-class LLMProvider(ABC):
-    @abstractmethod
-    def invoke(
-        self,
-        model_name: str = None,
-        temperature: float = 0.0,
-        completions: int = 1,
-    ) -> BaseChatModel:
-        """Get LLM instance with specified configuration."""
-        pass
-\end{verbatim}
     
     Concrete implementations were developed for three providers:
     \begin{itemize}
@@ -766,7 +753,7 @@ class LLMProvider(ABC):
     \subsection{Phase 1: Extraction Benchmarking}
     The script \texttt{run\_extraction\_phase.py} manages the batch processing of the $N=150$ sentences. It iterates through the target models (gpt-4o-mini, gemini-2.5-flash, deepseek-v3.2), dynamically injecting the appropriate \texttt{LLMProvider} into the extraction graph. Results are serialized row-by-row into a CSV file adhering to the schema in Table \ref{tab:extraction_schema}.
 
-    \begin{table}[ht]
+    \begin{table}[H]
         \centering
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
@@ -792,7 +779,7 @@ class LLMProvider(ABC):
     \subsection{Phase 2: Verification Benchmarking}
     The verification phase is orchestrated by \texttt{run\_verification\_phase.py}. This script loads the standardized benchmark claims generated in Phase 1 and feeds them into the verification agent. The output is stored using the schema defined in Table \ref{tab:verification_schema}.
 
-    \begin{table}[ht]
+    \begin{table}[H]
         \centering
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
@@ -862,7 +849,7 @@ The claim extraction phase evaluated each model's ability to identify verifiable
 
 Table \ref{tab:extraction_results} presents the aggregated performance metrics for all three models across the extraction task. The results reveal a distinct precision-recall trade-off pattern that directly addresses \textbf{RQ1}.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \begin{tabularx}{\textwidth}{|l|X|X|X|X|}
         \hline
@@ -887,7 +874,7 @@ This pattern has important practical implications: while gemini-2.5-flash and de
 
 To fully characterize the models' filtering capabilities, Table \ref{tab:extraction_negative} presents the negative class metrics---measuring each model's ability to correctly reject non-factual content.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \begin{tabularx}{\textwidth}{|l|X|X|X|}
         \hline
@@ -956,7 +943,7 @@ The verification phase evaluated each model's ability to assess the veracity of 
 
 Table \ref{tab:verification_results} presents the verification performance across all models.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
         \hline
@@ -1379,7 +1366,7 @@ This section presents the complete experimental results across all independent r
 
 Table \ref{tab:extraction_per_run} presents the detailed extraction metrics for each of the $k=3$ experimental runs.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Claim Extraction Metrics Per Run ($N=150$ sentences)}
     \label{tab:extraction_per_run}
@@ -1410,7 +1397,7 @@ Table \ref{tab:extraction_per_run} presents the detailed extraction metrics for 
 
 Table \ref{tab:verification_per_run} presents the detailed verification metrics for each of the $k=2$ experimental runs.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Claim Verification Metrics Per Run ($N=100$ claims)}
     \label{tab:verification_per_run}
@@ -1438,7 +1425,7 @@ Table \ref{tab:verification_per_run} presents the detailed verification metrics 
 
 Table \ref{tab:confusion_matrices_extraction} presents the averaged confusion matrices for the extraction phase.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Averaged Confusion Matrices for Claim Extraction ($k=3$ runs)}
     \label{tab:confusion_matrices_extraction}
@@ -1458,7 +1445,7 @@ Table \ref{tab:confusion_matrices_extraction} presents the averaged confusion ma
 
 Table \ref{tab:inter_model_agreement} presents the pairwise agreement rates and error analysis for the verification phase.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Inter-Model Agreement and Error Analysis (Verification Phase)}
     \label{tab:inter_model_agreement}
@@ -1615,7 +1602,7 @@ To ensure reproducibility, exact model versions and generation parameters were s
 
 Table \ref{tab:model_config} documents the exact model identifiers and API endpoints used.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{LLM API Configuration (exact model identifiers used in code)}
     \label{tab:model_config}
@@ -1635,7 +1622,7 @@ Table \ref{tab:model_config} documents the exact model identifiers and API endpo
 
 To minimize non-determinism, the generation parameters in Table \ref{tab:gen_params} were enforced at the code level (via the \texttt{LLMProvider} class).
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{LLM Generation and network parameters (as implemented in code)}
     \label{tab:gen_params}
@@ -1806,7 +1793,7 @@ def main(dataset_path: str, output_path: str):
 
 Table \ref{tab:dataset_sample} presents representative examples from the experimental dataset, illustrating the range of sentence types and ground truth labels. All sentences are taken directly from the BingCheck-derived corpus used in the experiments.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Sample Sentences from Experimental Dataset (BingCheck-derived)}
     \label{tab:dataset_sample}
@@ -1834,7 +1821,7 @@ Table \ref{tab:dataset_sample} presents representative examples from the experim
 
 Table \ref{tab:extraction_sample} presents a representative example from the extraction phase dataset. This row shows how the three LLMs extract claims from a single factual sentence about the Argentine tango. The example demonstrates the different extraction strategies: gpt-4o-mini identifies 3 claims with balanced precision-recall, while Gemini and DeepSeek both extract multiple claims with higher selectivity.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption[Extraction Phase Sample: Argentine Tango]{Extraction Phase Sample: Argentine Tango Sentence (From my\_thesis\_dataset\_run1.csv)}
     \label{tab:extraction_sample}
@@ -1895,7 +1882,7 @@ Table \ref{tab:extraction_sample} presents a representative example from the ext
 
 Table \ref{tab:verification_sample} presents a representative example from the verification phase. This claim about the Argentine tango was extracted in Phase 1 and then evaluated against web search results. The example demonstrates how all three models reached the same verdict (Supported) by finding multiple authoritative sources (UNESCO, Wikipedia, academic databases).
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption[Verification Phase Sample: Argentine Tango]{Verification Phase Sample: Argentine Tango Claim (From my\_thesis\_benchmark\_claims\_run1.csv)}
     \label{tab:verification_sample}
@@ -1963,7 +1950,7 @@ Table \ref{tab:verification_sample} presents a representative example from the v
 
 To demonstrate the system's handling of false claims, Table \ref{tab:verification_refuted} presents an example where the ground truth verdict is \textit{Refuted}.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Verification Example: Refuted Claim (Historical Date Error)}
     \label{tab:verification_refuted}
@@ -1989,7 +1976,7 @@ This example illustrates the challenge of verifying claims with specific histori
 
 Table \ref{tab:verification_insufficient} demonstrates how claims with unresolved references are handled.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Verification Example: Insufficient Information (Ambiguous Subject)}
     \label{tab:verification_insufficient}
