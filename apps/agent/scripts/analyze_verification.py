@@ -96,7 +96,7 @@ def normalize_verdict(verdict: str) -> str:
 
 def calculate_verification_metrics(df: pd.DataFrame, provider_prefix: str) -> Dict[str, Any]:
     """Calculate verification metrics for a specific LLM provider."""
-    print(f"\n🔍 Calculating verification metrics for {provider_prefix}...")
+    print(f"\nCalculating verification metrics for {provider_prefix}...")
     
     # Filter to only rows with ground truth verdicts (manually annotated)
     original_count = len(df)
@@ -106,7 +106,7 @@ def calculate_verification_metrics(df: pd.DataFrame, provider_prefix: str) -> Di
     print(f"  Total claims: {original_count}, Manually annotated: {annotated_count}")
     
     if annotated_count == 0:
-        print(f"  ⚠️  No manually annotated claims found for {provider_prefix}")
+        print(f"  [WARNING] No manually annotated claims found for {provider_prefix}")
         return None
     
     # Get ground truth and predictions
@@ -139,7 +139,7 @@ def calculate_verification_metrics(df: pd.DataFrame, provider_prefix: str) -> Di
     valid_comparison_count = len(y_true_filtered)
     
     if valid_comparison_count == 0:
-        print(f"  ⚠️  No valid comparisons found for {provider_prefix} after filtering")
+        print(f"  [WARNING] No valid comparisons found for {provider_prefix} after filtering")
         print(f"     All {annotated_count} annotated items were filtered out due to 'unknown'/'other' verdicts")
         return None
 
@@ -235,14 +235,14 @@ def create_verifications_comparison_summary(
 
 def analyze_verification_phase(benchmark_path: str, output_path: str):
     """Analyze verification results and create metrics summary."""
-    print("🔍 Analyzing verification phase results...")
+    print("Analyzing verification phase results...")
     print(f"Benchmark: {benchmark_path}")
     print(f"Output: {output_path}")
 
     # Generate a unique output path if the target file already exists
     unique_output_path = generate_unique_filename(output_path)
     if unique_output_path != output_path:
-        print(f"⚠️  Output file already exists. Using unique filename: {unique_output_path}")
+        print(f"[WARNING] Output file already exists. Using unique filename: {unique_output_path}")
 
     # Load benchmark with verifications
     df = load_benchmark_with_verifications(benchmark_path)
@@ -257,7 +257,7 @@ def analyze_verification_phase(benchmark_path: str, output_path: str):
     summary = create_verifications_comparison_summary(gpt4_metrics, gemini_metrics, deepseek_metrics)
     
     # Print summary
-    print(f"\n🏆 Verification Winner: {summary['verification_winner']} (Macro F1-Score: {summary['winner_f1_score']:.4f})")
+    print(f"\nVerification Winner: {summary['verification_winner']} (Macro F1-Score: {summary['winner_f1_score']:.4f})")
     print("All providers ranking:")
     for i, (provider, f1_score) in enumerate(summary['all_providers_ranking'], 1):
         print(f"  {i}. {provider}: {f1_score:.4f}")
@@ -292,9 +292,9 @@ def analyze_verification_phase(benchmark_path: str, output_path: str):
     if metrics_data:
         metrics_df = pd.DataFrame(metrics_data)
         metrics_df.to_csv(unique_output_path, index=False)
-        print(f"\n📈 Verification metrics saved to {unique_output_path}")
+        print(f"\nVerification metrics saved to {unique_output_path}")
     else:
-        print("⚠️  No metrics to save")
+        print("[WARNING] No metrics to save")
 
     return summary
 
@@ -316,18 +316,18 @@ def main():
     
     args = parser.parse_args()
 
-    print(f"📄 Benchmark: {args.benchmark}")
-    print(f"💾 Output: {args.output}")
+    print(f"Benchmark: {args.benchmark}")
+    print(f"Output: {args.output}")
     
     # Verify the benchmark exists
     if not Path(args.benchmark).exists():
-        print(f"❌ Benchmark file not found: {args.benchmark}")
+        print(f"[ERROR] Benchmark file not found: {args.benchmark}")
         sys.exit(1)
     
     # Analyze verification results
     summary = analyze_verification_phase(args.benchmark, args.output)
     
-    print("\n✅ Verification analysis completed successfully!")
+    print("\n[DONE] Verification analysis completed successfully!")
 
 
 if __name__ == "__main__":

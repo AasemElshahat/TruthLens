@@ -82,19 +82,19 @@ def load_dataset_with_extractions(dataset_path: str) -> pd.DataFrame:
 
 def calculate_extraction_metrics(df: pd.DataFrame, provider_prefix: str) -> Dict[str, Any]:
     """Calculate extraction metrics for a specific LLM provider."""
-    print(f"\n📊 Calculating extraction metrics for {provider_prefix}...")
+    print(f"\nCalculating extraction metrics for {provider_prefix}...")
 
     # Allow for either naming convention so the script tolerates future CSV tweaks
     label_candidates = ['contains_factual_claim', 'binary_ground_truth']
     label_col = next((col for col in label_candidates if col in df.columns), None)
     if not label_col:
-        print(f"  ⚠️  None of the expected label columns {label_candidates} exist in dataset")
+        print(f"  [WARNING] None of the expected label columns {label_candidates} exist in dataset")
         return None
 
     y_true = df[label_col].values
     pred_col = f"{provider_prefix}_binary_result"
     if pred_col not in df.columns:
-        print(f"  ⚠️  Missing prediction column '{pred_col}' in dataset")
+        print(f"  [WARNING] Missing prediction column '{pred_col}' in dataset")
         return None
     y_pred_series = pd.Series(df[pred_col], dtype="object")
     normalized_pred = y_pred_series.astype(str).str.lower()
@@ -111,7 +111,7 @@ def calculate_extraction_metrics(df: pd.DataFrame, provider_prefix: str) -> Dict
     y_pred_raw_filtered = y_pred_series[valid_mask].to_numpy()
 
     if len(y_true_raw_filtered) == 0:
-        print(f"  ⚠️  No valid sentences found for {provider_prefix}")
+        print(f"  [WARNING] No valid sentences found for {provider_prefix}")
         return None
 
     for idx, (truth, pred) in enumerate(zip(y_true_raw_filtered, y_pred_raw_filtered)):
@@ -128,14 +128,14 @@ def calculate_extraction_metrics(df: pd.DataFrame, provider_prefix: str) -> Dict
             pred_bool = bool(pred)
 
         if pred_bool is None:
-            print(f"  ⚠️  Unexpected prediction '{pred}' at filtered index {idx}; skipping row")
+            print(f"  [WARNING] Unexpected prediction '{pred}' at filtered index {idx}; skipping row")
             continue
 
         y_true_filtered.append(bool(truth))
         y_pred_filtered.append(pred_bool)
 
     if not y_true_filtered:
-        print(f"  ⚠️  No processed sentences found for {provider_prefix} after cleaning")
+        print(f"  [WARNING] No processed sentences found for {provider_prefix} after cleaning")
         return None
 
     y_true_filtered = pd.Series(y_true_filtered).astype(bool)
@@ -248,14 +248,14 @@ def create_extractions_comparison_summary(
 
 def analyze_extraction_phase(dataset_path: str, output_path: str):
     """Analyze extraction results and create metrics summary."""
-    print("🔍 Analyzing extraction phase results...")
+    print("Analyzing extraction phase results...")
     print(f"Dataset: {dataset_path}")
     print(f"Output: {output_path}")
 
     # Generate a unique output path if the target file already exists
     unique_output_path = generate_unique_filename(output_path)
     if unique_output_path != output_path:
-        print(f"⚠️  Output file already exists. Using unique filename: {unique_output_path}")
+        print(f"[WARNING] Output file already exists. Using unique filename: {unique_output_path}")
 
     # Load dataset with extractions
     df = load_dataset_with_extractions(dataset_path)
@@ -270,7 +270,7 @@ def analyze_extraction_phase(dataset_path: str, output_path: str):
     summary = create_extractions_comparison_summary(gpt4_metrics, gemini_metrics, deepseek_metrics)
 
     # Print summary
-    print(f"\n🏆 Extraction Winner: {summary['extraction_winner']} (F1-Score: {summary['winner_f1_score']:.4f})")
+    print(f"\nExtraction Winner: {summary['extraction_winner']} (F1-Score: {summary['winner_f1_score']:.4f})")
     print("All providers ranking:")
     for i, (provider, f1_score) in enumerate(summary['all_providers_ranking'], 1):
         print(f"  {i}. {provider}: {f1_score:.4f}")
@@ -303,9 +303,9 @@ def analyze_extraction_phase(dataset_path: str, output_path: str):
     if metrics_data:
         metrics_df = pd.DataFrame(metrics_data)
         metrics_df.to_csv(unique_output_path, index=False)
-        print(f"\n📈 Extraction metrics saved to {unique_output_path}")
+        print(f"\nExtraction metrics saved to {unique_output_path}")
     else:
-        print("⚠️  No metrics to save")
+        print("[WARNING] No metrics to save")
 
     return summary, unique_output_path
 
@@ -327,19 +327,19 @@ def main():
 
     args = parser.parse_args()
 
-    print(f"📄 Dataset: {args.dataset}")
-    print(f"💾 Output: {args.output}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Output: {args.output}")
 
     # Verify the dataset exists
     if not Path(args.dataset).exists():
-        print(f"❌ Dataset file not found: {args.dataset}")
+        print(f"[ERROR] Dataset file not found: {args.dataset}")
         sys.exit(1)
 
     # Analyze extraction results and get the actual output path used
     summary, actual_output_path = analyze_extraction_phase(args.dataset, args.output)
 
-    print("\n✅ Extraction analysis completed successfully!")
-    print(f"📊 Results saved to: {actual_output_path}")
+    print("\n[DONE] Extraction analysis completed successfully!")
+    print(f"Results saved to: {actual_output_path}")
 
 
 if __name__ == "__main__":

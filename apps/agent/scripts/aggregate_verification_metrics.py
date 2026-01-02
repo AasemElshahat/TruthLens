@@ -31,11 +31,11 @@ def main():
     run_files = sorted(per_run_dir.glob("verification_metrics_run*.csv"))
     
     if len(run_files) == 0:
-        print("❌ No verification metrics files found!")
+        print("[ERROR] No verification metrics files found!")
         print(f"   Looking in: {per_run_dir}")
         return 1
     
-    print(f"✓ Found {len(run_files)} runs to aggregate")
+    print(f"[OK] Found {len(run_files)} runs to aggregate")
     
     # Load all runs
     all_runs = []
@@ -69,24 +69,24 @@ def main():
     simple_df = pd.DataFrame(simple_summary)
     simple_path = aggregated_dir / "verification_summary_simple.csv"
     simple_df.to_csv(simple_path, index=False)
-    print(f"\n✓ Saved summary to {simple_path}")
+    print(f"\n[OK] Saved summary to {simple_path}")
     
     # Print formatted summary
     print("\n" + "─" * 60)
     print("VERIFICATION PHASE RESULTS (Mean ± Std across runs)")
     print("─" * 60)
     
-    print("\n📊 ACCURACY:")
+    print("\nACCURACY:")
     for provider in PROVIDERS:
         data = combined[combined['provider'] == provider]['accuracy']
         print(f"   {provider.upper():12s}: {data.mean()*100:.1f}% ± {data.std()*100:.1f}%")
     
-    print("\n📊 MACRO F1 SCORE:")
+    print("\nMACRO F1 SCORE:")
     for provider in PROVIDERS:
         data = combined[combined['provider'] == provider]['macro_f1_score']
         print(f"   {provider.upper():12s}: {data.mean():.3f} ± {data.std():.3f}")
     
-    print("\n📊 PER-CLASS F1 SCORES:")
+    print("\nPER-CLASS F1 SCORES:")
     for provider in PROVIDERS:
         pdata = combined[combined['provider'] == provider]
         sup = pdata['supported_f1_score'].mean()
@@ -102,11 +102,11 @@ def main():
     best_acc = max(PROVIDERS, key=lambda p: combined[combined['provider'] == p]['accuracy'].mean())
     best_f1 = max(PROVIDERS, key=lambda p: combined[combined['provider'] == p]['macro_f1_score'].mean())
     
-    print(f"\n🏆 BEST PERFORMERS:")
+    print(f"\nBEST PERFORMERS:")
     print(f"   Accuracy:     {best_acc.upper()}")
     print(f"   Macro F1:     {best_f1.upper()}")
     
-    print("\n✅ Aggregation complete!")
+    print("\n[DONE] Aggregation complete!")
     return 0
 
 

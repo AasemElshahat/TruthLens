@@ -19,31 +19,31 @@ def is_langgraph_installed() -> bool:
 
 def install_langgraph_cli() -> None:
     """Install langgraph-cli with inmem extra for development mode."""
-    print("📦 LangGraph CLI not found. Installing langgraph-cli[inmem]...")
+    print("LangGraph CLI not found. Installing langgraph-cli[inmem]...")
 
     install_command = [sys.executable, "-m", "pip", "install", "langgraph-cli[inmem]"]
 
     try:
         subprocess.run(install_command, check=True)
-        print("✅ LangGraph CLI installed successfully!")
+        print("[OK] LangGraph CLI installed successfully!")
     except subprocess.CalledProcessError as error:
-        print(f"❌ Failed to install langgraph-cli: {error}")
+        print(f"[ERROR] Failed to install langgraph-cli: {error}")
         sys.exit(1)
 
 
 def start_development_server() -> NoReturn:
     """Start the LangGraph development server with hot reloading."""
-    print("🚀 Starting LangGraph development server...")
+    print("Starting LangGraph development server...")
 
     dev_command = ["langgraph", "dev", "--no-browser"]
 
     try:
         subprocess.run(dev_command, check=True)
     except subprocess.CalledProcessError as error:
-        print(f"❌ Failed to start development server: {error}")
+        print(f"[ERROR] Failed to start development server: {error}")
         sys.exit(1)
     except KeyboardInterrupt:
-        print("\n⏹️  Development server stopped gracefully")
+        print("\nDevelopment server stopped gracefully")
         sys.exit(0)
 
 

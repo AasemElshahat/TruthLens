@@ -21,7 +21,7 @@ from claim_verifier.schemas import Verdict
 async def test_claim_extractor():
     """Test the claim extraction agent to understand its output format."""
     
-    print("🧪 Testing Claim Extraction Agent...")
+    print("Testing Claim Extraction Agent...")
     
     # Use a factual sentence from the BingCheck dataset
     test_sentence = "The invention of the first artificial heart was inspired by the need to save lives of people with heart failure and to overcome the shortage of donor hearts for transplantation."
@@ -67,7 +67,7 @@ async def test_claim_extractor():
 async def test_claim_verifier():
     """Test the claim verification agent to understand its output format."""
     
-    print("\n🧪 Testing Claim Verification Agent...")
+    print("\nTesting Claim Verification Agent...")
     
     # Create a sample validated claim to test verification on
     sample_claim = ValidatedClaim(

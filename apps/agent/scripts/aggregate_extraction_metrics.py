@@ -29,10 +29,10 @@ def main():
     run_files = sorted(per_run_dir.glob("extraction_metrics_run*.csv"))
     
     if len(run_files) == 0:
-        print("❌ No extraction metrics files found!")
+        print("[ERROR] No extraction metrics files found!")
         return 1
     
-    print(f"✓ Found {len(run_files)} runs to aggregate")
+    print(f"[OK] Found {len(run_files)} runs to aggregate")
     
     # Load all runs
     all_runs = []
@@ -73,7 +73,7 @@ def main():
     # Save aggregated summary
     summary_path = aggregated_dir / "extraction_metrics_aggregated.csv"
     summary_df.to_csv(summary_path, index=False)
-    print(f"\n✓ Saved aggregated metrics to {summary_path}")
+    print(f"\n[OK] Saved aggregated metrics to {summary_path}")
     
     # Also save a simplified version for easy thesis use
     simple_summary = []
@@ -94,35 +94,35 @@ def main():
     simple_df = pd.DataFrame(simple_summary)
     simple_path = aggregated_dir / "extraction_summary_simple.csv"
     simple_df.to_csv(simple_path, index=False)
-    print(f"✓ Saved simplified summary to {simple_path}")
+    print(f"[OK] Saved simplified summary to {simple_path}")
     
     # Print formatted summary
     print("\n" + "─" * 60)
     print("EXTRACTION PHASE RESULTS (Mean ± Std across 3 runs)")
     print("─" * 60)
     
-    print("\n📊 ACCURACY:")
+    print("\nACCURACY:")
     for provider in PROVIDERS:
         data = combined[combined['provider'] == provider]['accuracy']
         print(f"   {provider.upper():12s}: {data.mean()*100:.1f}% ± {data.std()*100:.1f}%")
     
-    print("\n📊 F1 SCORE (Positive Class - Factual Claims):")
+    print("\nF1 SCORE (Positive Class - Factual Claims):")
     for provider in PROVIDERS:
         data = combined[combined['provider'] == provider]['f1_score_positive']
         print(f"   {provider.upper():12s}: {data.mean():.3f} ± {data.std():.3f}")
     
-    print("\n📊 PRECISION (Factual Claim Detection):")
+    print("\nPRECISION (Factual Claim Detection):")
     for provider in PROVIDERS:
         data = combined[combined['provider'] == provider]['precision_positive']
         print(f"   {provider.upper():12s}: {data.mean():.3f} ± {data.std():.3f}")
     
-    print("\n📊 RECALL (Factual Claim Detection):")
+    print("\nRECALL (Factual Claim Detection):")
     for provider in PROVIDERS:
         data = combined[combined['provider'] == provider]['recall_positive']
         print(f"   {provider.upper():12s}: {data.mean():.3f} ± {data.std():.3f}")
     
     # Calculate average confusion matrix values
-    print("\n📊 AVERAGE CONFUSION MATRIX VALUES:")
+    print("\nAVERAGE CONFUSION MATRIX VALUES:")
     print(f"   {'Provider':<12} {'TP':>6} {'TN':>6} {'FP':>6} {'FN':>6}")
     for provider in PROVIDERS:
         pdata = combined[combined['provider'] == provider]
@@ -139,20 +139,20 @@ def main():
     best_prec = max(PROVIDERS, key=lambda p: combined[combined['provider'] == p]['precision_positive'].mean())
     best_recall = max(PROVIDERS, key=lambda p: combined[combined['provider'] == p]['recall_positive'].mean())
     
-    print(f"\n🏆 BEST PERFORMERS:")
+    print(f"\nBEST PERFORMERS:")
     print(f"   Accuracy:  {best_acc.upper()}")
     print(f"   F1 Score:  {best_f1.upper()}")
     print(f"   Precision: {best_prec.upper()}")
     print(f"   Recall:    {best_recall.upper()}")
     
     # Consistency analysis
-    print(f"\n📉 CONSISTENCY (Lower Std = More Consistent):")
+    print(f"\nCONSISTENCY (Lower Std = More Consistent):")
     for provider in PROVIDERS:
         acc_std = combined[combined['provider'] == provider]['accuracy'].std()
         print(f"   {provider.upper():12s}: Accuracy Std = {acc_std*100:.2f}%")
     
     # Trade-off analysis
-    print(f"\n⚖️ PRECISION-RECALL TRADE-OFF:")
+    print(f"\nPRECISION-RECALL TRADE-OFF:")
     for provider in PROVIDERS:
         pdata = combined[combined['provider'] == provider]
         prec = pdata['precision_positive'].mean()
@@ -166,7 +166,7 @@ def main():
             style = "Balanced"
         print(f"   {provider.upper():12s}: P={prec:.2f}, R={rec:.2f} → {style}")
     
-    print("\n✅ Aggregation complete!")
+    print("\n[DONE] Aggregation complete!")
     return 0
 
 

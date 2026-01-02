@@ -228,22 +228,22 @@ def analyze_single_run(benchmark_path: Path, run_number: int):
     
     # Load data
     df = pd.read_csv(benchmark_path)
-    print(f"✓ Loaded {len(df)} claims from {benchmark_path.name}")
+    print(f"[OK] Loaded {len(df)} claims from {benchmark_path.name}")
     
     # 1. Inter-model agreement
-    print("\n📊 Calculating inter-model agreement metrics...")
+    print("\nCalculating inter-model agreement metrics...")
     agreement_metrics = calculate_inter_model_agreement(df)
     
     # 2. Error patterns
-    print("📊 Analyzing error patterns...")
+    print("Analyzing error patterns...")
     error_patterns = analyze_error_patterns(df)
     
     # 3. Verdict distribution
-    print("📊 Calculating verdict distributions...")
+    print("Calculating verdict distributions...")
     distributions = calculate_verdict_distribution(df)
     
     # 4. Difficult claims
-    print("📊 Identifying difficult claims...")
+    print("Identifying difficult claims...")
     difficult_claims = identify_difficult_claims(df)
     
     # Save results
@@ -259,12 +259,12 @@ def analyze_single_run(benchmark_path: Path, run_number: int):
     }])
     agreement_path = per_run_dir / f"inter_model_metrics_run{run_number}.csv"
     agreement_df.to_csv(agreement_path, index=False)
-    print(f"✓ Saved inter-model metrics to {agreement_path.name}")
+    print(f"[OK] Saved inter-model metrics to {agreement_path.name}")
     
     # Save difficult claims
     difficult_path = claim_level_dir / f"claim_analysis_run{run_number}.csv"
     difficult_claims.to_csv(difficult_path, index=False)
-    print(f"✓ Saved claim analysis to {difficult_path.name}")
+    print(f"[OK] Saved claim analysis to {difficult_path.name}")
     
     # Print summary
     print_run_summary(agreement_metrics, error_patterns, distributions, difficult_claims)
@@ -278,14 +278,14 @@ def print_run_summary(agreement, errors, distributions, difficult_claims):
     print("SUMMARY")
     print(f"{'─'*60}")
     
-    print("\n🤝 INTER-MODEL AGREEMENT:")
+    print("\nINTER-MODEL AGREEMENT:")
     print(f"   All 3 agree:        {agreement['all_three_agree_pct']*100:.1f}%")
     print(f"   GPT-4 & Gemini:     {agreement['gpt4_gemini_agreement']*100:.1f}%")
     print(f"   GPT-4 & DeepSeek:   {agreement['gpt4_deepseek_agreement']*100:.1f}%")
     print(f"   Gemini & DeepSeek:  {agreement['gemini_deepseek_agreement']*100:.1f}%")
     print(f"   Fleiss' Kappa:      {agreement['fleiss_kappa']:.3f}")
     
-    print("\n📏 COHEN'S KAPPA (vs Ground Truth):")
+    print("\nCOHEN'S KAPPA (vs Ground Truth):")
     for p in PROVIDERS:
         kappa = agreement[f'cohens_kappa_{p}']
         interpretation = (
@@ -297,7 +297,7 @@ def print_run_summary(agreement, errors, distributions, difficult_claims):
         )
         print(f"   {p.upper():12s}: {kappa:.3f} ({interpretation})")
     
-    print("\n⚠️ ERROR PATTERNS:")
+    print("\nERROR PATTERNS:")
     for p in PROVIDERS:
         total = errors[f'{p}_errors_total']
         cautious = errors[f'{p}_over_cautious']
@@ -305,7 +305,7 @@ def print_run_summary(agreement, errors, distributions, difficult_claims):
         over_sup = errors[f'{p}_over_confident_supported']
         print(f"   {p.upper():12s}: {total} errors (cautious:{cautious}, wrong_rej:{wrong_rej}, over_conf:{over_sup})")
     
-    print("\n🎯 CLAIM DIFFICULTY DISTRIBUTION:")
+    print("\nCLAIM DIFFICULTY DISTRIBUTION:")
     difficulty_counts = difficult_claims['difficulty'].value_counts()
     for diff in ['easy', 'medium', 'hard', 'very_hard']:
         count = difficulty_counts.get(diff, 0)
@@ -314,7 +314,7 @@ def print_run_summary(agreement, errors, distributions, difficult_claims):
     # Show hardest claims
     very_hard = difficult_claims[difficult_claims['difficulty'] == 'very_hard']
     if len(very_hard) > 0:
-        print(f"\n🔴 CLAIMS ALL MODELS GOT WRONG ({len(very_hard)}):")
+        print(f"\nCLAIMS ALL MODELS GOT WRONG ({len(very_hard)}):")
         for _, row in very_hard.head(5).iterrows():
             claim_preview = row['claim_text'][:50] + "..." if len(row['claim_text']) > 50 else row['claim_text']
             print(f'   • "{claim_preview}"')
@@ -334,10 +334,10 @@ def aggregate_all_runs():
     run_files = sorted(per_run_dir.glob("inter_model_metrics_run*.csv"))
     
     if len(run_files) == 0:
-        print("❌ No run files found. Run analysis on individual runs first.")
+        print("[ERROR] No run files found. Run analysis on individual runs first.")
         return
     
-    print(f"✓ Found {len(run_files)} runs to aggregate")
+    print(f"[OK] Found {len(run_files)} runs to aggregate")
     
     # Load all runs
     all_runs = pd.concat([pd.read_csv(f) for f in run_files], ignore_index=True)
@@ -363,7 +363,7 @@ def aggregate_all_runs():
     # Save aggregated summary
     summary_path = aggregated_dir / "verification_summary_aggregated.csv"
     summary_df.to_csv(summary_path, index=False)
-    print(f"✓ Saved aggregated summary to {summary_path.name}")
+    print(f"[OK] Saved aggregated summary to {summary_path.name}")
     
     # Also load and combine the basic verification metrics
     basic_metrics_files = sorted(Path(__file__).parent.parent.parent.parent.glob("verification_metrics_run*.csv"))
@@ -394,7 +394,7 @@ def aggregate_all_runs():
         providers_df = pd.DataFrame(providers_summary)
         providers_path = aggregated_dir / "provider_metrics_aggregated.csv"
         providers_df.to_csv(providers_path, index=False)
-        print(f"✓ Saved provider metrics to {providers_path.name}")
+        print(f"[OK] Saved provider metrics to {providers_path.name}")
     
     # Print aggregated summary
     print_aggregated_summary(summary_df, len(run_files))
@@ -411,7 +411,7 @@ def aggregate_difficult_claims():
     claim_files = sorted(claim_level_dir.glob("claim_analysis_run*.csv"))
     
     if len(claim_files) < 2:
-        print("⚠️ Need at least 2 runs to aggregate claim difficulty")
+        print("[WARNING] Need at least 2 runs to aggregate claim difficulty")
         return
     
     # Load all claim analyses
@@ -444,12 +444,12 @@ def aggregate_difficult_claims():
     # Save
     output_path = aggregated_dir / "claim_difficulty_aggregated.csv"
     claim_summary.to_csv(output_path, index=False)
-    print(f"✓ Saved aggregated claim difficulty to {output_path.name}")
+    print(f"[OK] Saved aggregated claim difficulty to {output_path.name}")
     
     # Show consistently hard claims
     very_hard = claim_summary[claim_summary['avg_difficulty'] == 'very_hard']
     if len(very_hard) > 0:
-        print(f"\n🔴 CONSISTENTLY DIFFICULT CLAIMS ({len(very_hard)}):")
+        print(f"\nCONSISTENTLY DIFFICULT CLAIMS ({len(very_hard)}):")
         for _, row in very_hard.head(5).iterrows():
             preview = row['claim_text'][:60] + "..." if len(row['claim_text']) > 60 else row['claim_text']
             print(f'   • "{preview}"')
@@ -471,7 +471,7 @@ def print_aggregated_summary(summary_df, num_runs):
         ('cohens_kappa_deepseek', "Cohen's Kappa (DeepSeek)"),
     ]
     
-    print("\n📊 KEY METRICS (Mean ± Std):")
+    print("\nKEY METRICS (Mean +/- Std):")
     for metric, label in key_metrics:
         row = summary_df[summary_df['metric'] == metric]
         if len(row) > 0:
@@ -506,7 +506,7 @@ def main():
     elif args.run and args.benchmark:
         benchmark_path = Path(args.benchmark)
         if not benchmark_path.exists():
-            print(f"❌ Benchmark file not found: {benchmark_path}")
+            print(f"[ERROR] Benchmark file not found: {benchmark_path}")
             return 1
         analyze_single_run(benchmark_path, args.run)
     else:
@@ -518,7 +518,7 @@ def main():
         print("    poetry run python scripts/analyze_verification_extended.py --aggregate")
         return 1
     
-    print("\n✅ Analysis complete!")
+    print("\n[DONE] Analysis complete!")
     return 0
 
 
