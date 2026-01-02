@@ -117,7 +117,7 @@ TruthLens/
 ├── images/                         # Generated figures for thesis
 │   └── results/                    # Result visualization PNGs
 │
-└── REPRODUCTION_GUIDE.md                # This file
+└── REPRODUCTION_GUIDE.md           # This file
 ```
 
 ---
